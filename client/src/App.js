@@ -1,9 +1,28 @@
 import './App.css';
 import Login from './components/Login'
 import Register from './components/Register'
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
+
+const Layout = () => {
+  return (
+    <>
+      <Navbar />
+      <Outlet />
+      <Footer />
+    </>
+  )
+}
 
 const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      
+    ]
+  },
   {
     path: "/login",
     element: <Login />
