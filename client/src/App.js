@@ -3,6 +3,9 @@ import Login from './components/Login'
 import Register from './components/Register'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import Home from './components/Home'
+import About from './components/About';
+import Contact from './components/Contact';
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
 
 const Layout = () => {
@@ -20,7 +23,18 @@ const router = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
-      
+      {
+        path: "/",
+        element: <Home />
+      },
+      {
+        path: "/about",
+        element: <About />
+      },
+      {
+        path: "/contact",
+        element: <Contact />
+      }
     ]
   },
   {
