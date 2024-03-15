@@ -18,7 +18,8 @@
 .auth h1{
     color: rgb(255, 255, 255);
     font-size: xxx-large;
-    position: absolute;
+    display: flex;
+    margin-top: -50px;
     top: 10%;
     text-shadow: 1px 1px 5px rgb(0, 0, 0, 0.5);
 }
@@ -41,6 +42,14 @@
     border-bottom: 1px solid rgb(0, 0, 0);
 }
 
+.auth form .inputPassword{
+    position: relative;
+}
+
+.auth form .inputPassword input{
+    width: 90%;
+}
+
 .auth form button{
     padding: 10px;
     border: none;
@@ -48,6 +57,22 @@
     font-weight: bold;
     border-radius: 20px;
     transition: all 0.3s;
+}
+
+.auth form p{
+    position: absolute;
+    top: 61%;
+    transform: translateX(20%);
+    color: rgb(255, 0, 0);
+}
+
+.auth form h4{
+    display: flex;
+    justify-content: center;
+    font-weight: lighter;
+    color: rgb(255, 0, 0);
+    margin: 0;
+    padding: 0;
 }
 
 button[disabled=disabled], button:disabled{
@@ -66,14 +91,8 @@ span{
 .showPassword{
     position: absolute;
     top: 30%;
-    left: 50%;
+    left: 90%;
     cursor: pointer;
-}
-.showPassword i{
-    position: absolute;
-    cursor: pointer;
-    left: 80px;
-    top: 110px;
 }
 
 /* NAVBAR */
@@ -108,6 +127,48 @@ span{
 
 .navbar .container .links .active{
     color: rgb(0, 0, 0);
+}
+
+.navbar .container .links .login{
+    text-decoration: none;
+    width: 60px;
+    height: 25px;
+    border: 1px solid rgb(65, 175, 167);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    color: rgb(65, 175, 167);
+    transition: all 0.3s;
+}
+
+.navbar .container .links .login:hover{
+    color: rgb(255, 255, 255);
+    background-color: rgb(65, 175, 167);
+}
+
+.navbar .container .links .user{
+    color: rgb(65, 175, 167);
+    margin: 0;
+}
+
+.navbar .container .links .logout{
+    width: 65px;
+    height: 25px;
+    border-radius: 30px;
+    color: rgb(65, 175, 167);
+    border: 1px solid rgb(65, 175, 167);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+.navbar .container .links .logout:hover{
+    color: rgb(255, 255, 255);
+    background-color: rgb(65, 175, 167);
 }
 
 /* FOOTER */

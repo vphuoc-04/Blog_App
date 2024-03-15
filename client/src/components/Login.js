@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { AuthContext } from '../context/AuthContext'
 
 const Login = () => {
 
@@ -8,9 +10,30 @@ const Login = () => {
     password: ""
   });
 
+  const navigate = useNavigate();
+
+  const { login } = useContext(AuthContext);
+  console.log(login);
+
+  const [err, setErr] = useState(null);
+
   const handleInput = (event) => {
     setinput((prev) => ({...prev, [event.target.name]: event.target.value}))
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    try{
+      await login(input);
+      const res =  await axios.post("/auth/login", input);
+      navigate("/");
+      console.log(res);
+    }
+    catch(err){
+      setErr(err.response.data);
+    }
+  }
+  console.log(input);
 
   const [showPassword, setShowPassword] = useState("");
 
@@ -26,21 +49,25 @@ const Login = () => {
               placeholder= "Username"
               onChange = { handleInput }
             />
-            <input 
-              name = "password"
-              type = {showPassword === true ? "text" : "password"} 
-              placeholder = "Password"
-              onChange = { handleInput }
-            />
-            <div className = "showPassword">
-              <i className = {showPassword === true ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"} 
-                onClick = {() => setShowPassword(!showPassword)}
+            <div className = "inputPassword">
+              <input 
+                name = "password"
+                type = {showPassword === true ? "text" : "password"} 
+                placeholder = "Password"
+                onChange = { handleInput }
               />
+              <div className = "showPassword">
+                <i className = {showPassword === true ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"} 
+                  onClick = {() => setShowPassword(!showPassword)}
+                />
+              </div>
             </div>
             <button 
               className = {username && password ? "active-button" : ""}
               disabled = {username && password ? false : true}
+              onClick = { handleSubmit }
               >Login</button>
+              {err && <h4> { err} </h4>}
             <span>Don't you have an account? <Link to = "/register">Register</Link></span>
         </form>
     </div>
