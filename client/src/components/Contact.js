@@ -1,9 +1,28 @@
-import React from 'react'
+import React, { useRef } from 'react'
+import emailjs from '@emailjs/browser'
 import location from '../assets/img/location.png'
 import email from '../assets/img/email.png'
 import phone from '../assets/img/phone.png'
 
-const Contact = () => {
+export const Contact = () => {
+  const form = useRef();
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    emailjs
+      .sendForm('service_piogrhm', 'template_shih5ou', form.current, {
+        publicKey: '76zEpH9TyConkvOg3',
+      })
+      .then(
+        () => {
+          console.log("Gửi thành công!");
+        },
+        ( error ) => {
+          console.log("Lỗi", error.text);
+        },
+      );
+  };
   return (
     <div className = "contact">
       <div class = "container">
@@ -50,7 +69,7 @@ const Contact = () => {
           </div>
 
           <div class = "contact-form">
-            <form>
+            <form ref = { form } onSubmit = { sendEmail }>
               <h3 class = "title">Kết Nối</h3>
               <div class = "input-container">
                 <input 
