@@ -1,14 +1,15 @@
 import './App.css';
 import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import Post from './components/Post';
+import Listpost from './components/Listpost';
+import Dashboard from './components/Dashboard';
 
 const Layout = () => {
   return (
     <>
       <Navbar />
-      <Outlet />
-      <Sidebar />
+      <Dashboard />
     </>
   )
 }
@@ -19,11 +20,12 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "/post"
-        
+        path: "/post",
+        element: <Post />
       },
       {
-        path: "/listpost"
+        path: "/listpost",
+        element: <Listpost />
       }
     ]
   }
