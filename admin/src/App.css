@@ -1,3 +1,7 @@
+.App{
+    font-family: monospace;
+}
+
 /* NAVBAR */
 .navbar{
     display: flex;
@@ -28,11 +32,11 @@
     padding-top: 50px;
 }
 
-.sidebar .sidebarItem{
+.sidebar .show .sidebarItem{
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0px 20px;
+    margin: 30px 20px;
     padding: 5px 10px;
     border-radius: 10px;
     background-color: rgb(246, 246, 246);
@@ -45,7 +49,6 @@
 
 .sidebar .sidebarItem p{
     color: rgb(0, 0, 0);
-
 }
 
 .dashboard{
@@ -68,7 +71,7 @@
     font-size: large;
 }
 
-.post .postItem input{
+.post .content input{
     box-sizing: border-box;
     width: 100%;
     height: 50px;
@@ -79,7 +82,7 @@
     padding-left: 20px;
 }
 
-.post .postItem textarea{
+.post .content .postContent textarea{
     resize: none;
     width: 95%;
     border-radius: 20px;
@@ -87,25 +90,121 @@
     height: 100px;
     outline: none;
     border: 1px solid rgb(128, 128, 128);
+    color: rgb(128, 128, 128);
+    margin-top: 20px;
 }
 
-.post .thumbnail img{
-    width: 80px;
-    margin: 50px 30px;
-    cursor: pointer;
+.post .menu .item .file img{
+    width: 100px;
+    margin-top: 20px;
+}
+
+.post .menu .item .life{
+    position: relative;
 }
 
 .post button{
+    position: relative;
+    margin-top: 20px;
     height: 50px;
     width: 100px;
     border-radius: 30px;
     border: none;
-    transition: all 0.3s;
-}
-
-.active-button{
     background-color: rgb(65, 175, 167);
     color: rgb(255, 255, 255);
     cursor: pointer;
 }
+
+/* LOGIN ADMIN */
+.auth{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background-color: rgb(65, 175, 167);
+}
+
+.auth h1{
+    color: rgb(255, 255, 255);
+    font-size: xxx-large;
+    display: flex;
+    margin-top: -50px;
+    top: 10%;
+    text-shadow: 1px 1px 5px rgb(0, 0, 0, 0.5);
+}
+
+.auth form{
+    display: flex;
+    flex-direction: column;
+    padding: 60px 50px;
+    background-color: rgb(255, 255, 255);
+    width: 200px;
+    gap: 30px;
+    border-radius: 20px;
+    box-shadow: 0px 1px 5px 1px rgb(0, 0, 0, 0.5);
+}
+
+.auth form input{
+    padding: 10px;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid rgb(0, 0, 0);
+}
+
+.auth form .inputPassword{
+    position: relative;
+}
+
+.auth form .inputPassword input{
+    width: 90%;
+}
+
+.auth form button{
+    padding: 10px;
+    border: none;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.auth form p{
+    position: absolute;
+    top: 61%;
+    transform: translateX(20%);
+    color: rgb(255, 0, 0);
+}
+
+.auth form h4{
+    display: flex;
+    justify-content: center;
+    font-weight: lighter;
+    color: rgb(255, 0, 0);
+    margin: 0;
+    padding: 0;
+}
+
+button[disabled=disabled], button:disabled{
+    cursor: not-allowed;
+}
+
+.active-button{
+    background-color: rgb(65, 175, 167);
+    cursor: pointer;
+}
+
+span{
+    font-family: monospace;
+    text-align: center;
+}
+.showPassword{
+    position: absolute;
+    top: 30%;
+    left: 90%;
+    cursor: pointer;
+}
+
+
+
 

@@ -244,6 +244,30 @@ footer h3 button:hover{
     margin-top: -25px;
 }
 
+.home .posts{
+    display: flex;
+    gap: 50px;
+    margin: 50px 40px;
+    text-align: center;
+}
+
+.home .posts p{
+    font-size: large;
+}
+
+.home .posts .post .img img{
+    width: 320px;
+    height: 180px;
+    border-radius: 20px;
+    transition: all 0.3s;
+    cursor: pointer;
+    box-shadow: 3px 1px 10px 2px rgb(0, 0, 0, 0.5);
+}
+
+.home .posts .post .img img:hover{
+    transform: scale(1.1);
+}
+
 /* ABOUT */
 .about{}
 
@@ -520,4 +544,24 @@ textarea.input {
 
 .contact .container .form .contact-info .social-media .social-icons a:hover {
   transform: scale(1.05);
+}
+
+/* Content */
+.content .contentPost{
+    display: flex;
+    flex-direction: column;
+    margin-left: 100px;
+}
+
+.content .contentPost img{
+    border-radius: 30px;
+    border: 1px solid rgb(0, 0, 0);
+}
+.content .contentPost .admin{
+
+}
+
+.content .contentPost img{
+    width: 640px;
+    height: 360px;
 }

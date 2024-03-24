@@ -9,7 +9,7 @@ const Dashboard = () => {
     <div className = "dashboard">
         <Sidebar />
         <Routes>
-          <Route path = "/post" element = { <Post /> } />
+          <Route path = "//write" element = { <Post /> } />
           <Route path = "/listpost" element = { <Listpost /> } />
         </Routes>
     </div>

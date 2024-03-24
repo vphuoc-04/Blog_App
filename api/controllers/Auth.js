@@ -55,3 +55,34 @@ export const logout = (req, res) => {
         secure: true
     }).status(200).json("Tài khoản đã được đăng xuất!")
 }
+
+export const loginAdmin = (req, res) => {
+    const q = "SELECT * FROM admin WHERE username = ?";
+    database.query(q, [req.body.username], (err, data) => {
+        if (err) { return res.json(err) }
+
+        if (data.length === 0) { return res.status(404).json("Tài khoản không tồn tại") }
+
+        const admin = data[0];
+        if (req.body.password !== admin.password) {
+            return res.status(400).json("Sai thông tin đăng nhập!");
+        }
+
+        const token = jwt.sign({ id: data[0].id }, "admin_jwtkey");
+        const { password, ...adminInfo } = data[0];
+
+        res
+        .cookie("admin_access_token", token, {
+            httpOnly: true,
+        })
+        .status(200)
+        .json(adminInfo);
+    });
+}
+
+export const logoutAdmin = (req, res) => {
+    res.clearCookie("admin_access_token", {
+        sameSite: "none",
+        secure: true
+    }).status(200).json("Tài khoản đã được đăng xuất!")
+}
