@@ -2,7 +2,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Post from './components/Post';
-import Listpost from './components/Listpost';
+import Allpost from './components/Allpost';
 import Dashboard from './components/Dashboard';
 import LoginAdmin from './components/LoginAdmin'
 
@@ -29,8 +29,8 @@ const router = createBrowserRouter([
         element: <Post />
       },
       {
-        path: "/listpost",
-        element: <Listpost />
+        path: "/allpost",
+        element: <Allpost />
       }
     ]
   }

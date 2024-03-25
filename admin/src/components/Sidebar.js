@@ -18,7 +18,7 @@ const Sidebar = () => {
             <p>Đăng Tải Bài Viết</p>
           </div>
           </Link>
-          <Link to = {'/listpost'} style = {{ textDecoration: "none" }}>
+          <Link to = {'/allpost'} style = {{ textDecoration: "none" }}>
             <div className = "sidebarItem">
               <img src = { Editpost } alt ="" />
               <p>Quản Lý Bài Viết</p>

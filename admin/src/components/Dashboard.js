@@ -2,15 +2,15 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Post from '../components/Post'
-import Listpost from './Listpost'
+import Allpost from './Allpost'
 
 const Dashboard = () => {
   return (
     <div className = "dashboard">
         <Sidebar />
         <Routes>
-          <Route path = "//write" element = { <Post /> } />
-          <Route path = "/listpost" element = { <Listpost /> } />
+          <Route path = "/write" element = { <Post /> } />
+          <Route path = "/allpost" element = { <Allpost /> } />
         </Routes>
     </div>
   )
