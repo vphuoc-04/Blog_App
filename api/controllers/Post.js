@@ -40,15 +40,47 @@ export const addPost = (req, res) => {
 
         database.query(q, [values], (err, data) => {
             if(err) { return res.status(500).json(err) }
-            return res.json("Post has been created")
+            return res.json("Bài viết đã được đăng tải!")
         })
     });
 }
 
 export const deletePost = (req, res) => {
-    res.json("from controller")
+    const token = req.cookies.admin_access_token;
+    if(!token) { return res.status(401).json("Không được xác thực!") }
+    jwt.verify(token, "admin_jwtkey", (err, userInfo) => {
+        if(err) { return res.status(403).json("Token không hợp lệ!") }
+        
+        const postId = req.params.id;
+        const q = "DELETE FROM posts WHERE `id` = ? AND `uid` = ?";
+
+        database.query(q, [postId, userInfo.id], (err, data) => {
+            if(err) { return res.status(403).json("Không thể xóa bài viết!") }
+
+            return res.json("Bài viết đã được xóa");
+        })
+    })
 }
 
 export const updatePost = (req, res) => {
-    res.json("from controller")
+    const token = req.cookies.admin_access_token;
+    if(!token) { return res.status(401).json("Không được xác thực!") }
+    jwt.verify(token, "admin_jwtkey", (err, userInfo) => {
+        if(err) { return res.status(403).json("Token không hợp lệ!") }
+
+        const postId = req.params.id;
+        const q = "UPDATE posts SET `title` = ?,`des` = ?,`img` = ?,`life` = ? WHERE `id` = ? AND `uid` = ?";
+
+        const values = [
+            req.body.title,
+            req.body.des,
+            req.body.img,
+            req.body.life
+        ]
+
+        database.query(q, [...values, postId, userInfo.id], (err, data) => {
+            if(err) { return res.status(500).json(err) }
+            return res.json("Bài viết đã được cập nhật!");
+        })
+    })
 }
