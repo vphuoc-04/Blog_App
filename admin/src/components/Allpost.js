@@ -31,6 +31,7 @@ const Allpost = () => {
       console.log(err);
     }
   }
+  
   return (
     <div className = "allpost">
       <div className = "post">

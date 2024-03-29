@@ -23,6 +23,12 @@ const Sidebar = () => {
               <p>Quản Lý Bài Viết</p>
             </div>
           </Link>
+          <Link to = {'/user'} style = {{ textDecoration: "none" }}>
+            <div className = "sidebarItem">
+              <i class="fa-regular fa-user"></i>
+              <p>Quản Lý Người Dùng</p>
+            </div>
+          </Link>
         </div>
       ) : (
         <div className = "hide">

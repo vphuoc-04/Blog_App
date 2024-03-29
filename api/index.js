@@ -3,6 +3,7 @@ import multer from 'multer';
 import cookieParser from 'cookie-parser';
 import AuthRoutes from './routes/Auth.js';
 import PostRoutes from './routes/Posts.js'
+import UserRoutes from './routes/Users.js'
 import cors from 'cors'
 
 const app = express();
@@ -28,6 +29,7 @@ app.post('/api/upload', upload.single('file'), function (req, res){
 
 app.use("/api/auth", AuthRoutes);
 app.use("/api/posts", PostRoutes);
+app.use("/api/users", UserRoutes);
 
 app.listen(8800, () => {
     console.log("Connected!");

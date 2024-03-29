@@ -2,6 +2,17 @@
     font-family: monospace;
 }
 
+.dashboard .routes{
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 30px;
+    width: 100%;
+    max-width: 1000px;
+    padding: 30px 50px;
+    margin: 20px 30px;
+    background-color: rgb(255, 255, 255);
+}
+
 /* NAVBAR */
 .navbar{
     display: flex;
@@ -60,16 +71,6 @@
 }
 
 /* POST */
-
-.post{
-    box-sizing: border-box;
-    border-radius: 30px;
-    width: 100%;
-    max-width: 1000px;
-    padding: 30px 50px;
-    margin: 20px 30px;
-    background-color: rgb(255, 255, 255);
-}
 
 .post .postItem{
     color: rgb(128, 128, 128);
@@ -211,15 +212,13 @@ span{
     cursor: pointer;
 }
 
-/* LIST POST */
+/* ARTICLE MANAGEMENT */
 .allpost{
     box-sizing: border-box;
     border-radius: 30px;
     width: 100%;
-    max-width: 1000px;
     padding: 30px 50px;
     margin: 20px 30px;
-    background-color: rgb(255, 255, 255);
 }
 
 .allpost .post{
@@ -249,6 +248,30 @@ span{
 .allpost .post .content .des .icon img{
     width: 25px;
     padding: 0 10px;
+    cursor: pointer;
+}
+
+/* USER */
+.userManagement{
+    border-collapse: collapse;
+    font-size: 20px;
+}
+
+.userManagement td, .userManagement th{
+    padding: 8px;
+    border: 1px solid rgb(0, 0, 0, 0.5);
+}
+
+.userManagement th{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: left;
+    background-color: rgb(65, 175, 167);
+    color: rgb(255, 255, 255);
+}
+
+.userManagement td img{
+    width: 30px;
     cursor: pointer;
 }
 
