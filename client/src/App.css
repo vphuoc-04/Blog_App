@@ -244,28 +244,82 @@ footer h3 button:hover{
     margin-top: -25px;
 }
 
+.home .titleNewPost{
+    margin-left: 185px;
+    padding: 20px 0px;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.2);
+    width: calc(100% - 24.5%);
+    color: rgb(0, 0, 0, 0.6);
+}
+
 .home .posts{
     display: flex;
     gap: 50px;
     margin: 50px 40px;
-    text-align: center;
+    text-align: left;
+    flex-direction: row-reverse;
+    justify-content: center;
+}
+
+.home .posts .allPost{
+    display: flex;
+}
+
+.home .posts .newPost{
+    border: 1px solid rgb(0, 0, 0, 0.3);
+    border-radius: 20px;
+    width: 350px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.home .posts .newPost .title{
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.home .posts .newPost .des{
+    padding: 10px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
 }
 
 .home .posts p{
     font-size: large;
 }
 
-.home .posts .post .img img{
-    width: 320px;
-    height: 180px;
-    border-radius: 20px;
-    transition: all 0.3s;
+.home .posts .newPost .img img{
+    width: 350px;
+    height: 200px;
+    transition: all 0.5s;
     cursor: pointer;
-    box-shadow: 3px 1px 10px 2px rgb(0, 0, 0, 0.5);
+    border-radius: 20px;
 }
 
-.home .posts .post .img img:hover{
-    transform: scale(1.1);
+.home .posts .newPost .admin{
+    padding: 10px;
+    margin-top: auto;
+}
+
+.home .posts .newPost .admin .date{
+    margin: -20px 0 0 60px;
+}
+
+.home .posts .newPost .admin .adminInfo{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.home .posts .newPost .admin .adminInfo img{
+    width: 50px;
+    border-radius: 50px;
+    margin-top: 20px;
 }
 
 /* ABOUT */
@@ -547,21 +601,72 @@ textarea.input {
 }
 
 /* Content */
-.content .contentPost{
+.content .container{
     display: flex;
     flex-direction: column;
-    margin-left: 100px;
+    align-items: center;
 }
 
-.content .contentPost img{
+.content .container img{
     border-radius: 30px;
     border: 1px solid rgb(0, 0, 0);
 }
-.content .contentPost .admin{
 
+.content .container .admin{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    margin-left: -600px;
 }
 
-.content .contentPost img{
-    width: 640px;
-    height: 360px;
+.content .container .admin span{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.content .container .admin img{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+
+.content .container img{
+    width: 800px;
+    height: 450px;
+}
+
+.content .container .contentPost{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content .name{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    font-size: 40px;
+    padding: 0;
+    font-weight: lighter;
+}
+
+.content .name a{
+    font-family: great-vibes;
+    text-decoration: none;
+    color: rgb(65, 175, 167);
+    transition:all 0.5s;
+}
+
+.content .name a:hover{
+    color: rgb(80, 209, 200);
+}
+
+.content h2{
+    display: flex;
+    justify-content: center;
+    font-weight: lighter;
+    letter-spacing: -1px;
+    color: rgb(0, 0, 0, 0.7);
+    margin-top: -25px;
 }

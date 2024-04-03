@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import adminImg from '../assets/img/aboutMe.png'
 import axios from 'axios'
+import moment from 'moment';
 
 const Home = () => {
   const [ posts, setPosts ] = useState([]);
-
-  const life = useLocation().search;
+  const [ admin, setAdmin ] = useState([]);
+  const id = useLocation().search;
 
   useEffect(() => {
     const fetchData = async () => {
       try{
-        const res = await axios.get(`/posts${life}`);
+        const res = await axios.get(`/posts${id}`);
         setPosts(res.data)
       }
       catch(err){
@@ -18,7 +20,20 @@ const Home = () => {
       }
     };
     fetchData();
-  }, [life]);
+  }, [id]);
+
+  useEffect(() => {
+    const fetchDataAdmin = async () => {
+      try{
+        const res = await axios.get(`admin${id}`)
+        setAdmin(res.data);
+      }
+      catch(err){
+        console.log(err);
+      }
+    };
+    fetchDataAdmin();
+  }, [id]);
 
   return (
     <div className = "home">
@@ -26,13 +41,28 @@ const Home = () => {
         <a href = "/">Văn Phước</a>
       </h1>
       <h2>Software Engineer</h2>
+      <h1 className = "titleNewPost">New Posts</h1>
       <div className = "posts">
         { posts.map((post) => (
-          <div className = "post" key = { post.id }>
-            <Link className = "img" to = {`/post/${post.id}`}>
-              <img src = { `../upload/${post.img}` } alt = "" />
-            </Link>
-            <p> { post.title } </p>
+          <div className = "allPost">
+            <div className = "newPost" key = { post.id }>
+              <Link className = "img" to = {`/post/${post.id}`}>
+                <img src = { `../upload/${post.img}` } alt = "" />
+              </Link>
+              <div className = "title"> { post.title } </div>
+              <div className = "des"> { post.des } </div>
+              <div className = "admin">
+                { admin.map((a) => (
+                  <div className = "adminInfo">
+                    <img src = { adminImg } alt = '' />
+                    <p>{ a.username }</p>
+                  </div>
+                )) }
+                <div className = "date"> {moment(post.date).fromNow()} </div>
+              </div>
+            </div>
+            <div className = "popularPost">
+            </div>
           </div>
         )) }
       </div>
