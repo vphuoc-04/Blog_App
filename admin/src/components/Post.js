@@ -3,13 +3,14 @@ import Upload from '../assets/img/upload.svg'
 import { useLocation, useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import axios from 'axios'
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const Post = () => {
   const state = useLocation().state; 
   const [title, setTitle] = useState(state?.title || "");
   const [value, setValue] = useState(state?.des || "");
   const [file, setFile] = useState(null);
-  const [life, setLife] = useState(state?.life || "");
 
   const navigate = useNavigate();
 
@@ -33,13 +34,11 @@ const Post = () => {
         ? await axios.put(`/posts/${state.id}`, {
             title,
             des: value,
-            life,
             img: file ? imgUrl : "",
           })
         : await axios.post(`/posts/`, {
             title,
             des: value,
-            life, 
             img: file ? imgUrl : "",
             date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
           });
@@ -60,10 +59,12 @@ const Post = () => {
           onChange = {(event) => setTitle(event.target.value)}
         />
         <div className = "postContent">
-          <textarea
+          <ReactQuill
+            className = "reactQuill"
+            theme = "snow"
             placeholder = "Nội dung"
             value = { value }
-            onChange = {(event) => setValue(event.target.value)}
+            onChange = {setValue}
           />
         </div>
       </div>
@@ -79,20 +80,6 @@ const Post = () => {
           <label className = "file" htmlFor = "file">
             <img src = { file?URL.createObjectURL(file):Upload } alt = ""/>
           </label>
-          <div className="item">
-            <h1>Dev</h1>
-            <div className="life">
-              <input
-                type="radio"
-                checked={life === "dev"}
-                name = "life"
-                value = "dev"
-                id = "dev"
-                onChange={(event) => setLife(event.target.value)}
-              />
-              <label htmlFor="dev">Dev</label>
-            </div>
-          </div>
           <div className = "buttons">
             <button onClick = { handleUpload }>Đăng Tải</button>
           </div>

@@ -7,12 +7,12 @@ import axios from 'axios'
 const Allpost = () => {
   const [listPost, setListPost] = useState([]);
 
-  const life = useLocation().search;
+  const id = useLocation().search;
 
   useEffect(() => {
     const fetchData = async () => {
       try{
-        const res = await axios.get(`posts${life}`);
+        const res = await axios.get(`posts${id}`);
         setListPost(res.data);
       }
       catch(err){
@@ -20,7 +20,7 @@ const Allpost = () => {
       }
     };
     fetchData();
-  }, [life]);
+  }, [id]);
 
   const handleDelete = async (id) => {
     try{
