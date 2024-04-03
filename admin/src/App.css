@@ -70,10 +70,8 @@
 
 /* POST */
 
-.post .postItem{
-    color: rgb(128, 128, 128);
-    font-family: monospace;
-    font-size: large;
+.post .content{
+    padding: 20px 0px;
 }
 
 .post .content input{
@@ -84,7 +82,8 @@
     color: rgb(128, 128, 128);
     outline: none;
     border: 1px solid rgb(128, 128, 128);
-    padding-left: 20px;
+    padding: 10px 0 10px 20px;
+    margin-top: 20px;
 }
 
 .post .content .postContent .reactQuill{

@@ -13,7 +13,7 @@ export const getPosts = (req, res) => {
 }
 
 export const getPost = (req, res) => {
-    const q = "SELECT p.id, `username`, `title`, `des`, p.img, `life`, `date` FROM admin a JOIN posts p ON a.id=p.uid WHERE p.id = ?";
+    const q = "SELECT p.id, `username`, `title`, `introdes`, `des`, p.img, `date` FROM admin a JOIN posts p ON a.id=p.uid WHERE p.id = ?";
 
     database.query(q, [req.params.id], (err, data) => {
         if(err) { return res.json(err) }
@@ -27,13 +27,13 @@ export const addPost = (req, res) => {
     jwt.verify(token, "admin_jwtkey", (err, userInfo) => {
         if(err) return res.status(403).json("Token không hợp lệ!");
 
-        const q = "INSERT INTO posts(`title`,`des`,`img`,`life`,`date`,`uid`) VALUES (?)";
+        const q = "INSERT INTO posts(`title`,`introdes`,`des`,`img`,`date`,`uid`) VALUES (?)";
 
         const values = [
             req.body.title,
+            req.body.introdes,
             req.body.des,
             req.body.img,
-            req.body.life,
             req.body.date,
             userInfo.id
         ]
@@ -69,13 +69,13 @@ export const updatePost = (req, res) => {
         if(err) { return res.status(403).json("Token không hợp lệ!") }
 
         const postId = req.params.id;
-        const q = "UPDATE posts SET `title` = ?,`des` = ?,`img` = ?,`life` = ? WHERE `id` = ? AND `uid` = ?";
+        const q = "UPDATE posts SET `title` = ?,`introdes` = ?,`des` = ?,`img` = ? WHERE `id` = ? AND `uid` = ?";
 
         const values = [
             req.body.title,
+            req.body.introdes,
             req.body.des,
             req.body.img,
-            req.body.life
         ]
 
         database.query(q, [...values, postId, userInfo.id], (err, data) => {

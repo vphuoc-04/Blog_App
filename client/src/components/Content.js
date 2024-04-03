@@ -50,8 +50,9 @@ const Content = () => {
               src = { `../upload/${post?.img}` }
               alt = ""
             />
+            <p> { post.introdes } </p>
             <p 
-              dangerouslySetInnerHTML={{
+              dangerouslySetInnerHTML = {{
               __html: DOMPurify.sanitize(post.des),
             }}
             ></p>

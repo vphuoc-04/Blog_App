@@ -605,6 +605,7 @@ textarea.input {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-left: 100px;
 }
 
 .content .container img{
@@ -622,7 +623,6 @@ textarea.input {
 
 .content .container .admin span{
     font-size: 20px;
-    font-weight: bold;
 }
 
 .content .container .admin img{

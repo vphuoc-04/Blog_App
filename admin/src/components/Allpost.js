@@ -3,6 +3,7 @@ import {Link, useLocation } from 'react-router-dom'
 import Delete from '../assets/img/delete.png'
 import Edit from '../assets/img/edit.png'
 import axios from 'axios'
+import DOMPurify from "dompurify";
 
 const Allpost = () => {
   const [listPost, setListPost] = useState([]);
@@ -42,7 +43,7 @@ const Allpost = () => {
             </div>
             <div className = "des">
               <h3> { post.title } </h3>
-              <p> { post.des } </p>
+              <p> { post.introdes } </p>
               <div className = "icon">
                 <img 
                   onClick = {() => handleDelete(post.id) }

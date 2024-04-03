@@ -50,7 +50,7 @@ const Home = () => {
                 <img src = { `../upload/${post.img}` } alt = "" />
               </Link>
               <div className = "title"> { post.title } </div>
-              <div className = "des"> { post.des } </div>
+              <div className = "des"> { post.introdes } </div>
               <div className = "admin">
                 { admin.map((a) => (
                   <div className = "adminInfo">

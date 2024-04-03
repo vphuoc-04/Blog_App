@@ -10,6 +10,7 @@ const Post = () => {
   const state = useLocation().state; 
   const [title, setTitle] = useState(state?.title || "");
   const [value, setValue] = useState(state?.des || "");
+  const [introdes, setIntroDes] = useState(state?.introdes || "");
   const [file, setFile] = useState(null);
 
   const navigate = useNavigate();
@@ -33,12 +34,14 @@ const Post = () => {
       state
         ? await axios.put(`/posts/${state.id}`, {
             title,
+            introdes: introdes,
             des: value,
             img: file ? imgUrl : "",
           })
         : await axios.post(`/posts/`, {
             title,
             des: value,
+            introdes: introdes,
             img: file ? imgUrl : "",
             date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
           });
@@ -57,6 +60,12 @@ const Post = () => {
           value = { title }
           placeholder = "Tiêu đề"
           onChange = {(event) => setTitle(event.target.value)}
+        />
+        <input
+          type = "text"
+          value = { introdes }
+          placeholder = "Lời mở đầu"
+          onChange = {(event) => setIntroDes(event.target.value)}
         />
         <div className = "postContent">
           <ReactQuill
