@@ -4,6 +4,7 @@ import adminImg from '../assets/img/aboutMe.png'
 import axios from 'axios';
 import moment from 'moment'
 import DOMPurify from "dompurify";
+import Menu from './Menu';
 
 const Content = () => {
   const [post, setPost] = useState({});
@@ -11,6 +12,8 @@ const Content = () => {
   const location = useLocation();
 
   const postId = location.pathname.split("/")[2];
+
+  const currentPageUrl = `http://localhost:3000/post/${postId}`;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,28 +39,29 @@ const Content = () => {
         <a href = "/">Văn Phước</a>
       </h1>
       <h2>Software Engineer</h2>
-        <div className = "container">
-          <div className = "admin">
-            <img src = { adminImg } alt = ""/>
-            <div className = "nameAndDate">
-              <span> { post.username }</span>
-              <p>{moment(post.date).fromNow()}</p>
-            </div>
-          </div>
-          <div className = "contentPost">
-            <h1> { post.title } </h1>
-            <img
-              src = { `../upload/${post?.img}` }
-              alt = ""
-            />
-            <p> { post.introdes } </p>
-            <p 
-              dangerouslySetInnerHTML = {{
-              __html: DOMPurify.sanitize(post.des),
-            }}
-            ></p>
+      <div className = "container">
+        <div className = "admin">
+          <img src = { adminImg } alt = ""/>
+          <div className = "nameAndDate">
+            <span> { post.username }</span>
+            <p>{moment(post.date).fromNow()}</p>
           </div>
         </div>
+        <div className = "contentPost">
+          <h1> { post.title } </h1>
+          <img
+            src = { `../upload/${post?.img}` }
+            alt = ""
+          />
+          <p> { post.introdes } </p>
+          <p 
+            dangerouslySetInnerHTML = {{
+            __html: DOMPurify.sanitize(post.des),
+          }}
+          ></p>
+        </div>
+      </div>
+      <Menu id = { post.id } />
     </div>
   )
 }

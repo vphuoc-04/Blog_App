@@ -604,8 +604,8 @@ textarea.input {
 .content .container{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin-left: 100px;
+    align-items: flex-start;
+    margin: 50px 0 0 250px;
 }
 
 .content .container img{
@@ -618,7 +618,7 @@ textarea.input {
     align-items: center;
     gap: 20px;
     position: relative;
-    margin-left: -600px;
+    justify-content: flex-start;
 }
 
 .content .container .admin span{
@@ -652,6 +652,7 @@ textarea.input {
 }
 
 .content .name a{
+
     font-family: great-vibes;
     text-decoration: none;
     color: rgb(65, 175, 167);
@@ -669,4 +670,31 @@ textarea.input {
     letter-spacing: -1px;
     color: rgb(0, 0, 0, 0.7);
     margin-top: -25px;
+}
+
+
+/* MENU */
+
+.menu{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    position: absolute;
+    top: 42%;
+    left: 75%;
+}
+
+.menu .anotherPosts{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.menu .anotherPosts img{
+    width: 200px;
+    height: 113px;
+    border: 1px solid rgb(0, 0, 0, 0.1);
+    border-radius: 20px;
 }
