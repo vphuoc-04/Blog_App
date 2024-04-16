@@ -3,7 +3,6 @@ import {Link, useLocation } from 'react-router-dom'
 import Delete from '../assets/img/delete.png'
 import Edit from '../assets/img/edit.png'
 import axios from 'axios'
-import DOMPurify from "dompurify";
 
 const Allpost = () => {
   const [listPost, setListPost] = useState([]);

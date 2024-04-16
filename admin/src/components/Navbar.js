@@ -14,9 +14,13 @@ const Navbar = () => {
         <img src = { Logo } alt = "" />
       </a>
       <div className = "profile">
-        <span className = "user"> { currentUser?.username } </span>
         {currentUser ? (
-          <NavLink className = "logout" onClick = { logoutAdmin } to = "/">Logout</NavLink>
+          <span className = "user">
+              <div className = "avatar">
+                <img src = { Profile } />
+              </div>
+              <NavLink className = "logout" onClick = { logoutAdmin } to = "/">Logout</NavLink>
+            </span>
         ) : (
           <Link className = "login" to = "/login">Login</Link>
         )}

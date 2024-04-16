@@ -13,7 +13,8 @@ const Home = () => {
     const fetchData = async () => {
       try{
         const res = await axios.get(`/posts${id}`);
-        setPosts(res.data)
+        const reversedPosts = res.data.reverse();
+        setPosts(reversedPosts)
       }
       catch(err){
         console.log(err);
@@ -41,7 +42,7 @@ const Home = () => {
         <a href = "/">Văn Phước</a>
       </h1>
       <h2>Software Engineer</h2>
-      <h1 className = "titleNewPost">New Posts</h1>
+      <h1 className = "titleNewPost">Tất Cả Bài Viết</h1>
       <div className = "posts">
         { posts.map((post) => (
           <div className = "allPost">

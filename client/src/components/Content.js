@@ -13,8 +13,6 @@ const Content = () => {
 
   const postId = location.pathname.split("/")[2];
 
-  const currentPageUrl = `http://localhost:3000/post/${postId}`;
-
   useEffect(() => {
     const fetchData = async () => {
       try{
@@ -47,18 +45,18 @@ const Content = () => {
             <p>{moment(post.date).fromNow()}</p>
           </div>
         </div>
+        <h1> { post.title } </h1>
         <div className = "contentPost">
-          <h1> { post.title } </h1>
           <img
             src = { `../upload/${post?.img}` }
             alt = ""
           />
-          <p> { post.introdes } </p>
-          <p 
+          <h3 className = "introdes"> { post.introdes } </h3>
+          <h3 className = "des"
             dangerouslySetInnerHTML = {{
             __html: DOMPurify.sanitize(post.des),
           }}
-          ></p>
+          ></h3>
         </div>
       </div>
       <Menu id = { post.id } />

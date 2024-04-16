@@ -2,6 +2,12 @@
     font-family: monospace;
 }
 
+/* DASHBOARD */
+
+.dashboard{
+    display: flex;
+}
+
 .dashboard .routes{
     border-radius: 30px;
     width: 100%;
@@ -27,6 +33,12 @@
 
 .navbar .profile img{
     width: 30px;
+}
+
+.navbar .profile .user{
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 /* SIDEBAR */
@@ -62,10 +74,6 @@
 
 .sidebar .sidebarItem p{
     color: rgb(0, 0, 0);
-}
-
-.dashboard{
-    display: flex;
 }
 
 /* POST */
@@ -269,5 +277,43 @@ span{
     cursor: pointer;
 }
 
+/* PROFILE ADMIN */
+.profileAdmin{
+    display: flex;
+    gap: 100px;
+}
+
+.profileAdmin .content input{
+    width: 500px;
+    height: 30px;
+    padding: 10px;
+    border-radius: 20px;
+    outline: none;
+}
+
+.profileAdmin .content .button{
+    margin-top: 50px;
+    display: flex;
+    gap: 30px;
+}
+
+.profileAdmin .content .button button{
+    width: 100px;
+    height: 50px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+}
+
+.profileAdmin .content .button button:nth-child(1){
+    color: rgb(255, 255, 255);
+    background-color: rgb(65, 175, 167);
+}
+
+.profileAdmin .avatar img{
+    width: 200px;
+    margin-top: 50px;
+    border-radius: 50%;
+}
 
 

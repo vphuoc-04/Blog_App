@@ -6,6 +6,7 @@ import Allpost from './components/Allpost';
 import Dashboard from './components/Dashboard';
 import LoginAdmin from './components/LoginAdmin'
 import User from './components/User';
+import ProfileAdmin from './components/ProfileAdmin';
 
 const Layout = () => {
   return (
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/user",
         element: <User />
+      },
+      {
+        path: "/setting",
+        element: <ProfileAdmin />
       }
     ]
   }

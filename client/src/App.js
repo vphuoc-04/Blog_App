@@ -7,6 +7,7 @@ import Home from './components/Home'
 import About from './components/About';
 import Contact from './components/Contact';
 import Content from './components/Content';
+import ProfileUser from './components/ProfileUser';
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
 
 const Layout = () => {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />
+      },
+      {
+        path: "/setting",
+        element : <ProfileUser />
       },
       {
         path: "/post/:id",

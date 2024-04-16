@@ -119,6 +119,7 @@ span{
     text-decoration: none;
     font-size: 15px;
     transition:all 0.5s;
+    align-items: center;
 }
 
 .navbar .container .links:hover{
@@ -169,6 +170,18 @@ span{
 .navbar .container .links .logout:hover{
     color: rgb(255, 255, 255);
     background-color: rgb(65, 175, 167);
+}
+
+.navbar .container .links .user{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.navbar .container .links .user .avatar img{
+    width: 30px;
+    border-radius: 50%;
+    cursor: pointer;
 }
 
 /* FOOTER */
@@ -232,7 +245,7 @@ footer h3 button:hover{
 }
 
 .home .name a:hover{
-    color: rgb(80, 209, 200);
+    color: rgb(59, 203, 193);
 }
 
 .home h2{
@@ -253,16 +266,15 @@ footer h3 button:hover{
 }
 
 .home .posts{
-    display: flex;
-    gap: 50px;
-    margin: 50px 40px;
-    text-align: left;
-    flex-direction: row-reverse;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 50px 180px;
+    grid-gap: 50px;
 }
 
 .home .posts .allPost{
     display: flex;
+    justify-content: center;
 }
 
 .home .posts .newPost{
@@ -639,7 +651,12 @@ textarea.input {
 .content .container .contentPost{
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+}
+
+.content .container .contentPost .des, .introdes{
+    width: 800px;
+    font-weight: lighter;
 }
 
 .content .name{
@@ -660,7 +677,7 @@ textarea.input {
 }
 
 .content .name a:hover{
-    color: rgb(80, 209, 200);
+    color: rgb(59, 203, 193);
 }
 
 .content h2{
@@ -697,4 +714,44 @@ textarea.input {
     height: 113px;
     border: 1px solid rgb(0, 0, 0, 0.1);
     border-radius: 20px;
+}
+
+/* PROFILE USER */
+.profileUser{
+    display: flex;
+    gap: 100px;
+    padding: 106.7px 250px;
+}
+
+.profileUser .content input{
+    width: 500px;
+    height: 30px;
+    padding: 10px;
+    border-radius: 20px;
+    outline: none;
+}
+
+.profileUser .content .button{
+    margin-top: 50px;
+    display: flex;
+    gap: 30px;
+}
+
+.profileUser .content .button button{
+    width: 100px;
+    height: 50px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+}
+
+.profileUser .content .button button:nth-child(1){
+    color: rgb(255, 255, 255);
+    background-color: rgb(65, 175, 167);
+}
+
+.profileUser .avatar img{
+    width: 200px;
+    margin-top: 50px;
+    border-radius: 50%;
 }
