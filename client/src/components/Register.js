@@ -3,23 +3,26 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
 const Register = () => {
-
   const [input, setInput] = useState({
     username: "",
     email: "",
     password: ""
   });
-
-  const navigate = useNavigate();
-
+  const navigate = useNavigate()
   const [err, setErr] = useState(null);
-
+  const isValidEmail = (email) => {
+    const check = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return check.test(email);
+  }
   const handleInput = (event) => {
     setInput((prev) => ({...prev, [event.target.name]: event.target.value}))
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault()
+    if(!isValidEmail(input.email)){
+      setErr("Định dạng email không đúng!")
+      return;
+    }
     try{
       const res = await axios.post("/auth/register", input)
       navigate("/login");

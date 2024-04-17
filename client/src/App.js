@@ -8,6 +8,8 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Content from './components/Content';
 import ProfileUser from './components/ProfileUser';
+import Recover from './components/Recover';
+import Identify from './components/Identify';
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
 
 const Layout = () => {
@@ -24,37 +26,19 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
-    children: [
-      {
-        path: "/",
-        element: <Home />
-      },
-      {
-        path: "/setting",
-        element : <ProfileUser />
-      },
-      {
-        path: "/post/:id",
-        element: <Content />
-      },
-      {
-        path: "/about",
-        element: <About />
-      },
-      {
-        path: "/contact",
-        element: <Contact />
-      }
+    children: 
+    [
+      { path: "/", element: <Home /> }, 
+      { path: "/setting", element : <ProfileUser /> },
+      { path: "/contact", element: <Contact /> }, 
+      { path: "/about", element: <About /> }, 
+      { path: "/post/:id", element: <Content /> }
     ]
   },
-  {
-    path: "/login",
-    element: <Login />
-  },
-  {
-    path: "/register",
-    element: <Register />
-  }
+  { path: "/login", element: <Login /> },
+  { path: "/register", element: <Register /> },
+  { path: "/identify", element: <Identify /> },
+  { path: "/recover", element: <Recover /> }
 ]);
 
 function App() {

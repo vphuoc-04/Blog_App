@@ -90,7 +90,7 @@ span{
 }
 .showPassword{
     position: absolute;
-    top: 30%;
+    top: 20%;
     left: 90%;
     cursor: pointer;
 }
@@ -691,14 +691,13 @@ textarea.input {
 
 
 /* MENU */
-
 .menu{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
     position: absolute;
-    top: 42%;
+    top: 30%;
     left: 75%;
 }
 
@@ -755,3 +754,75 @@ textarea.input {
     margin-top: 50px;
     border-radius: 50%;
 }
+
+/* INDENTIFY */
+.identify{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background-color: rgb(65, 175, 167);
+}
+
+.identify .container{
+    padding: 20px 40px 80px 40px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.identify .container input{
+    width: 400px;
+    height: 50px;
+    outline: none;
+    border-radius: 30px;
+    padding-left: 30px;
+    font-size: 15px;
+}
+
+.identify .container button{
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+.identify .container button:hover{
+    background-color: rgb(65, 175, 167);
+    color: rgb(255, 255, 255);
+}
+
+.identify .container .action{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.identify .container td, .identify .container th{
+    padding: 10px;
+    border: 1px solid rgb(0, 0, 0, 0.5);
+}
+
+.identify .container .recover, .identify .container .back{
+    padding: 10px;
+    border: 1px solid rgb(65, 175, 167);
+    border-radius: 30px;
+    transition: all 0.5s;
+}
+
+.identify .container .recover:hover, .identify .container .back:hover{
+    color: rgb(255, 255, 255) !important;
+    background-color: rgb(65, 175, 167);
+}
+
+
+
+
+

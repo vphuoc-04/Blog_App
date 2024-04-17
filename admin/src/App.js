@@ -18,30 +18,15 @@ const Layout = () => {
 }
 
 const router = createBrowserRouter([
-  {
-    path: "/login",
-    element: <LoginAdmin />
-  },
+  { path: "/login", element: <LoginAdmin /> },
   {
     path: "/",
     element: <Layout />,
     children: [
-      {
-        path: "/write",
-        element: <Post />
-      },
-      {
-        path: "/allpost",
-        element: <Allpost />
-      },
-      {
-        path: "/user",
-        element: <User />
-      },
-      {
-        path: "/setting",
-        element: <ProfileAdmin />
-      }
+      { path: "/write", element: <Post /> },
+      { path: "/allpost", element: <Allpost /> },
+      { path: "/user", element: <User /> },
+      { path: "/setting", element: <ProfileAdmin />}
     ]
   }
 ])

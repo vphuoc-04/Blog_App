@@ -4,23 +4,17 @@ import axios from 'axios'
 import { AuthContext } from '../context/AuthContext'
 
 const Login = () => {
-
   const [input, setinput] = useState({
     username: "",
     password: ""
   });
-
   const navigate = useNavigate();
-
   const { login } = useContext(AuthContext);
   console.log(login);
-
   const [err, setErr] = useState(null);
-
   const handleInput = (event) => {
     setinput((prev) => ({...prev, [event.target.name]: event.target.value}))
   };
-
   const handleSubmit = async (event) => {
     event.preventDefault()
     try{
@@ -56,6 +50,7 @@ const Login = () => {
                 placeholder = "Password"
                 onChange = { handleInput }
               />
+              <span><Link to = "/identify" style = {{ textDecoration: "none", marginLeft: "95px" }}>Quên mật khẩu?</Link></span>
               <div className = "showPassword">
                 <i className = {showPassword === true ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"} 
                   onClick = {() => setShowPassword(!showPassword)}
@@ -66,9 +61,9 @@ const Login = () => {
               className = {username && password ? "active-button" : ""}
               disabled = {username && password ? false : true}
               onClick = { handleSubmit }
-              >Login</button>
-              {err && <h4> { err} </h4>}
-            <span>Don't you have an account? <Link to = "/register">Register</Link></span>
+            >Login</button>
+            {err && <h4> { err} </h4>}
+            <span>Bạn không có tài khoản? <Link to = "/register" style = {{ textDecoration: "none" }}>Register</Link></span>
         </form>
     </div>
   )
