@@ -5,25 +5,28 @@ import Logo from '../assets/logo/vphuoc.png'
 import Profile from '../assets/img/profile.png'
 
 const Navbar = () => {
-
   const { currentUser, logoutAdmin } = useContext(AdminContext);
-
   return (
     <div className = "navbar">
-      <a className = "logo" href = "/">
-        <img src = { Logo } alt = "" />
-      </a>
-      <div className = "profile">
-        {currentUser ? (
-          <span className = "user">
-              <div className = "avatar">
+      <div className = "container">
+        <a className = "logo" href = "/">
+          <img src = { Logo } alt = "" />
+        </a>
+        <div className = "profile">
+          {currentUser ? (
+            <details className = "user">
+              <summary className = "avatar">
                 <img src = { Profile } />
+              </summary>
+              <div className = "menu">
+                <span>{currentUser?.username}</span>
+                <NavLink className = "button" onClick = { logoutAdmin } to = "/"><i class="fa-solid fa-right-from-bracket"></i></NavLink>
               </div>
-              <NavLink className = "logout" onClick = { logoutAdmin } to = "/">Logout</NavLink>
-            </span>
-        ) : (
-          <Link className = "login" to = "/login">Login</Link>
-        )}
+            </details>
+          ) : (
+            <Link className = "button" to = "/login">Login</Link>
+          )}
+        </div>
       </div>
     </div>
   )

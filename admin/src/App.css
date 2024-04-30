@@ -19,12 +19,22 @@
 
 /* NAVBAR */
 .navbar{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 100px;
+    padding: 5px 200px;
     border-bottom: 1px solid rgb(0, 0, 0, 0.3);
     background-color: rgb(255, 255, 255);
+}
+
+.navbar .container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0px;
+}
+
+.navbar .container .profile{
+    display: flex;
+    align-items: center;
 }
 
 .navbar .logo img{
@@ -33,12 +43,60 @@
 
 .navbar .profile img{
     width: 30px;
+    cursor: pointer;
 }
 
 .navbar .profile .user{
     display: flex;
+}
+
+.navbar .profile details > summary {
+    list-style-type: none; 
+}
+
+.navbar .profile details > summary > img {
+    display: inline-block; 
+}
+
+.navbar .profile .menu{
+    background-color: rgb(255, 255, 255);
+    height: 130px;
+    width: 100px;
+    box-shadow: 1px 1px 5px rgb(0, 0, 0, 0.5);
+    margin: 20px 0 0 -45px;
+    display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    padding: 10px;
+    z-index: 10000;
+    border-radius: 10px;
+    position: absolute;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.navbar .profile .menu span{
+    color: rgb(65, 175, 167);
+    font-size: large;
+}  
+
+.navbar .profile .button{
+    width: 65px;
+    height: 25px;
+    border-radius: 30px;
+    color: rgb(65, 175, 167);
+    border: 1px solid rgb(65, 175, 167);
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+.navbar .profile .button:hover{
+    color: rgb(255, 255, 255);
+    background-color: rgb(65, 175, 167);
 }
 
 /* SIDEBAR */

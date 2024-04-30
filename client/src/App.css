@@ -152,8 +152,8 @@ span{
     color: rgb(65, 175, 167);
     margin: 0;
 }
-
-.navbar .container .links .logout{
+  
+.navbar .container .links .button{
     width: 65px;
     height: 25px;
     border-radius: 30px;
@@ -167,7 +167,7 @@ span{
     text-decoration: none;
 }
 
-.navbar .container .links .logout:hover{
+.navbar .container .links .button:hover{
     color: rgb(255, 255, 255);
     background-color: rgb(65, 175, 167);
 }
@@ -182,6 +182,28 @@ span{
     width: 30px;
     border-radius: 50%;
     cursor: pointer;
+}
+
+.navbar .container .links details > summary {
+    list-style-type: none; 
+}
+
+.navbar .container .links details > summary > img {
+    display: inline-block; 
+}
+
+.navbar .container .links .user .menu{
+    background-color: rgb(255, 255, 255);
+    height: 130px;
+    width: 100px;
+    box-shadow: 1px 1px 5px rgb(0, 0, 0, 0.5);
+    margin: -160px 0 0 25px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding: 10px;
+    z-index: 10000;
+    border-radius: 10px;
 }
 
 /* FOOTER */
@@ -719,7 +741,7 @@ textarea.input {
 .profileUser{
     display: flex;
     gap: 100px;
-    padding: 106.7px 250px;
+    padding: 100px 280px;
 }
 
 .profileUser .content input{
