@@ -164,10 +164,7 @@
 .post .menu .item .file img{
     width: 100px;
     margin-top: 80px;
-}
-
-.post .menu .item .life{
-    position: relative;
+    cursor: pointer;
 }
 
 .post button{
@@ -372,6 +369,7 @@ span{
     width: 200px;
     margin-top: 50px;
     border-radius: 50%;
+    cursor: pointer;
 }
 
 

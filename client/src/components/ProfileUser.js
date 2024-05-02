@@ -5,13 +5,14 @@ import { AuthContext } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom';
 
 const ProfileUser = () => {
-  const [avatar, setAvatar] = useState(null);
+  const [file, setFile] = useState(null);
   const { currentUser, logout } = useContext(AuthContext);
   const [userData, setUserData] = useState({
     username: currentUser.username || '',
     email: currentUser.email || '',
     oldPassword: '',
     newPassword: '',
+    img: ''
   });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -33,9 +34,14 @@ const ProfileUser = () => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async () => {
+  const handleSave = async (event) => {
+    event.preventDefault();
+    const avatarImg = await uploadUserAvatar();
     try{
-      const res = await axios.put(`/users/${currentUser.id}`, userData);
+      const res = await axios.put(`/users/${currentUser.id}`, {
+        ...userData,
+        img: file ? avatarImg: "",
+      });
       logout();
       navigate("/");
       console.log(res.data); 
@@ -44,6 +50,18 @@ const ProfileUser = () => {
       setError(err.response.data); 
     }
   };
+
+  const uploadUserAvatar = async () => {
+    try{  
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await axios.post("/upload", formData);
+      return res.data;
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
   return (
     <div className = "profileUser">
       <div className = "content">
@@ -84,13 +102,13 @@ const ProfileUser = () => {
       <div className = "avatar">
         <input 
           style = {{display: "none"}}
-          type = "avatar"
-          id = "avatar"
+          type = "file"
+          id = "file"
           name = ""
-          onChange = {(event) => setAvatar(event.target.files[0])}
+          onChange = {(event) => setFile(event.target.files[0])}
         />
-        <label className = "avatar" htmlFor = "avatar">
-          <img src = { avatar?URL.createObjectURL(avatar):Avatar } alt = "" />
+        <label className = "avatar" htmlFor = "file">
+          <img src = { file?URL.createObjectURL(file): Avatar || `../upload/${userData?.img}` } alt = "" />
         </label>
       </div>
     </div>

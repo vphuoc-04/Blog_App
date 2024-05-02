@@ -9,7 +9,6 @@ export const allUser = (req, res) => {
         return res.json(data);
     })
 }
-
 export const deleteUser = (req, res) => {
     const token = req.cookies.admin_access_token;
     if(!token) { return res.status(401).json("Không được xác thực!") }
@@ -45,8 +44,8 @@ export const updateUserProfile = (req, res) => {
           else{
             const hashedNewPassword = bcrypt.hashSync(req.body.newPassword, 10);
 
-            const updateUser = "UPDATE users SET `username` = ?, `email` = ?, `password` = ? WHERE `id` = ?";
-            const values = [req.body.username, req.body.email, hashedNewPassword, userId];
+            const updateUser = "UPDATE users SET `username` = ?, `email` = ?, `img` = ?, `password` = ? WHERE `id` = ?";
+            const values = [req.body.username, req.body.email, req.body.img, hashedNewPassword, userId];
 
             database.query(updateUser, values, (err, data) => {
                 if (err) { return res.status(500).json(err) }
@@ -56,4 +55,3 @@ export const updateUserProfile = (req, res) => {
       });
   });
 };
-

@@ -26,8 +26,8 @@ export const updateAdminProfile = (req, res) => {
                 return res.status(400).json("Mật khẩu cũ không đúng");
             }
             else{
-                const updateUser = "UPDATE admin SET `username` = ?, `email` = ?, `password` = ? WHERE `id` = ?";
-                const values = [req.body.username, req.body.email, req.body.newPassword, adminId];
+                const updateUser = "UPDATE admin SET `username` = ?, `email` = ?, `img` = ?, `password` = ? WHERE `id` = ?";
+                const values = [req.body.username, req.body.email, req.body.img, req.body.newPassword, adminId];
     
                 database.query(updateUser, values, (err, data) => {
                     if (err) { return res.status(500).json(err) }

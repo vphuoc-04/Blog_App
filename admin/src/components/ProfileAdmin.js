@@ -5,13 +5,14 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom'
 
 const ProfileAdmin = () => {
-  const [avatar, setAvatar] = useState(null);
+  const [file, setFile] = useState(null);
   const { currentUser, logoutAdmin } = useContext(AdminContext);
   const [adminData, setAdminData] = useState({
     username: currentUser.username || '',
     email: currentUser.email || '',
     oldPassword: '',
     newPassword: '',
+    img:''
   });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -33,9 +34,14 @@ const ProfileAdmin = () => {
     setAdminData({...adminData,[e.target.name]: e.target.value})
   }
 
-  const handleSave = async () => {
+  const handleSave = async (event) => {
+    event.preventDefault();
+    const avatarImg = await uploadAdminAvatar();
     try{
-      const res = await axios.put(`/admin/${currentUser.id}`, adminData);
+      const res = await axios.put(`/admin/${currentUser.id}`, {
+        ...adminData,
+        img: file ? avatarImg: "",
+      });
       logoutAdmin();
       navigate("/");
       console.log(res.data); 
@@ -45,6 +51,17 @@ const ProfileAdmin = () => {
     }
   };
 
+  const uploadAdminAvatar = async () => {
+    try{  
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await axios.post("/upload", formData);
+      return res.data;
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
   return (
     <div className = "profileAdmin">
       <div className = "content">
@@ -85,13 +102,13 @@ const ProfileAdmin = () => {
       <div className = "avatar">
         <input 
           style = {{display: "none"}}
-          type = "avatar"
-          id = "avatar"
+          type = "file"
+          id = "file"
           name = ""
-          onChange = {(event) => setAvatar(event.target.files[0])}
+          onChange = {(event) => setFile(event.target.files[0])}
         />
-        <label className = "avatar" htmlFor = "avatar">
-          <img src = { avatar?URL.createObjectURL(avatar):Avatar } alt = "" />
+        <label className = "avatar" htmlFor = "file">
+          <img src = { file?URL.createObjectURL(file):Avatar } alt = "" />
         </label>
       </div>
     </div>

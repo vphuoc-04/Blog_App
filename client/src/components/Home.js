@@ -55,7 +55,7 @@ const Home = () => {
               <div className = "admin">
                 { admin.map((a) => (
                   <div className = "adminInfo">
-                    <img src = { adminImg } alt = '' />
+                    <img src = { a.img } alt = '' />
                     <p>{ a.username }</p>
                   </div>
                 )) }
