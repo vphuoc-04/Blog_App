@@ -43,7 +43,10 @@
 
 .navbar .profile img{
     width: 30px;
+    height: 30px;
+    object-fit: cover;
     cursor: pointer;
+    border-radius: 50%;
 }
 
 .navbar .profile .user{
@@ -367,8 +370,10 @@ span{
 
 .profileAdmin .avatar img{
     width: 200px;
+    height: 200px;
     margin-top: 50px;
     border-radius: 50%;
+    object-fit: cover; 
     cursor: pointer;
 }
 

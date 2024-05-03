@@ -180,8 +180,10 @@ span{
 
 .navbar .container .links .user .avatar img{
     width: 30px;
+    height: 30px;
     border-radius: 50%;
     cursor: pointer;
+    object-fit: cover;
 }
 
 .navbar .container .links details > summary {
@@ -773,8 +775,10 @@ textarea.input {
 
 .profileUser .avatar img{
     width: 200px;
+    height: 200px;
     margin-top: 50px;
     border-radius: 50%;
+    object-fit: cover; 
     cursor: pointer;
 }
 

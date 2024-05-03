@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import { AdminContext } from '../context/AdminContext'
 import { Link, NavLink } from 'react-router-dom'
 import Logo from '../assets/logo/vphuoc.png'
-import Profile from '../assets/img/profile.png'
 
 const Navbar = () => {
   const { currentUser, logoutAdmin } = useContext(AdminContext);
@@ -16,7 +15,7 @@ const Navbar = () => {
           {currentUser ? (
             <details className = "user">
               <summary className = "avatar">
-                <img src = { `http://localhost:3000/upload/${ currentUser.img }` } />
+                <img src = { `http://localhost:3000/upload/${ currentUser?.img }` } />
               </summary>
               <div className = "menu">
                 <span>{currentUser?.username}</span>

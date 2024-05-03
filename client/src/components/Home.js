@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import adminImg from '../assets/img/aboutMe.png'
 import axios from 'axios'
 import moment from 'moment';
 
@@ -55,7 +54,7 @@ const Home = () => {
               <div className = "admin">
                 { admin.map((a) => (
                   <div className = "adminInfo">
-                    <img src = { a.img } alt = '' />
+                    <img src = { `../upload/${a.img}` } alt = '' />
                     <p>{ a.username }</p>
                   </div>
                 )) }

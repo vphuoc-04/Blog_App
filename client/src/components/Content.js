@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
-import adminImg from '../assets/img/aboutMe.png'
 import axios from 'axios';
 import moment from 'moment'
 import DOMPurify from "dompurify";
@@ -8,10 +7,10 @@ import Menu from './Menu';
 
 const Content = () => {
   const [post, setPost] = useState({});
-
+  const [ admin, setAdmin ] = useState([]);
   const location = useLocation();
-
   const postId = location.pathname.split("/")[2];
+  const id = useLocation().search;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +25,19 @@ const Content = () => {
     fetchData();
   }, [postId]);
 
+  useEffect(() => {
+    const fetchDataAdmin = async () => {
+      try{
+        const res = await axios.get(`/admin${id}`)
+        setAdmin(res.data);
+      }
+      catch(err){
+        console.log(err);
+      }
+    };
+    fetchDataAdmin();
+  }, [id]);
+
   const getText = (html) =>{
     const doc = new DOMParser().parseFromString(html, "text/html")
     return doc.body.textContent
@@ -38,12 +50,16 @@ const Content = () => {
       </h1>
       <h2>Software Engineer</h2>
       <div className = "container">
-        <div className = "admin">
-          <img src = { adminImg } alt = ""/>
-          <div className = "nameAndDate">
-            <span> { post.username }</span>
-            <p>{moment(post.date).fromNow()}</p>
-          </div>
+          <div className = "admin">
+            { admin.map((a) => (
+              <div className = "avatarAdmin">
+                <img src = { `../upload/${a.img}` } alt = '' />
+              </div>
+            )) }
+            <div className = "nameAndDate">
+              <span> { post.username }</span>
+              <p>{moment(post.date).fromNow()}</p>
+            </div>
         </div>
         <h1> { post.title } </h1>
         <div className = "contentPost">

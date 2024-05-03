@@ -39,7 +39,7 @@ export const updateUserProfile = (req, res) => {
           const userPassword = result[0].password;
           const isPasswordCorrect = bcrypt.compareSync(req.body.oldPassword, userPassword);
           if (!isPasswordCorrect) {
-              return res.status(400).json("Mật khẩu cũ không đúng");
+            return res.status(400).json("Mật khẩu cũ không đúng");
           }
           else{
             const hashedNewPassword = bcrypt.hashSync(req.body.newPassword, 10);

@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
 import Logo from '../assets/logo/vphuoc.png'
-import Avatar from '../assets/img/aboutMe.png'
 import { AuthContext } from '../context/AuthContext'
 
 const Navbar = () => {
