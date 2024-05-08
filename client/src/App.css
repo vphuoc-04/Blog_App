@@ -828,13 +828,27 @@ textarea.input {
 .identify .container .action{
     display: flex;
     justify-content: center;
-    margin-top: 20px;
-    gap: 10px;
+    margin-top: 50px;
+    gap: 20px;
+}
+
+.info table{
+    width: 500px;
+    height: 100px;
+    background-color: rgb(0, 0, 0, 0.02);
+    border-radius: 20px;
+}
+
+.identify .container td img{
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
 }
 
 .identify .container td, .identify .container th{
     padding: 10px;
-    border: 1px solid rgb(0, 0, 0, 0.5);
+    font-size: large;
+    text-align: center;
 }
 
 .identify .container .recover, .identify .container .back{
@@ -848,6 +862,7 @@ textarea.input {
     color: rgb(255, 255, 255) !important;
     background-color: rgb(65, 175, 167);
 }
+
 
 
 

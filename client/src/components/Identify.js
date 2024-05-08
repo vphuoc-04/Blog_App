@@ -40,24 +40,18 @@ export const Identify = () => {
                 {identify && (
                     <div className = "info">
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Avatar</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{ identify.id }</td>
-                                    <td>
-                                        <img src =  {identify.img } alt = "Avatar" style = {{ width: '50px', height: '50px' }} />
-                                    </td>
-                                    <td>{ identify.username }</td>
-                                    <td>{ identify.email }</td>
-                                </tr>
-                            </tbody>
+                            <tr>
+                                <th></th>
+                                <th>Username</th>
+                                <th>Email</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src =  { `../upload/${identify.img}` } />
+                                </td>
+                                <td>{ identify.username }</td>
+                                <td>{ identify.email }</td>
+                            </tr>
                         </table>
                         <div className = "action">
                             <Link 
@@ -70,7 +64,7 @@ export const Identify = () => {
                                 className = "back" 
                                 to = "/" 
                                 style={{textDecoration: "none", color: "rgb(65, 175, 167)"}}
-                            >Quay về trang chủ</Link>
+                            ><i class="fa-solid fa-house"></i></Link>
                         </div>
                     </div>
                 )}

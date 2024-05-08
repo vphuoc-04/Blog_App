@@ -108,7 +108,7 @@ const ProfileUser = () => {
           onChange = {(event) => setFile(event.target.files[0])}
         />
         <label className = "avatar" htmlFor = "file">
-          <img src = {file ? URL.createObjectURL(file) : Avatar} alt="" />
+          <img src = {file ? URL.createObjectURL(file) : Avatar || userData.img} alt="" />
         </label>
       </div>
     </div>

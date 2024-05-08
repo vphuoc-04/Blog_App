@@ -1,11 +1,10 @@
 import express from 'express'
-import multer from 'multer';
 import cookieParser from 'cookie-parser';
 import AuthRoutes from './routes/Auth.js';
 import PostRoutes from './routes/Posts.js'
 import UserRoutes from './routes/Users.js'
 import AdminRoutes from './routes/Admin.js'
-import { handleUpload } from './controllers/ImageManagement.js';
+import { handleUpload } from './uploads/ImageManagement.js';
 import cors from 'cors'
 
 const app = express();

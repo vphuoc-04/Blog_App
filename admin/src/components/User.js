@@ -33,20 +33,23 @@ export const User = () => {
     <div className = "userManagement">
       <table>
         <tr>
+          <th></th>
           <th>ID</th>
           <th>Username</th>
           <th>Email</th>
-          <th>Avatar</th>
           <th>Actions</th>
         </tr>
         { listUser.map((users) => (
             <tr>
+              <td>
+                <img src = { `http://localhost:3000/upload/${ users?.img }` } alt = ""/>
+              </td>
               <td> { users.id } </td>
               <td> { users.username } </td>
               <td> { users.email } </td>
-              <td> { users.img } </td>
               <td>
                 <img
+                  className = "delete"
                   onClick = {() => handleDelete( users.id )}
                   src = { Delete }
                 />

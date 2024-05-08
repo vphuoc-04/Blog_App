@@ -314,24 +314,28 @@ span{
 /* USER */
 .userManagement{
     border-collapse: collapse;
-    font-size: 20px;
+    font-size: 15px;
 }
 
 .userManagement td, .userManagement th{
-    padding: 8px;
-    border: 1px solid rgb(0, 0, 0, 0.5);
+    padding: 10px 60px;
 }
 
 .userManagement th{
     padding-top: 10px;
     padding-bottom: 10px;
     text-align: left;
-    background-color: rgb(65, 175, 167);
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
 }
 
 .userManagement td img{
     width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.delete{
     cursor: pointer;
 }
 
