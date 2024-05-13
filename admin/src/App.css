@@ -290,6 +290,7 @@ span{
 .allpost .post .content{
     display: flex;
     justify-content: start;
+    margin: -45px 0 0 50px ;
     gap: 30px;
 }
 
@@ -315,6 +316,7 @@ span{
 .userManagement{
     border-collapse: collapse;
     font-size: 15px;
+    margin-top: 25px;
 }
 
 .userManagement td, .userManagement th{

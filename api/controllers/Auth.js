@@ -2,17 +2,43 @@ import { database } from '../database.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
-export const register = (req, res) => {
+const makeRandomId = () => {
+    const min = 100000;
+    const max = 999999;
+
+    return Math.floor(Math.random () * (max - min+ 1 )) + min;
+}
+
+const isIdUnique = (id) => {
+    return new Promise((resolve, reject) => {
+        const q = "SELECT COUNT(*) AS count FROM users WHERE id = ?";
+        database.query(q, [id], (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(data[0].count === 0);
+            }
+        });
+    });
+}
+
+export const register = async (req, res) => {
     const q = "SELECT * FROM users WHERE email = ? OR username = ?";
-    database.query(q, [req.body.email, req.body.username], (err, data) => {
+    database.query(q, [req.body.email, req.body.username], async (err, data) => {
         if (err) { return res.json(err) }
         if (data.length) { return res.status(409).json("Tài khoản đã tồn tại!") }
 
         var salt = bcrypt.genSaltSync(10);
         var hash = bcrypt.hashSync(req.body.password, salt);
 
-        const q = "INSERT INTO users(`username`,`email`,`password`) VALUES(?)";
+        let randomId = makeRandomId();
+        while (!(await isIdUnique(randomId))) {
+            randomId = generateRandomId();
+        }
+
+        const q = "INSERT INTO users(`id`,`username`,`email`,`password`) VALUES(?)";
         const values = [
+            randomId,
             req.body.username,
             req.body.email,
             hash,

@@ -1,5 +1,6 @@
 import { database } from "../database.js";
 import jwt from 'jsonwebtoken'
+import speakingurl from 'speakingurl'
 
 export const getPosts = (req, res) => {
     const q = req.query.life
@@ -13,7 +14,7 @@ export const getPosts = (req, res) => {
 }
 
 export const getPost = (req, res) => {
-    const q = "SELECT p.id, `username`, `title`, `introdes`, `des`, p.img, `date` FROM admin a JOIN posts p ON a.id=p.uid WHERE p.id = ?";
+    const q = "SELECT p.id, `username`, `title`, `introdes`, `des`, p.img, `date` FROM admin a JOIN posts p ON a.id=p.uid WHERE p.url = ?";
 
     database.query(q, [req.params.id], (err, data) => {
         if(err) { return res.json(err) }
@@ -27,7 +28,9 @@ export const addPost = (req, res) => {
     jwt.verify(token, "admin_jwtkey", (err, userInfo) => {
         if(err) return res.status(403).json("Token không hợp lệ!");
 
-        const q = "INSERT INTO posts(`title`,`introdes`,`des`,`img`,`date`,`uid`) VALUES (?)";
+        const title = req.body.title;
+        const url = speakingurl(title);
+        const q = "INSERT INTO posts(`title`,`introdes`,`des`,`img`,`date`,`uid`,`url`) VALUES (?)";
 
         const values = [
             req.body.title,
@@ -35,7 +38,8 @@ export const addPost = (req, res) => {
             req.body.des,
             req.body.img,
             req.body.date,
-            userInfo.id
+            userInfo.id,
+            url
         ]
 
         database.query(q, [values], (err, data) => {
