@@ -53,7 +53,7 @@ const Content = () => {
           <div className = "admin">
             { admin.map((a) => (
               <div className = "avatarAdmin">
-                <img src = { `../upload/${a.img}` } alt = '' />
+                <img src = { `http://localhost:3001/image/${a?.img}` } alt = '' />
               </div>
             )) }
             <div className = "nameAndDate">

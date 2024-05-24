@@ -1,10 +1,28 @@
-import React, { useContext } from 'react'
-import { NavLink, Link, useNavigate } from 'react-router-dom'
+import React, { useContext, useState, useEffect } from 'react'
+import { NavLink, Link } from 'react-router-dom'
 import Logo from '../assets/logo/vphuoc.png'
 import { AuthContext } from '../context/AuthContext'
 
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
+  const defaultAvatar = "https://imgur.com/AhaZ0qB.jpg";
+  const [avatar, setAvatar] = useState(currentUser?.img || defaultAvatar);
+  useEffect(() => {
+    setAvatar( `../image/${currentUser?.img}` || defaultAvatar);
+  }, [currentUser]);
+  const isURL = (str) => { const pattern = /^https?:\/\//i; return !!pattern.test(str);};
+
+  const displayAvatar = (imgUrl) => {
+    if (imgUrl) {
+      if (isURL(imgUrl)) {
+        return <img src = {imgUrl} alt = "" />;
+      } 
+      else {
+        return <img src = {`../image/${imgUrl}`} alt = "" />;
+      }
+    }
+    return null;
+  };
   return (
     <div className = "navbar">
       <div className = "container">
@@ -18,7 +36,7 @@ const Navbar = () => {
           {currentUser ? (
             <details className = "user">
               <summary className = "avatar">
-                <img src = {  `../upload/${currentUser?.img}` } />
+                { displayAvatar(currentUser.img) }
               </summary>
               <div className = "menu">
                 <span>{currentUser?.username}</span>

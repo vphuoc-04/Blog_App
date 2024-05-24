@@ -1,18 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react'
-import Avatar from '../assets/img/avatar.jpg'
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom';
+import { FaCamera } from 'react-icons/fa';
+import AvatarEditorComponent from './AvatarEditor';
 
 const ProfileUser = () => {
+  const defaultAvatar = "https://imgur.com/AhaZ0qB.jpg";
   const [file, setFile] = useState(null);
-  const { currentUser, logout } = useContext(AuthContext);
+  const [showEditor, setShowEditor] = useState(false);
+  const { currentUser, setCurrentUser, logout } = useContext(AuthContext);
+  const [fileURL, setFileURL] = useState(null);
   const [userData, setUserData] = useState({
     username: currentUser.username || '',
     email: currentUser.email || '',
     oldPassword: '',
     newPassword: '',
-    img: ''
+    img: currentUser.img || defaultAvatar
   });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -30,17 +34,50 @@ const ProfileUser = () => {
     fetchUserData();
   }, [currentUser.id]);
 
-  const handleChange = (e) => {
+ const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async (event) => {
+  const uploadUserAvatar = async () => {
+    try{  
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await axios.post("/user-avatar", formData);
+      return res.data;
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+
+  const handleUploadAvatar = async () => {
+    setShowEditor(false);
+    const avatarImg = await uploadUserAvatar();
+    if (avatarImg) {
+      try {
+        const res = await axios.put(`/users/${currentUser.id}`, {
+          img: avatarImg,
+        });
+
+        const updated = { ...currentUser, img: avatarImg };
+        localStorage.setItem("user", JSON.stringify(updated));
+        setCurrentUser(updated);
+        setUserData((prevData) => ({ ...prevData, img: avatarImg }));
+        setFileURL(`../image/${avatarImg}`);
+      } 
+      catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+  /*const handleSave = async (event) => {
     event.preventDefault();
     const avatarImg = await uploadUserAvatar();
     try{
       const res = await axios.put(`/users/${currentUser.id}`, {
         ...userData,
-        img: file ? avatarImg: "",
+        img: avatarImg || userData.img,
       });
       logout();
       navigate("/");
@@ -49,22 +86,33 @@ const ProfileUser = () => {
     catch(err){
       setError(err.response.data); 
     }
+  };*/
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setFile(file);
+      const objectURL = URL.createObjectURL(file);
+      setFileURL(objectURL);
+      setShowEditor(true);
+    }
   };
 
-  const uploadUserAvatar = async () => {
-    try{  
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await axios.post("/upload", formData);
-      return res.data;
+  const isURL = (str) => { const pattern = /^https?:\/\//i; return !!pattern.test(str);};
+
+  const displayAvatar = () => {
+    const { img } = userData;
+    if(isURL(img)){
+      return <img src = {img} alt = "User Avatar" />;
+    } 
+    else {
+      return <img src = {`../image/${img}`} alt = "User Avatar" />;
     }
-    catch(err){
-      console.log(err);
-    }
-  }
+  };
+
   return (
     <div className = "profileUser">
-      <div className = "content">
+      {/* <div className = "content">
         <p>Tên</p>
         <input 
           type = "text"
@@ -98,17 +146,34 @@ const ProfileUser = () => {
           <button onClick = { handleSave }>Lưu</button>
           <button>Hủy</button>
         </div>
-      </div>
+      </div> */}
       <div className = "avatar">
         <input 
-          style = {{display: "none"}}
+          style = {{ display: "none" }}
           type = "file"
           id = "file"
-          name = ""
-          onChange = {(event) => setFile(event.target.files[0])}
+          onChange={handleFileChange}
         />
-        <label className = "avatar" htmlFor = "file">
-          <img src = {file ? URL.createObjectURL(file) : Avatar || userData.img} alt="" />
+        <label className = "avatar" htmlFor = "file" >
+          {showEditor ? (
+            <AvatarEditorComponent 
+              src = {fileURL} 
+              onAvatarSave = {handleUploadAvatar} 
+              onClose = {() => setShowEditor(false)} />
+            ) : (
+            <>
+              <img 
+                src = {fileURL 
+                ? fileURL 
+                : (userData?.img ? (isURL(userData.img) 
+                ? userData.img : `../image/${userData.img}`) 
+                : defaultAvatar)} alt="" 
+              />
+              <div className = "camera-icon">
+                <FaCamera />
+              </div>
+            </>
+          )}
         </label>
       </div>
     </div>

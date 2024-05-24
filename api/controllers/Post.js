@@ -2,7 +2,7 @@ import { database } from "../database.js";
 import jwt from 'jsonwebtoken'
 import speakingurl from 'speakingurl'
 
-export const getPosts = (req, res) => {
+export const checkPost = (req, res) => {
     const q = req.query.life
         ? "SELECT * FROM posts WHERE life = ?"
         : "SELECT * FROM posts";

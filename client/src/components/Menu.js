@@ -24,7 +24,7 @@ const Menu = () => {
       <h1>Những Bài Viết Khác</h1>
       {posts.map((post) => (
         <div className = "anotherPosts" key = {post.id}>
-          <Link className = "img" to = {`/post/${post.id}`}>
+          <Link className = "img" to = {`/post/${post.url}`}>
             <img 
               src = {`../upload/${post?.img}`} 
               alt = "" 

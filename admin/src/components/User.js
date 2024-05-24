@@ -29,6 +29,25 @@ export const User = () => {
       console.log(err);
     }
   }
+
+  const isURL = (str) => {
+    const pattern = /^https?:\/\//i;
+    return !!pattern.test(str);
+  };
+
+  const displayAvatar = (user) => {
+    if (user && user.img) {
+      if (isURL(user.img)) {
+        return <img src = {user.img} alt = "" />;
+      } 
+      else {
+        return <img src = {`http://localhost:3000/image/${user.img}`} alt = "" />;
+      }
+    } else {
+      return null;
+    }
+  };
+
   return (
     <div className = "userManagement">
       <table>
@@ -41,9 +60,7 @@ export const User = () => {
         </tr>
         { listUser.map((users) => (
             <tr>
-              <td>
-                <img src = { `http://localhost:3000/upload/${ users?.img }` } alt = ""/>
-              </td>
+              <td> { displayAvatar(users) } </td>
               <td> { users.id } </td>
               <td> { users.username } </td>
               <td> { users.email } </td>

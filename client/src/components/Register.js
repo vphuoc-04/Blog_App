@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
 const Register = () => {
+  const defaultAvatar = "https://imgur.com/AhaZ0qB.jpg";
   const [input, setInput] = useState({
     username: "",
     email: "",
-    password: ""
+    password: "",
+    img: defaultAvatar
   });
   const navigate = useNavigate()
   const [err, setErr] = useState(null);

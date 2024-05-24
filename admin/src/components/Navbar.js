@@ -15,7 +15,7 @@ const Navbar = () => {
           {currentUser ? (
             <details className = "user">
               <summary className = "avatar">
-                <img src = { `http://localhost:3000/upload/${ currentUser?.img }` } />
+                <img src = { `../image/${currentUser.img}` } alt = '' />
               </summary>
               <div className = "menu">
                 <span>{currentUser?.username}</span>

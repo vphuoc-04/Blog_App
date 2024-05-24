@@ -6,7 +6,7 @@ const makeRandomId = () => {
     const min = 100000;
     const max = 999999;
 
-    return Math.floor(Math.random () * (max - min+ 1 )) + min;
+    return Math.floor(Math.random () * (max - min + 1 )) + min;
 }
 
 const isIdUnique = (id) => {
@@ -36,12 +36,13 @@ export const register = async (req, res) => {
             randomId = generateRandomId();
         }
 
-        const q = "INSERT INTO users(`id`,`username`,`email`,`password`) VALUES(?)";
+        const q = "INSERT INTO users(`id`,`username`,`email`,`password`,`img`) VALUES(?)";
         const values = [
             randomId,
             req.body.username,
             req.body.email,
             hash,
+            req.body.img,
         ]
 
         database.query(q, [values], (err, data) => {
