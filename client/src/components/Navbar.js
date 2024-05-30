@@ -30,9 +30,9 @@ const Navbar = () => {
           <img src = { Logo } alt = ""/>
         </a>
         <div className = "links">
-          <NavLink exact = { true } className = "links" activeNav = "active" to = "/">Trang Chủ</NavLink> 
-          <NavLink exact = { true } className = "links" activeNav = "active" to = "/about">Tác Giả</NavLink>
-          <NavLink exact = { true } className = "links" activeNav = "active" to = "/contact">Kết Nối</NavLink>
+          <NavLink exact = { true } className = "links" activeNav = "active" to = "/">Home</NavLink> 
+          <NavLink exact = { true } className = "links" activeNav = "active" to = "/about">About</NavLink>
+          <NavLink exact = { true } className = "links" activeNav = "active" to = "/contact">Contact</NavLink>
           {currentUser ? (
             <details className = "user">
               <summary className = "avatar">

@@ -346,9 +346,11 @@ span{
     display: flex;
     gap: 100px;
     justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
-.profileAdmin .content input{
+/*.profileAdmin .content input{
     width: 500px;
     height: 30px;
     padding: 10px;
@@ -373,6 +375,10 @@ span{
 .profileAdmin .content .button button:nth-child(1){
     color: rgb(255, 255, 255);
     background-color: rgb(65, 175, 167);
+}*/
+
+.profileAdmin h1{
+    margin-top: -80px;
 }
 
 .profileAdmin .avatar{
@@ -405,9 +411,83 @@ span{
     cursor: pointer;
 }
   
-  .profileAdmin .avatar:hover .camera-icon {
+.profileAdmin .avatar:hover .camera-icon {
     display: block;
-  }
+}
+
+.profileAdmin .info{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 50px;
+    background-color: rgb(59, 203, 193);
+    border-radius: 50px;
+}
+
+.profileAdmin .info span{
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+}
+
+.profileAdmin .info .setting{
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 500px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 1px 1px 5px 2px rgb(0, 0, 0, 0.5);
+}
+
+.setting .content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px;
+}
+
+.setting .content p{
+    font-size: large;
+}
+
+.setting .content input{
+    height: 40px;
+    width: 200px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.5);
+}
+
+.setting .content .action {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 100px;
+}
+
+.profileAdmin .info .action span{
+    font-size: larger;
+    font-weight: bold;
+    cursor: pointer;
+    color: rgb(59, 203, 193);
+}
+
+.profileAdmin .info .action button{
+    background-color: rgb(59, 203, 193);
+    width: 100px;
+    height: 40px;
+    color: rgb(255, 255, 255);   
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+}
+
+.profileAdmin .info:nth-child(2){
+    margin-top: -50px;
+}
 
 /* Avatar Editor */
 .avatarEditor{

@@ -9,6 +9,8 @@ const ProfileAdmin = () => {
   const [file, setFile] = useState(null);
   const defaultAvatar = "https://imgur.com/AhaZ0qB.jpg";
   const [showEditor, setShowEditor] = useState(false);
+  const [infoProfile, setInfoProfile] = useState(false);
+  const [changePassword, setChangePassword] = useState(false);
   const { currentUser, setCurrentUser, logoutAdmin } = useContext(AdminContext);
   const [fileURL, setFileURL] = useState(null);
   const [adminData, setAdminData] = useState({
@@ -18,6 +20,7 @@ const ProfileAdmin = () => {
     newPassword: '',
     img: currentUser.img
   });
+  const [tempAdminData, setTempAdminData] = useState(adminData);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -26,6 +29,7 @@ const ProfileAdmin = () => {
       try{
         const res = await axios.get(`/admin/${currentUser.id}`);
         setAdminData(res.data);
+        setTempAdminData(res.data)
       }
       catch(err){
         console.log(err);
@@ -35,7 +39,7 @@ const ProfileAdmin = () => {
   },[currentUser.id]);
 
   const handleChange = (e) => {
-    setAdminData({...adminData,[e.target.name]: e.target.value})
+    setTempAdminData({...tempAdminData,[e.target.name]: e.target.value})
   }
 
   /*const handleSave = async (event) => {
@@ -156,6 +160,65 @@ const ProfileAdmin = () => {
             </>
           )}
         </label>
+      </div>
+      <h1> { adminData.username } </h1>
+      <div className = "info" style = {{ marginTop: -50, cursor: 'pointer' }} onClick = {() => setInfoProfile(true)}>
+        <span>Thông Tin Cá Nhân</span>
+        {infoProfile ? (
+          <div className = "setting" style = {{ cursor: 'default' }}>
+            <div className = "content">
+              <p>Tên</p>
+              <input 
+                type = "text"
+                name = "username"
+                value = { tempAdminData.username || '' }
+                onChange = { handleChange }
+              />
+              <p>Email</p>
+              <input 
+                type = "text"
+                name = "email"
+                value = { adminData.email || '' }
+                onChange = { handleChange }
+              />
+              <div className = "action">
+                <span onClick = {(e) => {e.stopPropagation(); setInfoProfile(false)}}>Hủy</span>
+                <button >Lưu</button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div></div>
+        )}
+      </div>
+      <div className = "info" style = {{marginTop: -60, cursor: 'pointer'}} onClick={() => setChangePassword(true)} >
+        <span>Mật Khẩu</span>
+        {changePassword ? (
+          <div className = "setting" style = {{ cursor: 'default' }}>
+            <div className = "content">
+              <p>Mật Khẩu Cũ</p>
+              <input 
+                type = "password"
+                name = "oldPassword"
+                value = { adminData.oldPassword || '' }
+                onChange = { handleChange }
+              />
+              <p>Mật Khẩu Mới</p>
+              <input 
+                type = "password"
+                name = "newPassword"
+                value = { adminData.newPassword || '' }
+                onChange = { handleChange }
+              />
+              <div className = "action">
+                <span onClick = {(e) => {e.stopPropagation(); setChangePassword(false)}}>Hủy</span>
+                <button >Lưu</button>
+              </div>
+            </div>
+          </div>
+          ) : (
+            <div></div>
+          )}
       </div>
     </div>
   )
