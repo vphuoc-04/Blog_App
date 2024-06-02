@@ -4,8 +4,8 @@ import { changePassword, infoAdmin, updateAdminProfile, uploadAvatar } from '../
 const router = express.Router();
 
 router.get("/", infoAdmin);
-router.put("/:id", uploadAvatar);
-router.put("/:id", changePassword);
-router.put("/:id", updateAdminProfile)
+router.put("/avatar/:id", uploadAvatar);
+router.put("/password/:id", changePassword);
+router.put("/profile/:id", updateAdminProfile)
 
 export default router;

@@ -59,15 +59,15 @@ const ProfileUser = () => {
     const avatarImg = await uploadUserAvatar();
     if (avatarImg) {
       try {
-        const res = await axios.put(`/users/${currentUser.id}`, {
+        const res = await axios.put(`/users/avatar/${currentUser.id}`, {
           img: avatarImg,
         });
-
         const updated = { ...currentUser, img: avatarImg };
         localStorage.setItem("user", JSON.stringify(updated));
         setCurrentUser(updated);
         setUserData((prevData) => ({ ...prevData, img: avatarImg }));
         setFileURL(`../image/${avatarImg}`);
+        console.log(res);
       } 
       catch (err) {
         console.log(err);
@@ -75,22 +75,36 @@ const ProfileUser = () => {
     }
   };
 
-  /*const handleSave = async (event) => {
+  const handleUpdateUserProfile = async (event) => {
     event.preventDefault();
-    const avatarImg = await uploadUserAvatar();
     try{
-      const res = await axios.put(`/users/${currentUser.id}`, {
-        ...userData,
-        img: avatarImg || userData.img,
+      const res = await axios.put(`/users/profile/${currentUser.id}`, {
+        username: tempUserData.username,
+        email: tempUserData.email,
       });
-      logout();
-      navigate("/");
       console.log(res.data); 
+      window.location.reload();
     } 
     catch(err){
-      setError(err.response.data); 
+      console.log(err);
     }
-  };*/
+  }
+
+  const handleChanglePassword = async (event) => {
+    event.preventDefault();
+    try{
+      const res = await axios.put(`/users/password/${currentUser.id}`,{
+        oldPassword: tempUserData.oldPassword,
+        newPassword: tempUserData.newPassword,
+      });
+      console.log(res.data);
+      logout();
+      navigate('/login');
+    }
+    catch(err){
+      setError(err.response.data);
+    }
+  }
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -116,115 +130,97 @@ const ProfileUser = () => {
 
   return (
     <div className = "profileUser">
-      {/* <div className = "content">
-        <p>Mật Khẩu Cũ</p>
-        <input 
-          type = "password"
-          name = "oldPassword"
-          value = { userData.oldPassword || '' }
-          onChange = { handleChange }
-        />
-        <p>Mật Khẩu Mới</p>
-        <input 
-          type = "password"
-          name = "newPassword"
-          value = { userData.newPassword || '' }
-          onChange = { handleChange }
-        />
-        { error && <p style={{ color: 'red' }}>{error}</p> }
-        <div className = "button">
-          <button onClick = { handleSave }>Lưu</button>
-          <button>Hủy</button>
+      <div className = "container">
+        <div className = "avatar">
+          <input 
+            style = {{ display: "none" }}
+            type = "file"
+            id = "file"
+            onChange={handleFileChange}
+          />
+          <label className = "avatar" htmlFor = "file" >
+            {showEditor ? (
+              <AvatarEditorComponent 
+                src = {fileURL} 
+                onAvatarSave = {handleUploadAvatar} 
+                onClose = {() => setShowEditor(false)} 
+              />
+              ) : (
+              <>
+                <img 
+                  src = {fileURL 
+                  ? fileURL 
+                  : (userData?.img ? (isURL(userData.img) 
+                  ? userData.img : `../image/${userData.img}`) 
+                  : defaultAvatar)} alt="" 
+                />
+                <div className = "camera-icon">
+                  <FaCamera />
+                </div>
+              </>
+            )}
+          </label>
         </div>
-      </div> */}
-      <div className = "avatar">
-        <input 
-          style = {{ display: "none" }}
-          type = "file"
-          id = "file"
-          onChange={handleFileChange}
-        />
-        <label className = "avatar" htmlFor = "file" >
-          {showEditor ? (
-            <AvatarEditorComponent 
-              src = {fileURL} 
-              onAvatarSave = {handleUploadAvatar} 
-              onClose = {() => setShowEditor(false)} 
-            />
-            ) : (
-            <>
-              <img 
-                src = {fileURL 
-                ? fileURL 
-                : (userData?.img ? (isURL(userData.img) 
-                ? userData.img : `../image/${userData.img}`) 
-                : defaultAvatar)} alt="" 
-              />
-              <div className = "camera-icon">
-                <FaCamera />
-              </div>
-            </>
-          )}
-        </label>
-      </div>
-      <h1> { userData.username } </h1>
-      <div className = "info" style = {{ marginTop: -50, cursor: 'pointer' }} onClick = {() => setInfoProfile(true)}>
-        <span>Thông Tin Cá Nhân</span>
-        {infoProfile ? (
-          <div className = "setting" style = {{ cursor: 'default' }}>
-            <div className = "content">
-              <p>Tên</p>
-              <input 
-                type = "text"
-                name = "username"
-                value = { tempUserData.username || '' }
-                onChange = { handleChange }
-              />
-              <p>Email</p>
-              <input 
-                type = "text"
-                name = "email"
-                value = { userData.email || '' }
-                onChange = { handleChange }
-              />
-              <div className = "action">
-                <span onClick = {(e) => {e.stopPropagation(); setInfoProfile(false)}}>Hủy</span>
-                <button >Lưu</button>
+        <h1> { userData.username } </h1>
+        <div className = "info" style = {{ marginTop: -50, cursor: 'pointer' }} onClick = {() => setInfoProfile(true)}>
+          <span>Thông Tin Cá Nhân</span>
+          {infoProfile ? (
+            <div className = "setting" style = {{ cursor: 'default' }}>
+              <div className = "content">
+                <p>Tên</p>
+                <input 
+                  type = "text"
+                  name = "username"
+                  value = { tempUserData.username || '' }
+                  onChange = { handleChange }
+                />
+                <p>Email</p>
+                <input 
+                  type = "text"
+                  name = "email"
+                  value = { tempUserData.email || '' }
+                  onChange = { handleChange }
+                />
+                <div className = "action">
+                  <span onClick = {(e) => {e.stopPropagation(); setInfoProfile(false)}}>Hủy</span>
+                  <button onClick = { handleUpdateUserProfile }>Lưu</button>
+                </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <div></div>
-        )}
-      </div>
-      <div className = "info" style = {{marginTop: -60, cursor: 'pointer'}} onClick={() => setChangePassword(true)} >
-        <span>Mật Khẩu</span>
-        {changePassword ? (
-          <div className = "setting" style = {{ cursor: 'default' }}>
-            <div className = "content">
-              <p>Mật Khẩu Cũ</p>
-              <input 
-                type = "password"
-                name = "oldPassword"
-                value = { userData.oldPassword || '' }
-                onChange = { handleChange }
-              />
-              <p>Mật Khẩu Mới</p>
-              <input 
-                type = "password"
-                name = "newPassword"
-                value = { userData.newPassword || '' }
-                onChange = { handleChange }
-              />
-              <div className = "action">
-                <span onClick = {(e) => {e.stopPropagation(); setChangePassword(false)}}>Hủy</span>
-                <button >Lưu</button>
-              </div>
-            </div>
-          </div>
           ) : (
             <div></div>
           )}
+        </div>
+        <div className = "info" style = {{marginTop: -60, cursor: 'pointer'}} onClick={() => setChangePassword(true)} >
+          <span>Mật Khẩu</span>
+          {changePassword ? (
+            <div className = "setting" style = {{ cursor: 'default' }}>
+              <div className = "content">
+                <p>Mật Khẩu Cũ</p>
+                <input 
+                  type = "password"
+                  name = "oldPassword"
+                  value = { tempUserData.oldPassword || '' }
+                  onChange = { handleChange }
+                />
+                <p>Mật Khẩu Mới</p>
+                <input 
+                  type = "password"
+                  name = "newPassword"
+                  value = { tempUserData.newPassword || '' }
+                  onChange = { handleChange }
+                />
+                { error && <p style={{ color: 'red' }}>{error}</p> }
+                <div className = "action">
+                  <span onClick = {(e) => {e.stopPropagation(); setChangePassword(false)}}>Hủy</span>
+                  <button onClick = { handleChanglePassword }>Lưu</button>
+                </div>
+              </div>
+            </div>
+            ) : (
+              <div></div>
+            )}
+        </div>
       </div>
     </div>
   )

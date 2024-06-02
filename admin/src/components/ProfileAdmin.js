@@ -42,23 +42,6 @@ const ProfileAdmin = () => {
     setTempAdminData({...tempAdminData,[e.target.name]: e.target.value})
   }
 
-  /*const handleSave = async (event) => {
-    event.preventDefault();
-    const avatarImg = await uploadAdminAvatar();
-    try{
-      const res = await axios.put(`/admin/${currentUser.id}`, {
-        ...adminData,
-        img: file ? avatarImg: "",
-      });
-      logoutAdmin();
-      navigate("/");
-      console.log(res.data); 
-    } 
-    catch(err){
-      setError(err.response.data); 
-    }
-  };*/
-
   const uploadAdminAvatar = async () => {
     try{  
       const formData = new FormData();
@@ -76,10 +59,9 @@ const ProfileAdmin = () => {
     const avatarImg = await uploadAdminAvatar();
     if (avatarImg) {
       try {
-        const res = await axios.put(`/admin/${currentUser.id}`, {
+        const res = await axios.put(`/admin/avatar/${currentUser.id}`, {
           img: avatarImg,
         });
-
         const updated = { ...currentUser, img: avatarImg };
         localStorage.setItem("user", JSON.stringify(updated));
         setCurrentUser(updated);
@@ -101,124 +83,124 @@ const ProfileAdmin = () => {
       setShowEditor(true);
     }
   };
+
+  const handleUpdateAdminProfile = async (event) => {
+    event.preventDefault();
+    try{
+      const res = await axios.put(`/admin/profile/${currentUser.id}`, {
+        username: tempAdminData.username,
+        email: tempAdminData.email,
+      });
+      console.log(res.data); 
+      window.location.reload();
+    } 
+    catch(err){
+      console.log(err);
+    }
+  }
+
+  const handleChanglePassword = async (event) => {
+    event.preventDefault();
+    try{
+      const res = await axios.put(`/admin/password/${currentUser.id}`,{
+        oldPassword: tempAdminData.oldPassword,
+        newPassword: tempAdminData.newPassword,
+      });
+      console.log(res.data);
+      logoutAdmin();
+      navigate('/login');
+    }
+    catch(err){
+      setError(err.response.data);
+    }
+  }
+
   return (
     <div className = "profileAdmin">
-      {/* <div className = "content">
-        <p>Tên</p>
-        <input 
-          type = "text"
-          name = "username"
-          value = { adminData.username || '' }
-          onChange = { handleChange }
-        />
-        <p>Email</p>
-        <input 
-          type = "text"
-          name = "email"
-          value = { adminData.email || '' }
-          onChange = { handleChange }
-        />
-        <p>Mật Khẩu Cũ</p>
-        <input 
-          type = "password"
-          name = "oldPassword"
-          value = { adminData.oldPassword || '' }
-          onChange = { handleChange }
-        />
-        <p>Mật Khẩu Mới</p>
-        <input 
-          type = "password"
-          name = "newPassword"
-          value = { adminData.newPassword || '' }
-          onChange = { handleChange }
-        />
-        { error && <p style={{ color: 'red' }}>{error}</p> }
-          <div className = "button">
-          <button onClick = { handleSave }>Lưu</button>
-          <button>Hủy</button>
+      <div className = "container">
+        <div className = "avatar">
+          <input 
+            style = {{ display: "none" }}
+            type = "file"
+            id = "file"
+            onChange={ handleFileChange }
+          />
+          <label className = "avatar" htmlFor = "file" >
+            {showEditor ? (
+              <AvatarEditorComponent 
+                src = {fileURL} 
+                onAvatarSave = { handleUploadAvatar}  
+                onClose = {() => setShowEditor(false)} />
+            ) : (
+              <>
+                <img src = {fileURL ? fileURL : (adminData?.img ? `/image/${adminData?.img}` : defaultAvatar)} alt = "" />
+                <div className = "camera-icon">
+                  <FaCamera />
+                </div>
+              </>
+            )}
+          </label>
         </div>
-      </div> */}
-      <div className = "avatar">
-        <input 
-          style = {{ display: "none" }}
-          type = "file"
-          id = "file"
-          onChange={handleFileChange}
-        />
-        <label className = "avatar" htmlFor = "file" >
-          {showEditor ? (
-            <AvatarEditorComponent 
-              src = {fileURL} 
-              onAvatarSave = {handleUploadAvatar} 
-              onClose = {() => setShowEditor(false)} />
-          ) : (
-            <>
-              <img src = {fileURL ? fileURL : (adminData?.img ? `/image/${adminData?.img}` : defaultAvatar)} alt = "" />
-              <div className = "camera-icon">
-                <FaCamera />
-              </div>
-            </>
-          )}
-        </label>
-      </div>
-      <h1> { adminData.username } </h1>
-      <div className = "info" style = {{ marginTop: -50, cursor: 'pointer' }} onClick = {() => setInfoProfile(true)}>
-        <span>Thông Tin Cá Nhân</span>
-        {infoProfile ? (
-          <div className = "setting" style = {{ cursor: 'default' }}>
-            <div className = "content">
-              <p>Tên</p>
-              <input 
-                type = "text"
-                name = "username"
-                value = { tempAdminData.username || '' }
-                onChange = { handleChange }
-              />
-              <p>Email</p>
-              <input 
-                type = "text"
-                name = "email"
-                value = { adminData.email || '' }
-                onChange = { handleChange }
-              />
-              <div className = "action">
-                <span onClick = {(e) => {e.stopPropagation(); setInfoProfile(false)}}>Hủy</span>
-                <button >Lưu</button>
+        <h1> { adminData.username } </h1>
+        <div className = "info" style = {{ marginTop: -50, cursor: 'pointer' }} onClick = {() => setInfoProfile(true)}>
+          <span>Thông Tin Cá Nhân</span>
+          {infoProfile ? (
+            <div className = "setting" style = {{ cursor: 'default' }}>
+              <div className = "content">
+                <p>Tên</p>
+                <input 
+                  type = "text"
+                  name = "username"
+                  value = { tempAdminData.username || '' }
+                  onChange = { handleChange }
+                />
+                <p>Email</p>
+                <input 
+                  type = "text"
+                  name = "email"
+                  value = { tempAdminData.email || '' }
+                  onChange = { handleChange }
+                />
+                <div className = "action">
+                  <span onClick = {(e) => {e.stopPropagation(); setInfoProfile(false)}}>Hủy</span>
+                  <button onClick = { handleUpdateAdminProfile }>Lưu</button>
+                </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <div></div>
-        )}
-      </div>
-      <div className = "info" style = {{marginTop: -60, cursor: 'pointer'}} onClick={() => setChangePassword(true)} >
-        <span>Mật Khẩu</span>
-        {changePassword ? (
-          <div className = "setting" style = {{ cursor: 'default' }}>
-            <div className = "content">
-              <p>Mật Khẩu Cũ</p>
-              <input 
-                type = "password"
-                name = "oldPassword"
-                value = { adminData.oldPassword || '' }
-                onChange = { handleChange }
-              />
-              <p>Mật Khẩu Mới</p>
-              <input 
-                type = "password"
-                name = "newPassword"
-                value = { adminData.newPassword || '' }
-                onChange = { handleChange }
-              />
-              <div className = "action">
-                <span onClick = {(e) => {e.stopPropagation(); setChangePassword(false)}}>Hủy</span>
-                <button >Lưu</button>
-              </div>
-            </div>
-          </div>
           ) : (
             <div></div>
           )}
+        </div>
+        <div className = "info" style = {{marginTop: -60, cursor: 'pointer'}} onClick={() => setChangePassword(true)} >
+          <span>Mật Khẩu</span>
+          {changePassword ? (
+            <div className = "setting" style = {{ cursor: 'default' }}>
+              <div className = "content">
+                <p>Mật Khẩu Cũ</p>
+                <input 
+                  type = "password"
+                  name = "oldPassword"
+                  value = { tempAdminData.oldPassword || '' }
+                  onChange = { handleChange }
+                />
+                <p>Mật Khẩu Mới</p>
+                <input 
+                  type = "password"
+                  name = "newPassword"
+                  value = { tempAdminData.newPassword || '' }
+                  onChange = { handleChange }
+                />
+                { error && <p style={{ color: 'red' }}>{error}</p> }
+                <div className = "action">
+                  <span onClick = {(e) => {e.stopPropagation(); setChangePassword(false)}}>Hủy</span>
+                  <button onClick = { handleChanglePassword }>Lưu</button>
+                </div>
+              </div>
+            </div>
+            ) : (
+              <div></div>
+            )}
+        </div>
       </div>
     </div>
   )

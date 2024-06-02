@@ -744,10 +744,22 @@ textarea.input {
 .profileUser{
     display: flex;
     gap: 100px;
-    padding: 73px 280px;
+    padding: 50px 280px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+
+.profileUser .container{
+    display: flex;
+    gap: 100px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 350px;
+    height: 600px;
+    border-radius: 20px;
+    box-shadow: 1px 1px 5px 2px rgb(0, 0, 0, 0.5);
 }
 
 /*.profileUser .content input{

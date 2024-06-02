@@ -52,10 +52,10 @@ export const changePassword = (req, res) => {
             if (err) { return res.status(500).json(err) }
 
             const userPassword = result[0].password;
-            const isPasswordCorrect = bcrypt.compareSync(req.bod.oldPassword, userPassword);
+            const isPasswordCorrect = bcrypt.compareSync(req.body.oldPassword, userPassword);
             if(!isPasswordCorrect) { return res.status(400).json("Mật khẩu không đúng!") }
             else{
-                const hashedNewPassword = bcrypt.hashSync(req.bod.newPassword, 10);
+                const hashedNewPassword = bcrypt.hashSync(req.body.newPassword, 10);
                 const updatePassword = "UPDATE users SET `password` = ? WHERE `id` = ?";
                 const value = [hashedNewPassword, userId];
                 database.query(updatePassword, value, (err, data) => {
@@ -75,9 +75,9 @@ export const updateUserProfile = (req, res) => {
 
         const userId = req.params.id;
         const q = "UPDATE users SET `username` = ?, `email` = ? WHERE `id` = ?";
-        const values = [req.bod.username, req.body.email];
+        const values = [req.body.username, req.body.email, userId];
 
-        database.query(q, [values, userId], (err, data) => {
+        database.query(q, values, (err, data) => {
             if(err) { return res.status(403).json("Thông tin chưa được cập nhật!") }
             return res.json("Thông tin đã được cập nhật!");
         })

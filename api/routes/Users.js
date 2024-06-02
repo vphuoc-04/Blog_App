@@ -5,8 +5,8 @@ const router = express.Router();
 
 router.get("/", allUser);
 router.delete("/:id", deleteUser);
-router.put("/:id", uploadAvatar);
-router.put("/:id", changePassword)
-router.put("/:id", updateUserProfile);
+router.put("/avatar/:id", uploadAvatar);
+router.put("/password/:id", changePassword)
+router.put("/profile/:id", updateUserProfile);
 
 export default router;
