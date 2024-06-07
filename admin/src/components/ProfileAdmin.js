@@ -38,6 +38,20 @@ const ProfileAdmin = () => {
     fetchAdminData();
   },[currentUser.id]);
 
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if(event.key === 'user'){
+        const update = JSON.parse(event.newValue);
+        setCurrentUser(update);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    }
+  })
+
   const handleChange = (e) => {
     setTempAdminData({...tempAdminData,[e.target.name]: e.target.value})
   }
@@ -64,9 +78,10 @@ const ProfileAdmin = () => {
         });
         const updated = { ...currentUser, img: avatarImg };
         localStorage.setItem("user", JSON.stringify(updated));
-        setCurrentUser(updated);
         setAdminData((prevData) => ({ ...prevData, img: avatarImg }));
-        setFileURL(`../image/${avatarImg}`);
+        window.location.reload();
+        setCurrentUser(updated);
+        console.log(res);
       } 
       catch (err) {
         console.log(err);
@@ -92,7 +107,10 @@ const ProfileAdmin = () => {
         email: tempAdminData.email,
       });
       console.log(res.data); 
+      const updated = { ...currentUser, username: tempAdminData.username, email: tempAdminData.email };
+      localStorage.setItem("user", JSON.stringify(updated));
       window.location.reload();
+      setCurrentUser(updated);
     } 
     catch(err){
       console.log(err);

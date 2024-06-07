@@ -38,6 +38,20 @@ const ProfileUser = () => {
     fetchUserData();
   }, [currentUser.id]);
 
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if(event.key === 'user'){
+        const update = JSON.parse(event.newValue);
+        setCurrentUser(update);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    }
+  })
+
   const handleChange = (e) => {
     setTempUserData({ ...tempUserData, [e.target.name]: e.target.value });
   };
@@ -64,9 +78,9 @@ const ProfileUser = () => {
         });
         const updated = { ...currentUser, img: avatarImg };
         localStorage.setItem("user", JSON.stringify(updated));
-        setCurrentUser(updated);
         setUserData((prevData) => ({ ...prevData, img: avatarImg }));
-        setFileURL(`../image/${avatarImg}`);
+        window.location.reload();
+        setCurrentUser(updated);
         console.log(res);
       } 
       catch (err) {
@@ -83,7 +97,10 @@ const ProfileUser = () => {
         email: tempUserData.email,
       });
       console.log(res.data); 
+      const updated = { ...currentUser, username: tempUserData.username, email: tempUserData.email };
+      localStorage.setItem("user", JSON.stringify(updated));
       window.location.reload();
+      setCurrentUser(updated);
     } 
     catch(err){
       console.log(err);
