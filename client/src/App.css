@@ -1017,6 +1017,50 @@ textarea.input {
     border-radius: 30px;
 }
 
+/* PAGINATE */
+.paginate {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+    bottom: 20px;
+    left: 50%;
+    justify-content: center;
+}
+
+.paginate li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgb(241, 241, 241);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.paginate li a {
+    text-decoration: none;
+    color: #333;
+}
+
+.paginate li:hover {
+    background-color: rgb(199, 199, 199);
+}
+
+.paginate .active {
+    background-color: rgb(59, 203, 193);
+    color: rgb(255, 255, 255);
+}
+
+.paginate .active a{
+    color: rgb(255, 255, 255);
+}
+
+.paginate .disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
 
 
 

@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment';
+import ReactPaginate from 'react-paginate';
 
 const Home = () => {
   const [ posts, setPosts ] = useState([]);
   const [ admin, setAdmin ] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const id = useLocation().search;
+  const postPerPage = 9;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,6 +18,7 @@ const Home = () => {
         const res = await axios.get(`/posts${id}`);
         const reversedPosts = res.data.reverse();
         setPosts(reversedPosts)
+        setPageCount(Math.ceil(res.data.length / postPerPage));
       }
       catch(err){
         console.log(err);
@@ -35,6 +40,13 @@ const Home = () => {
     fetchDataAdmin();
   }, [id]);
 
+  const handlePageClick = (event) => { setCurrentPage(event.selected); }
+
+  const displayPosts = posts.slice(
+    currentPage * postPerPage,
+    (currentPage + 1) * postPerPage
+  );
+
   return (
     <div className = "home">
       <h1 className = "name">
@@ -43,7 +55,7 @@ const Home = () => {
       <h2>Software Engineer</h2>
       <h1 className = "titleNewPost">Tất Cả Bài Viết</h1>
       <div className = "posts">
-        { posts.map((post) => (
+        { displayPosts.map((post) => (
           <div className = "allPost">
             <div className = "newPost" key = { post.id }>
               <Link className = "img" to = {`/post/${post.url}`}>
@@ -66,6 +78,26 @@ const Home = () => {
           </div>
         )) }
       </div>
+      <ReactPaginate
+        breakLabel = "..."
+        nextLabel = ">"
+        onPageChange = { handlePageClick }
+        pageRangeDisplayed = {1}
+        pageCount = { pageCount }
+        previousLabel = "<"
+        renderOnZeroPageCount = { null }
+        containerClassName = "paginate"
+        pageClassName = "page-item"
+        pageLinkClassName = "page-link"
+        previousClassName = "page-item"
+        previousLinkClassName = "page-link"
+        nextClassName = "page-item"
+        nextLinkClassName = "page-link"
+        breakClassName = "page-item"
+        breakLinkClassName = "page-link"
+        activeClassName = "active"
+        disabledClassName = "disabled"
+      />
     </div>
   )
 }
