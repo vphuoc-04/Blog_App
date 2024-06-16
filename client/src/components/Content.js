@@ -4,6 +4,7 @@ import axios from 'axios';
 import moment from 'moment'
 import DOMPurify from "dompurify";
 import Menu from './Menu';
+import Comment from './Comment';
 
 const Content = () => {
   const [post, setPost] = useState({});
@@ -74,6 +75,7 @@ const Content = () => {
           }}
           ></h3>
         </div>
+        <Comment />
       </div>
       <Menu id = { post.id } />
     </div>

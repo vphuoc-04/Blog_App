@@ -1062,8 +1062,99 @@ textarea.input {
     opacity: 0.6;
 }
 
+/* COMMENT */
+.comment .container .user{
+    display: flex;
+    justify-content: start;
+    gap: 20px;
+    margin-left: -250px;
+}
 
+.user input{
+    border: none;
+    outline: none;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    width: 720px;
+    padding: 10px 0 10px 0;
+}
 
+.user .action{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
+.user .action .buttons{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 10px;
+}
 
+.user .action .buttons span{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 40px;
+    height: 30px;
+    color: rgb(0, 0, 0);
+    transition: all 0.5s;
+}
 
+.user .action .buttons span:hover{
+    width: 40px;
+    height: 30px;
+    border-radius: 30px;
+    background-color: rgb(225, 225, 225);
+}
+
+.user .action .buttons button {
+    background-color: rgb(225, 225, 225);
+    width: 80px;
+    height: 30px;
+    color: rgb(98, 98, 98);
+    border: none;
+    border-radius: 30px;
+    cursor: not-allowed;
+    transition: all 0.5s;
+}
+
+.user .action .buttons button.active-button-comment{
+    background-color: rgb(65, 175, 167);
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+
+.listcomments{
+    margin-left: -500px;
+}
+
+.listcomments .infoCommentAccount{
+    display: flex;
+    gap: 15px;
+}
+
+.infoCommentAccount .username{
+    font-size: 15px;
+    margin-top: 1px;
+    font-weight: bold;
+    color: rgb(0, 0, 0, 0.7);
+}
+
+.infoCommentAccount p{
+    margin-top: 5px;
+    font-size: x-small;
+}
+
+.infoCommentAccount .avatar img{
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.infoComment{
+    margin: -37px 0 35px 67px;
+    font-size: 15px;
+    color: rgb(0, 0, 0, 0.7);
+}
