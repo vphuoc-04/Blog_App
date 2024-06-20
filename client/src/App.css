@@ -1154,7 +1154,19 @@ textarea.input {
 }
 
 .infoComment{
-    margin: -37px 0 35px 67px;
+    margin: -40px 0 35px 67px;
     font-size: 15px;
     color: rgb(0, 0, 0, 0.7);
+}
+
+.listcomments .likeAndReply{
+    margin-left: 65px;
+    margin-top: -40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.likeAndReply .replyComment{
+    margin-left: 30px;
 }

@@ -75,7 +75,7 @@ const Content = () => {
           }}
           ></h3>
         </div>
-        <Comment />
+        <Comment postId = { post.id }/>
       </div>
       <Menu id = { post.id } />
     </div>
