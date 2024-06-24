@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { useLocation } from 'react-router-dom';
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import moment from 'moment';
@@ -9,8 +8,11 @@ import axios from 'axios';
 const Comment = ({ postId }) => {
     const [comment, setComment] = useState("");
     const [comments, setComments] = useState([]);
-    const [button, setButton] = useState(false);
+    const [commentButton, setCommetButton] = useState(false);
+    const [replyCommentbutton, setReplyCommentbutton] = useState(false);
     const [likes, setLikes] = useState({});
+    const [replycomment, setReplyComment] = useState("");
+    const [replycomments, setReplyComments] = useState([]);
     const [likeCounts, setLikeCounts] = useState({});
     const { currentUser } = useContext(AuthContext);
     const [userData, setUserData] = useState({
@@ -21,7 +23,7 @@ const Comment = ({ postId }) => {
     useEffect(() => {
         const fetchCommentData = async () => {
             try{
-                const res = await axios.get("/comments?postId=" + postId);
+                const res = await axios.get(`/comments?postId=${postId}`);
                 if(Array.isArray(res.data)) {
                     const reversedComments = res.data.reverse();
                     setComments(reversedComments);
@@ -54,6 +56,41 @@ const Comment = ({ postId }) => {
     }, [postId, currentUser]);
 
     useEffect(() => {
+        const fetchReplyCommentData = async () => {
+            try{
+                const res = await axios.get(`/replycomments?postId=${postId}`);
+                if(Array.isArray(res.data)){
+                    const reversedReplyComments = res.data.reverse();
+                    setReplyComments(reversedReplyComments);
+
+                    const likesRes = await axios.get("/likes?postId=" + postId);
+                    const initLike = {};
+                    const likeCount = {};
+                    likesRes.data.forEach((like) => {
+                        if(!likeCount[like.commentId]){
+                            likeCount[like.commentId] = 0;
+                        }
+                        likeCount[like.commentId] += 1;
+                        if(like.userId === currentUser.id){
+                            initLike[like.commentId] = true;
+                        }
+                    });
+                    setLikes(initLike);
+                    setLikeCounts(likeCount);
+                } 
+                else{
+                    console.log(res.data);
+                    setReplyComments([]);
+                }
+            }   
+            catch(err){
+                console.log(err);
+            }
+        }
+        fetchReplyCommentData();
+    }, [postId, currentUser]);
+
+    useEffect(() => {
         if(currentUser && currentUser.id){
             const fetchUserData = async () => {
                 try{
@@ -68,24 +105,32 @@ const Comment = ({ postId }) => {
         }
     }, [currentUser]);
 
+    const handleReplyClick = (commentId) => { setReplyCommentbutton(commentId); }
+
     useEffect(() => {
-        const handleInputClick = () => {
-            setButton(true);
+        const handleInputCommentClick = () => {
+            setCommetButton(true);
         };
-        const inputElement = document.getElementById('comment');
+        const inputElement = document.getElementById('comment')
         if(inputElement){
-            inputElement.addEventListener('click', handleInputClick);
+            inputElement.addEventListener('click', handleInputCommentClick);
         }
         return () => {
             if(inputElement){
-                inputElement.removeEventListener('click', handleInputClick);
+                inputElement.removeEventListener('click', handleInputCommentClick);
             }
         };
-    }, []);
+    }, [])
 
-    const handleInputChange = (event) => { setComment(event.target.value); };
+    const handleInputCommentChange = (event) => {
+        setComment(event.target.value);
+    };
 
-    const handleSubmit = async (event) => {
+    const handleInputReplycomentChange = (event) => {
+        setReplyComment(event.target.value)
+    };
+
+    const handleComment = async (event) => {
         event.preventDefault();
         if(comment.length > 0){
             try{
@@ -102,13 +147,38 @@ const Comment = ({ postId }) => {
                     ...newComment,
                     id: res.data.id
                 }, ...prevComments]);
-                setButton(false);
+                setCommetButton(false);
             } 
             catch(err){
                 console.log(err);
             }
         }
     };
+    
+    const handleReplyComment = async (commentId) => {
+        if(replycomment.length > 0){
+            try{
+                const newReplyComment = {
+                    replycomment: replycomment,
+                    postId,
+                    commentId,
+                    date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+                    username: currentUser.username,
+                    img: currentUser.img
+                };
+                const res = await axios.post('/replycomments/', newReplyComment);
+                setReplyComment('');
+                setReplyComments((prevReplyComments) => [{
+                    ...newReplyComment,
+                    id: res.data.id
+                }, ...prevReplyComments]);
+                setReplyCommentbutton(false);
+            } 
+            catch(err){
+                console.error('Error posting reply comment:', err.response ? err.response.data : err.message);
+            }
+        }
+    };    
 
     const handleLikeComment = async (commentId) => {
         try{
@@ -146,25 +216,26 @@ const Comment = ({ postId }) => {
     
     return (
         <div className = "comment">
+            <div className= "commentCount"> { comments.length + replycomments.length } Bình Luận</div>
             <div className = "container">
                 {currentUser ? (
-                    <div className = "user">
+                    <div className = "mainComment">
                         <img src = {isURL(currentUser.img) ? currentUser.img : `../image/${currentUser.img}`} style = {{ width: 50, height: 50, objectFit: 'cover' }} />
                         <div className = "action">
                             <input
                                 name = "comment"
                                 placeholder = "Viết bình luận..."
                                 id = "comment"
-                                onChange = {handleInputChange}
+                                onChange = {handleInputCommentChange}
                                 value = {comment}
                             />
-                            {button ? (
+                            {commentButton ? (
                                 <div className = "buttons">
-                                    <span onClick = {(e) => { e.stopPropagation(); setButton(false); setComment("") }}>Hủy</span>
+                                    <span onClick = {(e) => { e.stopPropagation(); setCommetButton(false); setComment("") }}>Hủy</span>
                                     <button
                                         className = {comment.length > 0 ? "active-button-comment" : ""}
                                         disabled = {comment.length === 0}
-                                        onClick = {handleSubmit}
+                                        onClick = { handleComment }
                                     >Bình Luận</button>
                                 </div>
                             ) : (
@@ -181,23 +252,111 @@ const Comment = ({ postId }) => {
                             <div className = "infoCommentAccount">
                                 <div className = "avatar"> {displayAvatar(c?.img)} </div>
                                 <div className = "username"> {c.username} </div>
-                                <p>{moment(c.date).fromNow()}</p>
+                                <p>{moment(c.date).format("DD/MM/YYYY")}</p>
                             </div>
                             <div className = "infoComment">
                                 <p> {c.comment} </p>
                             </div>
-                            <div className = "likeAndReply">
+                            <div className = "likeAndCountLike">
                                 <span>
                                     {likes[c.id] ? (
-                                        <FavoriteOutlinedIcon style={{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(c.id) }/>
+                                        <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(c.id) }/>
                                     ) : (
-                                        <FavoriteBorderOutlinedIcon style={{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(c.id) }/>
+                                        <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(c.id) }/>
                                     )}
                                 </span>
                                 <p> {likeCounts[c.id] || 0}</p>
-                                <div className = "replyComment" style={{ cursor: 'pointer' }}>Trả lời
-
+                            </div>
+                            <div className = "reply">
+                                <div className = "replyComment">
+                                    <p style={{ cursor: 'pointer' }} onClick = { () => handleReplyClick(c.id) }>Trả lời</p>
+                                    {replyCommentbutton === c.id && (
+                                        <div className = "mainReplyComment">
+                                            <img src = {
+                                                isURL(currentUser.img) ? currentUser.img : `../image/${currentUser.img}`} 
+                                                style = {{ width: 50, height: 50, objectFit: 'cover' }} 
+                                            />
+                                            <div className = "inputAndUserName">
+                                                <div className = "username"> {currentUser.username} </div>
+                                                <input
+                                                    name = "replycomment"
+                                                    placeholder = "Viết bình luận..."
+                                                    id = "replycomment"
+                                                    onChange = { handleInputReplycomentChange }
+                                                    value = { replycomment}
+                                                />
+                                                <div className = "buttons">
+                                                    <span onClick = {(e) => { e.stopPropagation(); setReplyCommentbutton(false); setReplyComment("") }}>Hủy</span>
+                                                    <button
+                                                        className = {replycomment.length > 0 ? "active-button-comment" : ""}
+                                                        disabled = {replycomment.length === 0}
+                                                        onClick = { () => handleReplyComment(c.id) }
+                                                    >Bình Luận</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
+                            </div>
+                            <div className="listReplyComments">
+                                {Array.isArray(replycomments) && replycomments.map((rc) => {
+                                    if(rc.commentId === c.id) {
+                                        return (
+                                            <div className = "container" key = { rc.id }>
+                                                <div className = "infoCommentAccount">
+                                                    <div className = "avatar"> {displayAvatar(rc?.img)} </div>
+                                                    <div className = "username"> {rc.username} </div>
+                                                    <p>{moment(rc.date).format("DD/MM/YYYY")}</p>
+                                                </div>
+                                                <div className = "infoComment">
+                                                    <p> {rc.replycomment} </p>
+                                                </div>
+                                                <div className = "likeAndCountLike">
+                                                    <span>
+                                                        {likes[rc.id] ? (
+                                                            <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
+                                                        ) : (
+                                                            <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
+                                                        )}
+                                                    </span>
+                                                    <p> {likeCounts[rc.id] || 0}</p>
+                                                </div>
+                                                <div className = "reply">
+                                                    <div className = "replyComment">
+                                                        <p style={{ cursor: 'pointer' }} onClick = { () => handleReplyClick(c.id) }>Trả lời</p>
+                                                        {replyCommentbutton === c.id && (
+                                                            <div className = "mainReplyComment">
+                                                                <img src = {
+                                                                    isURL(currentUser.img) ? currentUser.img : `../image/${currentUser.img}`} 
+                                                                    style = {{ width: 50, height: 50, objectFit: 'cover' }} 
+                                                                />
+                                                                <div className = "inputAndUserName">
+                                                                    <div className = "username"> {currentUser.username} </div>
+                                                                    <input
+                                                                        name = "replycomment"
+                                                                        placeholder = "Viết bình luận..."
+                                                                        id = "replycomment"
+                                                                        onChange = { handleInputReplycomentChange }
+                                                                        value = { replycomment}
+                                                                    />
+                                                                    <div className = "buttons">
+                                                                        <span onClick = {(e) => { e.stopPropagation(); setReplyCommentbutton(false); setReplyComment("") }}>Hủy</span>
+                                                                        <button
+                                                                            className = {replycomment.length > 0 ? "active-button-comment" : ""}
+                                                                            disabled = {replycomment.length === 0}
+                                                                            onClick = { () => handleReplyComment(c.id) }
+                                                                        >Bình Luận</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                })}
                             </div>
                         </div>
                     ))}

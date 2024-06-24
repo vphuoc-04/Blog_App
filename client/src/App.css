@@ -1063,14 +1063,17 @@ textarea.input {
 }
 
 /* COMMENT */
-.comment .container .user{
+.comment .commentCount{
+    font-size: x-large;
+}
+.comment .container .mainComment{
     display: flex;
     justify-content: start;
     gap: 20px;
     margin-left: -250px;
 }
 
-.user input{
+.mainComment input{
     border: none;
     outline: none;
     border-bottom: 1px solid rgb(0, 0, 0);
@@ -1078,20 +1081,20 @@ textarea.input {
     padding: 10px 0 10px 0;
 }
 
-.user .action{
+.mainComment .action{
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.user .action .buttons{
+.mainComment .action .buttons{
     display: flex;
     justify-content: end;
     align-items: center;
     gap: 10px;
 }
 
-.user .action .buttons span{
+.mainComment .action .buttons span{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1102,14 +1105,14 @@ textarea.input {
     transition: all 0.5s;
 }
 
-.user .action .buttons span:hover{
+.mainComment .action .buttons span:hover{
     width: 40px;
     height: 30px;
     border-radius: 30px;
     background-color: rgb(225, 225, 225);
 }
 
-.user .action .buttons button {
+.mainComment .action .buttons button {
     background-color: rgb(225, 225, 225);
     width: 80px;
     height: 30px;
@@ -1120,7 +1123,7 @@ textarea.input {
     transition: all 0.5s;
 }
 
-.user .action .buttons button.active-button-comment{
+.mainComment .action .buttons button.active-button-comment{
     background-color: rgb(65, 175, 167);
     color: rgb(255, 255, 255);
     cursor: pointer;
@@ -1159,14 +1162,130 @@ textarea.input {
     color: rgb(0, 0, 0, 0.7);
 }
 
-.listcomments .likeAndReply{
+.listcomments .infoComment p{
+    word-break: break-word;
+    width: 725px;
+}
+
+.container .likeAndCountLike{
+    gap: 15px;
+    margin-top: -45px;
     margin-left: 65px;
-    margin-top: -40px;
+}
+
+.likeAndCountLike span{
+    position: absolute;
+    margin-top: 10px;
+}
+
+.likeAndCountLike p{
+    margin-left: 30px;
+}
+
+.listcomments .reply{
+    margin: -49px 0 10px 30px;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.likeAndReply .replyComment{
+.reply .replyComment{
     margin-left: 30px;
 }
+
+.reply .replyComment p{
+    margin-left: 90px;
+}
+
+.replyComment p{
+    height: 30px;
+    width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s;
+}
+
+.replyComment p:hover{
+    height: 30px;
+    width: 60px;
+    background-color: rgb(225, 225, 225);
+    border-radius: 30px;
+}
+
+.reply .mainReplyComment{
+    display: flex;
+    gap: 15px;
+}
+
+.inputAndUserName .username{
+    font-size: 15px;
+    margin-top: 1px;
+    font-weight: bold;
+    color: rgb(0, 0, 0, 0.7);
+}
+
+.inputAndUserName input{
+    border: none;
+    outline: none;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    width: 575px;
+    padding: 10px 0 10px 0;
+}
+
+.inputAndUserName .buttons{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.mainReplyComment .inputAndUserName .buttons{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.mainReplyComment .inputAndUserName .buttons span{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 40px;
+    height: 30px;
+    color: rgb(0, 0, 0);
+    transition: all 0.5s;
+}
+
+.mainReplyComment .inputAndUserName .buttons span:hover{
+    width: 40px;
+    height: 30px;
+    border-radius: 30px;
+    background-color: rgb(225, 225, 225);
+}
+
+.mainReplyComment .inputAndUserName .buttons button {
+    background-color: rgb(225, 225, 225);
+    width: 80px;
+    height: 30px;
+    color: rgb(98, 98, 98);
+    border: none;
+    border-radius: 30px;
+    cursor: not-allowed;
+    transition: all 0.5s;
+}
+
+.mainReplyComment .inputAndUserName .buttons button.active-button-comment{
+    background-color: rgb(65, 175, 167);
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+
+.listReplyComments{
+    margin-top: -50px;
+    margin-left: -190px;
+}
+
