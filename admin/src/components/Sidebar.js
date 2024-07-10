@@ -17,13 +17,13 @@ const Sidebar = () => {
               <p>Đăng Tải Bài Viết</p>
             </div>
           </Link>
-          <Link to = {'/allpost'} style = {{ textDecoration: "none" }}>
+          <Link to = {'/listposts'} style = {{ textDecoration: "none" }}>
             <div className = "sidebarItem">
               <i class="fa-solid fa-newspaper"></i>
               <p>Quản Lý Bài Viết</p>
             </div>
           </Link>
-          <Link to = {'/user'} style = {{ textDecoration: "none" }}>
+          <Link to = {'/users'} style = {{ textDecoration: "none" }}>
             <div className = "sidebarItem">
               <i class="fa-solid fa-user"></i>
               <p>Quản Lý Người Dùng</p>

@@ -313,6 +313,86 @@ span{
     cursor: pointer;
 }
 
+body.darkBackground {
+    overflow: hidden;
+    position: relative;
+}
+
+body.darkBackground::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); 
+    z-index: 1; 
+}
+
+.post .readPosts .container {
+    position: fixed; 
+    width: 950px;
+    height: 550px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 30px;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: auto;
+}
+
+.readPosts .container .content{
+    display: flex;
+}
+
+.readPosts .container .content .picAndDes::-webkit-scrollbar,
+.readPosts .container .content .comments::-webkit-scrollbar {
+    width: 5px;
+}
+
+.readPosts .container .content .picAndDes::-webkit-scrollbar-track,
+.readPosts .container .content .comments::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.readPosts .container .content .picAndDes::-webkit-scrollbar-thumb,
+.readPosts .container .content .comments::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.readPosts .container .content .picAndDes {
+    max-height: 550px;
+    overflow-y: auto;
+    padding-right: 30px;
+}
+
+.readPosts .container .content .comments {
+    max-height: 550px;
+    overflow-y: auto;
+    width: 350px;
+}
+
+.readPosts .container .content .picAndDes img{
+    position: relative;
+    margin-top: 50px;
+}
+
+.readPosts .container .content .picAndDes p{
+    word-wrap: break-word;
+    width: 450px;
+}
+
+.readPosts .container .closeReadButton {
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    z-index: 3; 
+    font-size: x-large;
+}
+
 /* USER */
 .userManagement{
     border-collapse: collapse;

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import moment from 'moment';
 import axios from 'axios';
 
@@ -11,24 +12,38 @@ const Comment = ({ postId }) => {
     const [commentButton, setCommetButton] = useState(false);
     const [replyCommentbutton, setReplyCommentbutton] = useState(false);
     const [likes, setLikes] = useState({});
+    const [likesReplyComment, setLikesReplyComment] = useState({});
     const [replycomment, setReplyComment] = useState("");
     const [replycomments, setReplyComments] = useState([]);
     const [likeCounts, setLikeCounts] = useState({});
+    const [likeReplyCommentsCount, setLikeReplyCommentCount] = useState({});
+    const [editCommentId, setEditCommentId] = useState(null);
+    const [editCommentContent, setEditCommentContent] = useState('');
+    const [boxActionComment, setBoxActionComment] = useState(null);
     const { currentUser } = useContext(AuthContext);
-    const [userData, setUserData] = useState({
-        username: '',
-        img: ''
-    });
+
+    const isURL = (str) => { const pattern = /^https?:\/\//i; return !!pattern.test(str); };
+    const displayAvatar = (avatarCmt) => {
+        if(avatarCmt) {
+            if(isURL(avatarCmt)) {
+                return <img src={avatarCmt} alt="" />;
+            }
+            else{
+                return <img src={`../image/${avatarCmt}`} alt="" />;
+            }
+        }
+        return null;
+    };
 
     useEffect(() => {
         const fetchCommentData = async () => {
             try{
-                const res = await axios.get(`/comments?postId=${postId}`);
+                const res = await axios.get(`/comments/data/comment?postId=${postId}`);
                 if(Array.isArray(res.data)) {
                     const reversedComments = res.data.reverse();
                     setComments(reversedComments);
 
-                    const likesRes = await axios.get("/likes?postId=" + postId);
+                    const likesRes = await axios.get("/likecomments?postId=" + postId);
                     const initLike = {};
                     const likeCount = {};
                     likesRes.data.forEach((like) => {
@@ -56,14 +71,14 @@ const Comment = ({ postId }) => {
     }, [postId, currentUser]);
 
     useEffect(() => {
-        const fetchReplyCommentData = async () => {
+        const fetchReplyCommentData = async (parentId) => {
             try{
-                const res = await axios.get(`/replycomments?postId=${postId}`);
-                if(Array.isArray(res.data)){
-                    const reversedReplyComments = res.data.reverse();
-                    setReplyComments(reversedReplyComments);
+                const res = await axios.get(`/comments/data/reply?postId=${postId}&parentId=${parentId}`);
+                if(Array.isArray(res.data)) {
+                    const reversedComments = res.data.reverse();
+                    setReplyComments(reversedComments);
 
-                    const likesRes = await axios.get("/likes?postId=" + postId);
+                    const likesRes = await axios.get("/likecomments?postId=" + postId);
                     const initLike = {};
                     const likeCount = {};
                     likesRes.data.forEach((like) => {
@@ -82,11 +97,11 @@ const Comment = ({ postId }) => {
                     console.log(res.data);
                     setReplyComments([]);
                 }
-            }   
+            } 
             catch(err){
                 console.log(err);
             }
-        }
+        };
         fetchReplyCommentData();
     }, [postId, currentUser]);
 
@@ -95,7 +110,7 @@ const Comment = ({ postId }) => {
             const fetchUserData = async () => {
                 try{
                     const res = await axios.get(`/users/${currentUser.id}`);
-                    setUserData(res.data);
+                    currentUser(res.data);
                 } 
                 catch(err){
                     console.log(err);
@@ -106,6 +121,7 @@ const Comment = ({ postId }) => {
     }, [currentUser]);
 
     const handleReplyClick = (commentId) => { setReplyCommentbutton(commentId); }
+    const handleNextReplyClick = (commentId, replyCommentId) => { setReplyCommentbutton(commentId, replyCommentId); }
 
     useEffect(() => {
         const handleInputCommentClick = () => {
@@ -141,7 +157,7 @@ const Comment = ({ postId }) => {
                     username: currentUser.username,
                     img: currentUser.img
                 };
-                const res = await axios.post('/comments/', newComment);
+                const res = await axios.post('/comments/comment/', newComment);
                 setComment('');
                 setComments((prevComments) => [{
                     ...newComment,
@@ -155,18 +171,18 @@ const Comment = ({ postId }) => {
         }
     };
     
-    const handleReplyComment = async (commentId) => {
+    const handleReplyComment = async (parentId) => {
         if(replycomment.length > 0){
             try{
                 const newReplyComment = {
-                    replycomment: replycomment,
+                    comment: replycomment,
                     postId,
-                    commentId,
+                    parentId,
                     date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
                     username: currentUser.username,
                     img: currentUser.img
                 };
-                const res = await axios.post('/replycomments/', newReplyComment);
+                const res = await axios.post('/comments/comment/reply', newReplyComment);
                 setReplyComment('');
                 setReplyComments((prevReplyComments) => [{
                     ...newReplyComment,
@@ -182,14 +198,14 @@ const Comment = ({ postId }) => {
 
     const handleLikeComment = async (commentId) => {
         try{
-            if(likes[commentId]) {
-                await axios.delete(`/likes?postId=${postId}&commentId=${commentId}`);
+            if(likes[commentId]){
+                await axios.delete(`/likecomments?postId=${postId}&commentId=${commentId}`);
                 setLikeCounts((prevCount) => ({
                     ...prevCount, [commentId]: prevCount[commentId] - 1
                 }));
             } 
             else{
-                await axios.post(`/likes/`, { postId, commentId });
+                await axios.post(`/likecomments/`, { postId, commentId });
                 setLikeCounts((prevCounts) => ({
                     ...prevCounts, [commentId]: (prevCounts[commentId] || 0) + 1
                 }));
@@ -201,22 +217,57 @@ const Comment = ({ postId }) => {
         }
     };
 
-    const isURL = (str) => { const pattern = /^https?:\/\//i; return !!pattern.test(str); };
-    const displayAvatar = (avatarCmt) => {
-        if(avatarCmt) {
-            if(isURL(avatarCmt)) {
-                return <img src={avatarCmt} alt="" />;
-            }
+    const handleBoxActionComment = (id) => {
+        setBoxActionComment((prevId) => (prevId === id ? null : id));
+    }
+
+    const handleDeleteComment = async (id, parentId) => {
+        try{
+            const res = await axios.delete(`/comments/delete/${id}`, {
+                params: { parentId }
+            });
+            if(res.status === 200){
+                setComments(prevComments => prevComments.filter(comment => comment.id !== id));
+            } 
             else{
-                return <img src={`../image/${avatarCmt}`} alt="" />;
+                console.error("Failed to delete comment");
             }
+        }   
+        catch(err) {
+            console.log("Error:", err.response ? err.response.data : err.message);
         }
-        return null;
     };
     
+    const handleEditComment = (id, currentText) => {
+        setEditCommentId(id);
+        setEditCommentContent(currentText);
+    };
+
+    const handleSaveEditComment = async (id) => {
+        try{
+            const res = await axios.put(`/comments/edit/${id}`, {
+                comment: editCommentContent,
+                date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+            });
+            if(res.status === 200){
+                setComments(prevComments => prevComments.map(comment => 
+                    comment.id === id ? { ...comment, comment: editCommentContent } : comment
+                ));
+                setEditCommentId(null);
+                setEditCommentContent('');
+            } 
+            else{
+                console.error("Failed to edit comment");
+            }
+        } 
+        catch (err){
+            console.log("Error:", err.response ? err.response.data : err.message);
+        }
+    };
+
     return (
         <div className = "comment">
-            <div className= "commentCount"> { comments.length + replycomments.length } Bình Luận</div>
+            <div className= "commentCount"> { comments.length } Bình Luận</div>
             <div className = "container">
                 {currentUser ? (
                     <div className = "mainComment">
@@ -253,7 +304,36 @@ const Comment = ({ postId }) => {
                                 <div className = "avatar"> {displayAvatar(c?.img)} </div>
                                 <div className = "username"> {c.username} </div>
                                 <p>{moment(c.date).format("DD/MM/YYYY")}</p>
+                                <div className = "editAndDelete">
+                                    <div className = "button">
+                                        <MoreVertIcon style = {{ color: '#828282', cursor: 'pointer' }} onClick = {() => handleBoxActionComment(c.id) } />
+                                        {currentUser ? (
+                                            <div className="boxActionComment">
+                                                {boxActionComment === c.id && (
+                                                    <div className="view">
+                                                        <span onClick={() => handleEditComment(c.id, c.comment)}><i className="fa-regular fa-pen-to-square"></i>Chỉnh sửa</span>
+                                                        <span onClick={() => handleDeleteComment(c.id, c.parentId)}><i className="fa-regular fa-trash-can"></i>Xóa</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <span>Báo Cáo</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
+                            {editCommentId === c.id && (
+                                <div className = "editComment">
+                                    <textarea 
+                                        value = { editCommentContent } 
+                                        onChange = {(e) => setEditCommentContent(e.target.value)} 
+                                    />
+                                    <button style = {{ cursor: 'pointer', width:100, height: 100 }} onClick = {() => handleSaveEditComment(c.id)}>Lưu</button>
+                                    <button onClick = {() => setEditCommentId(null)}>Hủy</button>
+                                </div>
+                            )}
                             <div className = "infoComment">
                                 <p> {c.comment} </p>
                             </div>
@@ -283,7 +363,7 @@ const Comment = ({ postId }) => {
                                                     placeholder = "Viết bình luận..."
                                                     id = "replycomment"
                                                     onChange = { handleInputReplycomentChange }
-                                                    value = { replycomment}
+                                                    value = { replycomment }
                                                 />
                                                 <div className = "buttons">
                                                     <span onClick = {(e) => { e.stopPropagation(); setReplyCommentbutton(false); setReplyComment("") }}>Hủy</span>
@@ -300,7 +380,7 @@ const Comment = ({ postId }) => {
                             </div>
                             <div className="listReplyComments">
                                 {Array.isArray(replycomments) && replycomments.map((rc) => {
-                                    if(rc.commentId === c.id) {
+                                    if(rc.parentId === c.id) {
                                         return (
                                             <div className = "container" key = { rc.id }>
                                                 <div className = "infoCommentAccount">
@@ -309,22 +389,22 @@ const Comment = ({ postId }) => {
                                                     <p>{moment(rc.date).format("DD/MM/YYYY")}</p>
                                                 </div>
                                                 <div className = "infoComment">
-                                                    <p> {rc.replycomment} </p>
+                                                    <p> {rc.comment} </p>
                                                 </div>
                                                 <div className = "likeAndCountLike">
                                                     <span>
-                                                        {likes[rc.id] ? (
+                                                        {likesReplyComment[rc.id] ? (
                                                             <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
                                                         ) : (
                                                             <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
                                                         )}
                                                     </span>
-                                                    <p> {likeCounts[rc.id] || 0}</p>
+                                                    <p> {likeReplyCommentsCount[rc.id] || 0}</p>
                                                 </div>
                                                 <div className = "reply">
                                                     <div className = "replyComment">
-                                                        <p style={{ cursor: 'pointer' }} onClick = { () => handleReplyClick(c.id) }>Trả lời</p>
-                                                        {replyCommentbutton === c.id && (
+                                                        <p style={{ cursor: 'pointer' }} onClick = { () => handleNextReplyClick(rc.id) }>Trả lời</p>
+                                                        {replyCommentbutton === rc.id && (
                                                             <div className = "mainReplyComment">
                                                                 <img src = {
                                                                     isURL(currentUser.img) ? currentUser.img : `../image/${currentUser.img}`} 

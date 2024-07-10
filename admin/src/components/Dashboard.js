@@ -13,8 +13,8 @@ const Dashboard = () => {
         <div className = "routes">
           <Routes>
             <Route path = "/write" element = { <Post /> } />
-            <Route path = "/allpost" element = { <Allpost /> } />
-            <Route path = "/user" element = { <User /> } />
+            <Route path = "/listposts" element = { <Allpost /> } />
+            <Route path = "/users" element = { <User /> } />
             <Route path = "/setting" element = { <ProfileAdmin /> } />
           </Routes>
         </div>

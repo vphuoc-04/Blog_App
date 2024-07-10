@@ -199,7 +199,7 @@ span{
     height: 130px;
     width: 100px;
     box-shadow: 1px 1px 5px rgb(0, 0, 0, 0.5);
-    margin: -160px 0 0 25px;
+    margin: -170px 0 0 15px;
     display: flex;
     align-items: center;
     justify-content: end;
@@ -1071,6 +1071,7 @@ textarea.input {
     justify-content: start;
     gap: 20px;
     margin-left: -250px;
+    padding-bottom: 10px;
 }
 
 .mainComment input{
@@ -1131,11 +1132,44 @@ textarea.input {
 
 .listcomments{
     margin-left: -500px;
+    padding-bottom: 30px;
 }
 
 .listcomments .infoCommentAccount{
     display: flex;
     gap: 15px;
+}
+
+.listcomments .infoCommentAccount .editAndDelete{
+    position: absolute;
+    left: 67.7%;
+    margin-top: 25px;
+}
+
+.listcomments .infoCommentAccount .editAndDelete .button .boxActionComment .view{
+    height: 70px;
+    width: 120px;
+    z-index: 100px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 1px 1px 5px rgb(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 10px;
+    justify-content: center;
+    gap: 10px;
+}
+
+.boxActionComment .view span{
+    display: flex;
+    gap: 10px;
+    margin-left: 10px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.boxActionComment .view span:hover{
+    background-color: rgb(0, 0, 0, 0.1);
 }
 
 .infoCommentAccount .username{
@@ -1191,6 +1225,7 @@ textarea.input {
 
 .reply .replyComment{
     margin-left: 30px;
+    padding-bottom: 10px;
 }
 
 .reply .replyComment p{
@@ -1229,7 +1264,7 @@ textarea.input {
     border: none;
     outline: none;
     border-bottom: 1px solid rgb(0, 0, 0);
-    width: 575px;
+    width: 665px;
     padding: 10px 0 10px 0;
 }
 
@@ -1239,7 +1274,6 @@ textarea.input {
     align-items: center;
     gap: 10px;
 }
-
 
 .mainReplyComment .inputAndUserName .buttons{
     display: flex;
