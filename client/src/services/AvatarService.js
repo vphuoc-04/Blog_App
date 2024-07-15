@@ -38,4 +38,19 @@ const AvatarEditorComponent = ({ src, onAvatarSave, onClose }) => {
   );
 };
 
+const isURL = (str) => { const pattern = /^https?:\/\//i; return !!pattern.test(str); };
+const displayAvatar = (avatar) => {
+    if(avatar) {
+        if(isURL(avatar)) {
+            return <img src = {avatar} alt = "" />;
+        }
+        else{
+            return <img src = {`../image/${avatar}`} alt = "" />;
+        }
+    }
+    return null;
+};
+
 export default AvatarEditorComponent;
+
+export { isURL, displayAvatar };

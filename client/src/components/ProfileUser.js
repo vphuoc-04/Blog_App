@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom';
 import { FaCamera } from 'react-icons/fa';
-import AvatarEditorComponent from './AvatarEditor';
+import AvatarEditorComponent from '../services/AvatarService';
 
 const ProfileUser = () => {
   const defaultAvatar = "https://imgur.com/AhaZ0qB.jpg";

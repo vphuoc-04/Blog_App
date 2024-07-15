@@ -2,7 +2,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Post from './components/Post';
-import Allpost from './components/Allpost';
+import ListPosts from './components/ListPosts';
 import Dashboard from './components/Dashboard';
 import LoginAdmin from './components/LoginAdmin'
 import User from './components/User';
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "/write", element: <Post /> },
-      { path: "/listposts", element: <Allpost /> },
+      { path: "/listposts", element: <ListPosts /> },
       { path: "/users", element: <User /> },
       { path: "/setting", element: <ProfileAdmin />}
     ]

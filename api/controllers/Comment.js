@@ -2,7 +2,7 @@ import { database } from "../database.js";
 import jwt from 'jsonwebtoken'
 
 export const getComments = (req, res) => {
-    const q = "SELECT c.id, u.username, c.comment, u.img, c.date FROM users u JOIN comments c ON u.id = c.uidc JOIN posts p ON p.id = c.postId WHERE c.postId = ?";
+    const q = "SELECT c.id, u.username, c.comment, u.img, c.date FROM users u JOIN comments c ON u.id = c.uidc JOIN posts p ON p.id = c.postId WHERE c.postId = ? AND c.parentId IS NULL";
     database.query(q, [req.query.postId], (err, data) => {
         if (err) return res.status(500).json(err);
         return res.status(200).json(data);
@@ -16,7 +16,7 @@ export const addComments = (req, res) => {
     jwt.verify(token, 'jwtkey', (err, userInfo) => {
         if (err) return res.status(403).json('Token không hợp lệ!');
 
-        const q = 'INSERT INTO comments(`comment`, `date`, `uidc`, `username`, `img`, `postId`) VALUES (?)';
+        const q = 'INSERT INTO comments(`comment`, `date`, `uidc`, `username`, `img`, `postId`, `parentId`) VALUES (?)';
         const values = [
             req.body.comment,
             req.body.date,
@@ -24,6 +24,7 @@ export const addComments = (req, res) => {
             req.body.username,
             req.body.img,
             req.body.postId,
+            req.body.parentId || null
         ];
 
         database.query(q, [values], (err, data) => {
@@ -34,7 +35,7 @@ export const addComments = (req, res) => {
 };
 
 export const getReplyComment = (req, res) =>{
-    const q = "SELECT u.username, c.comment, u.img, c.date, c.parentId FROM users u JOIN comments c ON u.id = c.uidc JOIN posts p ON p.id = c.postId WHERE c.postId = ?";
+    const q = "SELECT c.id, u.username, c.comment, u.img, c.date, c.parentId FROM users u JOIN comments c ON u.id = c.uidc JOIN posts p ON p.id = c.postId WHERE c.postId = ? AND c.parentId IS NOT NULL";
     database.query(q, [req.query.postId], (err, data) => {
         if (err) return res.status(500).json(err);
         return res.status(200).json(data);
@@ -109,7 +110,7 @@ export const editComments = (req, res) => {
 
         database.query(q, [ ...values, req.params.id], (err, data) => {
             if(err) { return res.status(500).json(err) }
-            return res.json('Đã xóa!');
+            return res.json('Đã chỉnh sửa!');
         });
     });
 };

@@ -1225,7 +1225,6 @@ textarea.input {
 
 .reply .replyComment{
     margin-left: 30px;
-    padding-bottom: 10px;
 }
 
 .reply .replyComment p{
@@ -1251,6 +1250,7 @@ textarea.input {
 .reply .mainReplyComment{
     display: flex;
     gap: 15px;
+    margin-top: 30px;
 }
 
 .inputAndUserName .username{
@@ -1319,7 +1319,64 @@ textarea.input {
 }
 
 .listReplyComments{
-    margin-top: -50px;
     margin-left: -190px;
 }
+
+.editComment{
+    z-index: 1000;
+}
+
+.editComment .action input{
+    border: none;
+    outline: none;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    width: 720px;
+    padding: 10px 0 10px 0;
+    margin-left: 70px;
+    margin-top: -200px;
+}
+
+.editComment .buttons{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.editComment .buttons span{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 40px;
+    height: 30px;
+    color: rgb(0, 0, 0);
+    transition: all 0.5s;
+}
+
+.editComment .buttons span:hover{
+    width: 40px;
+    height: 30px;
+    border-radius: 30px;
+    background-color: rgb(225, 225, 225);
+}
+
+.editComment .buttons button{
+    background-color: rgb(225, 225, 225);
+    width: 80px;
+    height: 30px;
+    color: rgb(98, 98, 98);
+    border: none;
+    border-radius: 30px;
+    cursor: not-allowed;
+    transition: all 0.5s;
+}
+
+.editComment .buttons button.active-button-edit{
+    background-color: rgb(65, 175, 167);
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+
 
