@@ -6,8 +6,13 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import moment from 'moment';
 import axios from 'axios';
 import { 
-    fetchCommentData, fetchReplyCommentData, DeleteComment, 
-    LikeComment, EditComment, AddComment, ReplyComment
+    fetchCommentData, 
+    fetchReplyCommentData, 
+    DeleteComment, 
+    LikeComment, 
+    EditComment, 
+    AddComment, 
+    ReplyComment
 } from '../services/CommentService';
 
 import { fetchUserData } from '../services/AuthService';
@@ -26,7 +31,10 @@ const Comment = ({ postId }) => {
     const [editCommentId, setEditCommentId] = useState(null);
     const [editCommentContent, setEditCommentContent] = useState('');
     const [boxActionComment, setBoxActionComment] = useState(null);
+    const [reportComment, setReportComment] = useState(null);
+    const [showReportForm, setShowReportForm] = useState(false);
     const [originalContent, setOriginalContent] = useState('');
+    const [showReplies, setShowReplies] = useState({});
     const { currentUser } = useContext(AuthContext);
 
     // Fetch data of comment
@@ -86,6 +94,18 @@ const Comment = ({ postId }) => {
         };
     }, [])
 
+    useEffect(() => {
+        if (showReportForm) {
+            document.body.classList.add("no-scroll");
+        } else {
+            document.body.classList.remove("no-scroll");
+        }
+
+        return () => {
+            document.body.classList.remove("no-scroll");
+        };
+    }, [showReportForm]);
+
     const handleInputCommentChange = (event) => {
         setComment(event.target.value);
     };
@@ -96,10 +116,7 @@ const Comment = ({ postId }) => {
 
     const handleReplyClick = (id) => {
         console.log("Click vào nút Trả lời tiếp theo với id:", id);
-        setReplyCommentForm((prevForms) => ({
-            ...prevForms,
-            [id]: !prevForms[id]
-        }));
+        setReplyCommentForm((prevForms) => ({ ...prevForms, [id]: !prevForms[id] }));
     }
     
     const handleBoxActionComment = (id) => {
@@ -123,61 +140,152 @@ const Comment = ({ postId }) => {
         ));
     };
 
+    const handleReportComment = (id) => {
+        setReportComment(id);
+        setShowReportForm(true);
+        setBoxActionComment(false);
+    };
+
+    const handleCloseReportForm = () => {
+        setShowReportForm(false);
+        setReportComment(null);
+    };
+
+    const toggleReplies = (commentId) => {
+        setShowReplies(prevState => ({
+            ...prevState,
+            [commentId]: !prevState[commentId]
+        }));
+    };
+
+    const countReplies = (parentId) => {
+        let count = 0;
+        replycomments.forEach(rc => {
+            if (rc.parentId === parentId) {
+                count++;
+                count += countReplies(rc.id);
+            }
+        });
+        return count;
+    };
+    
     const renderReplies = (parentId) => {
         return replycomments.filter(rc => rc.parentId === parentId).map(rc => (
             <div className = "container" style = {{ marginLeft: 0 }} key = {rc.id}>
-                <div className = "infoCommentAccount">
-                    <div className = "avatar"> {displayAvatar(rc?.img)} </div>
-                    <div className = "username"> {rc.username} </div>
-                    <p>{moment(rc.date).format("DD/MM/YYYY")}</p>
-                </div>
-                <div className = "infoComment">
-                    <p> {rc.comment} </p>
-                </div>
-                <div className = "likeAndCountLike">
-                    <span>
-                        {likes[rc.id] ? (
-                            <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
-                        ) : (
-                            <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
-                        )}
-                    </span>
-                    <p> {likeCounts[rc.id] || 0}</p>
-                </div>
-                <div className = "reply">
-                    <div className = "replyComment">
-                        <p style={{ cursor: 'pointer' }} onClick={() => {
-                            console.log('rc.id:', rc.id, 'rc.parentId:', rc.parentId);
-                            handleReplyClick(rc.id);
-                        }}>Trả lời</p>
-                        {replyCommentForm[rc.id] && (
-                            <div className = "mainReplyComment">
-                                <img src = {
-                                    isURL(currentUser.img) ? currentUser.img : `../image/${currentUser.img}`} 
-                                    style = {{ width: 50, height: 50, objectFit: 'cover' }} 
-                                />
-                                <div className = "inputAndUserName">
-                                    <div className = "username"> {currentUser.username} </div>
-                                    <input
-                                        name = "replycomment"
-                                        placeholder = "Viết bình luận..."
-                                        id = "replycomment"
-                                        onChange = { handleInputReplycomentChange }
-                                        value = { replycomment}
-                                    />
-                                    <div className = "buttons">
-                                        <span onClick = {(e) => { e.stopPropagation(); setReplyCommentForm(false); setReplyComment("") }}>Hủy</span>
-                                        <button
-                                            className = {replycomment.length > 0 ? "active-button-comment" : ""}
-                                            disabled = {replycomment.length === 0}
-                                            onClick = { () => handleReplyComment(rc.id) }
-                                        >Bình Luận</button>
+                {editCommentId === rc.id ? (
+                    // Edit comment form
+                    <div className = "formEdit">
+                        <div className = "avatar"> {displayAvatar(rc?.img)} </div>
+                        <div className = "form">
+                            <input className = "inputFormEdit"
+                                type = "text"
+                                value = { editCommentContent }
+                                onChange = {(e) => setEditCommentContent(e.target.value)}
+                            />
+                            <div className = "buttons">
+                                <span 
+                                    style = {{ cursor: 'pointer' }}
+                                    onClick = {() => handleCancelEdit(rc.id)}>Hủy</span>
+                                <button 
+                                    className = { editCommentContent.length > 0 && editCommentContent !== originalContent ? "active-button-edit" : "" }
+                                    disabled = { editCommentContent.length === 0 || editCommentContent === originalContent}
+                                    onClick = {() => handleEditSaveComment(rc.id)}>Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className = "content">
+                        <div className = "infoCommentAccount">
+                            <div className = "avatar"> {displayAvatar(rc?.img)} </div>
+                            <div className = "username"> {rc.username} </div>
+                            <p>{moment(rc.date).format("DD/MM/YYYY")}</p>
+                            <MoreVertIcon style = {{ color: '#828282', cursor: 'pointer', marginLeft: 500 }} onClick = {() => handleBoxActionComment(rc.id) } />
+                            {currentUser && currentUser.id === rc.uidc ? (
+                                <div className = "boxActionCommentReplies">
+                                    {boxActionComment === rc.id && (
+                                        <div className = "editAndDelete">
+                                            <span onClick = {() => handleEditComment(rc.id, rc.comment)}><i className = "fa-regular fa-pen-to-square"></i>Chỉnh sửa</span>
+                                            <span onClick = {() => handleDeleteComment(rc.id, rc.parentId)}><i className = "fa-regular fa-trash-can"></i>Xóa</span>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className = "boxActionCommentReplies">
+                                    {boxActionComment === rc.id && (
+                                        <div className = "report">
+                                            <span onClick = {() => handleReportComment(rc.id)}><i className="fa-regular fa-trash-can"></i>Báo cáo</span>
+                                        </div>
+                                    )}
+                                    <div>
+                                        {showReportForm && reportComment && (
+                                            <>
+                                                <div className = "overlay"></div>
+                                                <div className = "reportForm">
+                                                    <div className = "form">
+                                                        <h2>Báo cáo bình luận này</h2>
+                                                        <textarea placeholder=  "Lý do của bạn..." rows = "5"></textarea>
+                                                        <div className = "buttonsReport">
+                                                            <span onClick = {handleCloseReportForm}>Hủy</span>
+                                                            <button>Gửi</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
+                                
+                            )}
+                        </div>
+                        <div className = "infoComment">
+                            <p> {rc.comment} </p>
+                        </div>
+                        <div className = "likeAndCountLike">
+                            <span>
+                                {likes[rc.id] ? (
+                                    <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
+                                ) : (
+                                    <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
+                                )}
+                            </span>
+                            <p> {likeCounts[rc.id] || 0}</p>
+                        </div>
+                        <div className = "reply">
+                            <div className = "replyComment">
+                                <p style={{ cursor: 'pointer' }} onClick={() => {
+                                    console.log('rc.id:', rc.id, 'rc.parentId:', rc.parentId);
+                                    handleReplyClick(rc.id);
+                                }}>Trả lời</p>
+                                {replyCommentForm[rc.id] && (
+                                    <div className = "mainReplyComment">
+                                        <img src = {
+                                            isURL(currentUser.img) ? currentUser.img : `../image/${currentUser.img}`} 
+                                            style = {{ width: 50, height: 50, objectFit: 'cover' }} 
+                                        />
+                                        <div className = "inputAndUserName">
+                                            <div className = "username"> {currentUser.username} </div>
+                                            <input
+                                                name = "replycomment"
+                                                placeholder = "Viết bình luận..."
+                                                id = "replycomment"
+                                                onChange = { handleInputReplycomentChange }
+                                                value = { replycomment }
+                                            />
+                                            <div className = "buttons">
+                                                <span onClick = {(e) => { e.stopPropagation(); setReplyCommentForm(false); setReplyComment("") }}>Hủy</span>
+                                                <button
+                                                    className = {replycomment.length > 0 ? "active-button-comment" : ""}
+                                                    disabled = {replycomment.length === 0}
+                                                    onClick = { () => handleReplyComment(rc.id) }
+                                                >Bình Luận</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        </div>
                     </div>
-                </div>
+                )}
                 {renderReplies(rc.id)}
             </div>
         ));
@@ -223,43 +331,16 @@ const Comment = ({ postId }) => {
                     {Array.isArray(comments) && comments.map((c) => (
                         // Danh sách các bình luận
                         <div className = "container" key = {c.id}>
-                            <div className = "infoCommentAccount">
-                                <div className = "avatar"> {displayAvatar(c?.img)} </div>
-                                <div className = "username"> {c.username} </div>
-                                <p> {moment(c.date).format("DD/MM/YYYY")} </p>
-                                <div className = "editAndDelete">
-                                    <div className = "button">
-                                        <MoreVertIcon style = {{ color: '#828282', cursor: 'pointer' }} onClick = {() => handleBoxActionComment(c.id) } />
-                                        {currentUser && currentUser.id ? (
-                                            <div className="boxActionComment">
-                                                {boxActionComment === c.id && (
-                                                    <div className="view">
-                                                        <span onClick={() => handleEditComment(c.id, c.comment)}><i className="fa-regular fa-pen-to-square"></i>Chỉnh sửa</span>
-                                                        <span onClick={() => handleDeleteComment(c.id, c.parentId)}><i className="fa-regular fa-trash-can"></i>Xóa</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ) : (
-                                            <div>
-                                                {boxActionComment === c.id && (
-                                                    <div className="view">
-                                                        <span onClick={() => handleDeleteComment(c.id, c.parentId)}><i className="fa-regular fa-trash-can"></i>Báo cáo</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                            {editCommentId === c.id && (
-                                <div className = "editComment">
-                                    <div className = "action">
-                                        <div className = "input">
-                                            <input 
-                                                value = { editCommentContent } 
-                                                onChange = {(event) => setEditCommentContent(event.target.value)} 
-                                            />
-                                        </div>
+                            {editCommentId === c.id ? (
+                                // Edit comment form
+                                <div className = "formEdit">
+                                    <div className = "avatar"> {displayAvatar(c?.img)} </div>
+                                    <div className = "form">
+                                        <input className = "inputFormEdit"
+                                            type = "text"
+                                            value = { editCommentContent }
+                                            onChange = {(e) => setEditCommentContent(e.target.value)}
+                                        />
                                         <div className = "buttons">
                                             <span 
                                                 style = {{ cursor: 'pointer' }}
@@ -271,120 +352,241 @@ const Comment = ({ postId }) => {
                                         </div>
                                     </div>
                                 </div>
-                            )}
-                            <div className = "infoComment">
-                                {!c.isEditing && <p>{c.comment}</p>}
-                            </div>
-                            <div className = "likeAndCountLike">
-                                <span>
-                                    {likes[c.id] ? (
-                                        <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(c.id) }/>
-                                    ) : (
-                                        <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(c.id) }/>
-                                    )}
-                                </span>
-                                <p> {likeCounts[c.id] || 0}</p>
-                            </div>
-                            <div className = "reply">
-                                <div className = "replyComment">
-                                    <p style={{ cursor: 'pointer' }}
-                                        onClick = {() => {
-                                            console.log('c.id: ', c.id)
-                                            handleReplyClick(c.id)}}
-                                    >Trả lời</p>
-                                    {replyCommentForm[c.id] && (
-                                        // Phần bình luận cho bình luận đầu tiên
-                                        <div className = "mainReplyComment">
-                                            <img src = {
-                                                isURL(currentUser.img) ? currentUser.img : `../image/${currentUser.img}`} 
-                                                style = {{ width: 50, height: 50, objectFit: 'cover' }} 
-                                            />
-                                            <div className = "inputAndUserName">
-                                                <div className = "username"> {currentUser.username} </div>
-                                                <input
-                                                    name = "replycomment"
-                                                    placeholder = "Viết bình luận..."
-                                                    id = "replycomment"
-                                                    onChange = { handleInputReplycomentChange }
-                                                    value = { replycomment }
-                                                />
-                                                <div className = "buttons">
-                                                    <span onClick = {(e) => { e.stopPropagation(); setReplyCommentForm(false); setReplyComment("") }}>Hủy</span>
-                                                    <button
-                                                        className = {replycomment.length > 0 ? "active-button-comment" : ""}
-                                                        disabled = {replycomment.length === 0}
-                                                        onClick = { () => handleReplyComment(c.id) }
-                                                    >Bình Luận</button>
+                            ) : (
+                            <div className = "content">
+                                <div className = "infoCommentAccount">
+                                    <div className = "avatar"> {displayAvatar(c?.img)} </div>
+                                    <div className = "username"> {c.username} </div>
+                                    <p> {moment(c.date).format("DD/MM/YYYY")} </p>
+                                    <div className = "editAndDelete">
+                                        <div className = "button">
+                                            <MoreVertIcon style = {{ color: '#828282', cursor: 'pointer' }} onClick = {() => handleBoxActionComment(c.id) } />
+                                            {currentUser && currentUser.id === c.uidc ? (
+                                                <div className = "boxActionComment">
+                                                    {boxActionComment === c.id && (
+                                                        <div className = "editAndDelete">
+                                                            <span onClick = {() => handleEditComment(c.id, c.comment)}><i className = "fa-regular fa-pen-to-square"></i>Chỉnh sửa</span>
+                                                            <span onClick = {() => handleDeleteComment(c.id, c.parentId)}><i className = "fa-regular fa-trash-can"></i>Xóa</span>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="listReplyComments">
-                                {Array.isArray(replycomments) && replycomments.map((rc) => {
-                                    if(c.id === rc.parentId){
-                                        return (
-                                            <div className = "container" key = { rc.id }>
-                                                <div className = "infoCommentAccount">
-                                                    <div className = "avatar"> {displayAvatar(rc?.img)} </div>
-                                                    <div className = "username"> {rc.username} </div>
-                                                    <p>{moment(rc.date).format("DD/MM/YYYY")}</p>
-                                                </div>
-                                                <div className = "infoComment">
-                                                    <p> {rc.comment} </p>
-                                                </div>
-                                                <div className = "likeAndCountLike">
-                                                    <span>
-                                                        {likes[rc.id] ? (
-                                                            <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
-                                                        ) : (
-                                                            <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
-                                                        )}
-                                                    </span>
-                                                    <p> {likeCounts[rc.id] || 0}</p>
-                                                </div>
-                                                <div className = "reply">
-                                                    <div className = "replyComment">
-                                                        <p style={{ cursor: 'pointer' }} onClick={() => {
-                                                            console.log('rc.id:', rc.id, 'rc.parentId:', rc.parentId);
-                                                            handleReplyClick(rc.id);
-                                                        }}>Trả lời</p>
-                                                        {replyCommentForm[rc.id] && (
-                                                            <div className = "mainReplyComment">
-                                                                <img src = {
-                                                                    isURL(currentUser.img) ? currentUser.img : `../image/${currentUser.img}`} 
-                                                                    style = {{ width: 50, height: 50, objectFit: 'cover' }} 
-                                                                />
-                                                                <div className = "inputAndUserName">
-                                                                    <div className = "username"> {currentUser.username} </div>
-                                                                    <input
-                                                                        name = "replycomment"
-                                                                        placeholder = "Viết bình luận..."
-                                                                        id = "replycomment"
-                                                                        onChange = { handleInputReplycomentChange }
-                                                                        value = { replycomment}
-                                                                    />
-                                                                    <div className = "buttons">
-                                                                        <span onClick = {(e) => { e.stopPropagation(); setReplyCommentForm(false); setReplyComment("") }}>Hủy</span>
-                                                                        <button
-                                                                            className = {replycomment.length > 0 ? "active-button-comment" : ""}
-                                                                            disabled = {replycomment.length === 0}
-                                                                            onClick = { () => handleReplyComment(rc.id) }
-                                                                        >Bình Luận</button>
+                                            ) : (
+                                                <div className = "boxActionComment">
+                                                    {boxActionComment === c.id && (
+                                                        <div className = "report">
+                                                            <span onClick = {() => handleReportComment(c.id)}><i className = "fa-regular fa-trash-can"></i>Báo cáo</span>
+                                                        </div>
+                                                    )}
+                                                    <div>
+                                                        {showReportForm && reportComment && (
+                                                            <>
+                                                                <div className = "overlay"></div>
+                                                                <div className = "reportForm">
+                                                                    <div className = "form">
+                                                                        <h2>Báo cáo bình luận này</h2>
+                                                                        <textarea placeholder = "Lý do của bạn..." rows = "5"></textarea>
+                                                                        <div className = "buttonsReport">
+                                                                            <span onClick = {handleCloseReportForm}>Hủy</span>
+                                                                            <button>Gửi</button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            </>
                                                         )}
                                                     </div>
                                                 </div>
-                                                {renderReplies(rc.id)}
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className = "infoComment">
+                                    {!c.isEditing && <p>{c.comment}</p>}
+
+                                </div>
+                                <div className = "likeAndCountLike">
+                                    <span>
+                                        {likes[c.id] ? (
+                                            <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(c.id) }/>
+                                        ) : (
+                                            <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(c.id) }/>
+                                        )}
+                                    </span>
+                                    <p> {likeCounts[c.id] || 0}</p>
+                                </div>
+                                <div className = "reply">
+                                    <div className = "replyComment">
+                                        <p style = {{ cursor: 'pointer' }} 
+                                            onClick = {() => { 
+                                                console.log('c.id: ', c.id)
+                                                handleReplyClick(c.id)}} >Trả lời
+                                        </p>
+                                        <div className = "showReplies" style = {{ cursor: 'pointer', marginLeft: 10, fontSize: 13 }}
+                                            onClick = {() => toggleReplies(c.id)}>
+                                            {showReplies[c.id] ? `Ẩn ${countReplies(c.id)} phản hồi` : `Hiện ${countReplies(c.id)} phản hồi`}
+                                        </div>
+                                        {replyCommentForm[c.id] && (
+                                            // Phần bình luận cho bình luận đầu tiên
+                                            <div className = "mainReplyComment">
+                                                <img src = {
+                                                    isURL(currentUser.img) ? currentUser.img : `../image/${currentUser.img}`} 
+                                                    style = {{ width: 50, height: 50, objectFit: 'cover' }} 
+                                                />
+                                                <div className = "inputAndUserName">
+                                                    <div className = "username"> {currentUser.username} </div>
+                                                    <input
+                                                        name = "replycomment"
+                                                        placeholder = "Viết bình luận..."
+                                                        id = "replycomment"
+                                                        onChange = { handleInputReplycomentChange }
+                                                        value = { replycomment }
+                                                    />
+                                                    <div className = "buttons">
+                                                        <span onClick = {(e) => { e.stopPropagation(); setReplyCommentForm(false); setReplyComment("") }}>Hủy</span>
+                                                        <button
+                                                            className = {replycomment.length > 0 ? "active-button-comment" : ""}
+                                                            disabled = {replycomment.length === 0}
+                                                            onClick = { () => handleReplyComment(c.id) }
+                                                        >Bình Luận</button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        );
-                                    }
-                                    return null;
-                                })}
-                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                {showReplies[c.id] && (
+                                    <div className="listReplyComments">
+                                        {Array.isArray(replycomments) && replycomments.map((rc) => {
+                                            if(c.id === rc.parentId){
+                                                return (
+                                                    <div className = "container" key = { rc.id }>
+                                                    {editCommentId === rc.id ? (
+                                                        // Edit comment form
+                                                        <div className = "formEdit">
+                                                            <div className = "avatar"> {displayAvatar(rc?.img)} </div>
+                                                            <div className = "form">
+                                                                <input className = "inputFormEdit"
+                                                                    type = "text"
+                                                                    value = { editCommentContent }
+                                                                    onChange = {(e) => setEditCommentContent(e.target.value)}
+                                                                />
+                                                                <div className = "buttons">
+                                                                    <span 
+                                                                        style = {{ cursor: 'pointer' }}
+                                                                        onClick = {() => handleCancelEdit(rc.id)}>Hủy</span>
+                                                                    <button 
+                                                                        className = { editCommentContent.length > 0 && editCommentContent !== originalContent ? "active-button-edit" : "" }
+                                                                        disabled = { editCommentContent.length === 0 || editCommentContent === originalContent}
+                                                                        onClick = {() => handleEditSaveComment(rc.id)}>Lưu</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className = "content">
+                                                            <div className = "infoCommentAccount">
+                                                                <div className = "avatar"> {displayAvatar(rc?.img)} </div>
+                                                                <div className = "username"> {rc.username} </div>
+                                                                <p>{moment(rc.date).format("DD/MM/YYYY")}</p>
+                                                                <div className = "editAndDelete">
+                                                                    <div className = "button">
+                                                                        <MoreVertIcon style = {{ color: '#828282', cursor: 'pointer' }} onClick = {() => handleBoxActionComment(rc.id) } />
+                                                                        {currentUser && currentUser.id === rc.uidc ? (
+                                                                            <div className="boxActionComment">
+                                                                                {boxActionComment === rc.id && (
+                                                                                    <div className="editAndDelete">
+                                                                                        <span onClick={() => handleEditComment(rc.id, rc.comment)}><i className="fa-regular fa-pen-to-square"></i>Chỉnh sửa</span>
+                                                                                        <span onClick={() => handleDeleteComment(rc.id, rc.parentId)}><i className="fa-regular fa-trash-can"></i>Xóa</span>
+                                                                                    </div>
+                                                                                )}
+                                                                            </div>
+                                                                        ) : (
+                                                                            <div className = "boxActionComment">
+                                                                                {boxActionComment === rc.id && (
+                                                                                    <div className = "report">
+                                                                                        <span onClick={() => handleReportComment(rc.id)}><i className="fa-regular fa-trash-can"></i>Báo cáo</span>
+
+                                                                                    </div>
+                                                                                )}
+                                                                                <div>
+                                                                                {showReportForm && reportComment && (
+                                                                                    <>
+                                                                                        <div className = "overlay"></div>
+                                                                                        <div className = "reportForm">
+                                                                                            <div className = "form">
+                                                                                                <h2>Báo cáo bình luận này</h2>
+                                                                                                <textarea placeholder="Lý do của bạn..." rows = "5"></textarea>
+                                                                                                <div className = "buttonsReport">
+                                                                                                    <span onClick = {handleCloseReportForm}>Hủy</span>
+                                                                                                    <button>Gửi</button>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </>
+                                                                                )}
+                                                                            </div>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className = "infoComment">
+                                                            <p> {rc.comment} </p> 
+                                                            </div>
+                                                            <div className = "likeAndCountLike">
+                                                                <span>
+                                                                    {likes[rc.id] ? (
+                                                                        <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
+                                                                    ) : (
+                                                                        <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
+                                                                    )}
+                                                                </span>
+                                                                <p> {likeCounts[rc.id] || 0}</p>
+                                                            </div>
+                                                            <div className = "reply">
+                                                                <div className = "replyComment">
+                                                                    <p style={{ cursor: 'pointer' }} onClick={() => {
+                                                                        console.log('rc.id:', rc.id, 'rc.parentId:', rc.parentId);
+                                                                        handleReplyClick(rc.id);
+                                                                    }}>Trả lời</p>
+                                                                    {replyCommentForm[rc.id] && (
+                                                                        <div className = "mainReplyComment">
+                                                                            <img src = {
+                                                                                isURL(currentUser.img) ? currentUser.img : `../image/${currentUser.img}`} 
+                                                                                style = {{ width: 50, height: 50, objectFit: 'cover' }} 
+                                                                            />
+                                                                            <div className = "inputAndUserName">
+                                                                                <div className = "username"> {currentUser.username} </div>
+                                                                                <input
+                                                                                    name = "replycomment"
+                                                                                    placeholder = "Viết bình luận..."
+                                                                                    id = "replycomment"
+                                                                                    onChange = { handleInputReplycomentChange }
+                                                                                    value = { replycomment}
+                                                                                />
+                                                                                <div className = "buttons">
+                                                                                    <span onClick = {(e) => { e.stopPropagation(); setReplyCommentForm(false); setReplyComment("") }}>Hủy</span>
+                                                                                    <button
+                                                                                        className = {replycomment.length > 0 ? "active-button-comment" : ""}
+                                                                                        disabled = {replycomment.length === 0}
+                                                                                        onClick = { () => handleReplyComment(rc.id) }
+                                                                                    >Bình Luận</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        )}
+                                                        {renderReplies(rc.id)}
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
+                                        })}
+                                    </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

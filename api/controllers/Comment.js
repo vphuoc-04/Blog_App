@@ -2,7 +2,7 @@ import { database } from "../database.js";
 import jwt from 'jsonwebtoken'
 
 export const getComments = (req, res) => {
-    const q = "SELECT c.id, u.username, c.comment, u.img, c.date FROM users u JOIN comments c ON u.id = c.uidc JOIN posts p ON p.id = c.postId WHERE c.postId = ? AND c.parentId IS NULL";
+    const q = "SELECT c.id, c.uidc, u.username, c.comment, u.img, c.date FROM users u JOIN comments c ON u.id = c.uidc JOIN posts p ON p.id = c.postId WHERE c.postId = ? AND c.parentId IS NULL";
     database.query(q, [req.query.postId], (err, data) => {
         if (err) return res.status(500).json(err);
         return res.status(200).json(data);
@@ -35,7 +35,7 @@ export const addComments = (req, res) => {
 };
 
 export const getReplyComment = (req, res) =>{
-    const q = "SELECT c.id, u.username, c.comment, u.img, c.date, c.parentId FROM users u JOIN comments c ON u.id = c.uidc JOIN posts p ON p.id = c.postId WHERE c.postId = ? AND c.parentId IS NOT NULL";
+    const q = "SELECT c.id, c.uidc, u.username, c.comment, u.img, c.date, c.parentId FROM users u JOIN comments c ON u.id = c.uidc JOIN posts p ON p.id = c.postId WHERE c.postId = ? AND c.parentId IS NOT NULL";
     database.query(q, [req.query.postId], (err, data) => {
         if (err) return res.status(500).json(err);
         return res.status(200).json(data);
