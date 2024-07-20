@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AdminContext } from '../context/AdminContext';
+import { AdminContext } from '../context/AuthContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'
 import { FaCamera } from 'react-icons/fa';

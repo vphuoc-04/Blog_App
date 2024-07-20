@@ -274,7 +274,7 @@ span{
 }
 
 /* ARTICLE MANAGEMENT */
-.allpost{
+.listPost{
     box-sizing: border-box;
     border-radius: 30px;
     width: 100%;
@@ -282,32 +282,32 @@ span{
     margin: 20px 30px;
 }
 
-.allpost .post{
+.listPost .post{
     display: flex;
     flex-direction: column-reverse;
     gap: 20px;
 }
 
-.allpost .post .content{
+.listPost .post .content{
     display: flex;
     justify-content: start;
     margin: -45px 0 0 20px ;
     gap: 30px;
 }
 
-.allpost .post .content .thumbnail{
+.listPost .post .content .thumbnail{
     padding: 10px 0px;
     margin-left: -50px;
 }
 
-.allpost .post .content .thumbnail img{
+.listPost .post .content .thumbnail img{
     width: 180px;
     height: 100px;
     border-radius: 20px;
     box-shadow: 3px 1px 10px 2px rgb(0, 0, 0, 0.5);
 }
 
-.allpost .post .content .des .icon img{
+.listPost .post .content .des .icon img{
     width: 25px;
     padding: 0 10px;
     cursor: pointer;
@@ -334,12 +334,12 @@ body.darkBackground::before {
     width: 950px;
     height: 550px;
     background-color: rgb(255, 255, 255);
-    border-radius: 30px;
+
     z-index: 2;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    overflow: auto;
+    overflow-y: auto;
 }
 
 .readPosts .container .content{
@@ -347,19 +347,22 @@ body.darkBackground::before {
 }
 
 .readPosts .container .content .picAndDes::-webkit-scrollbar,
-.readPosts .container .content .comments::-webkit-scrollbar {
+.readPosts .comments .container::-webkit-scrollbar {
     width: 5px;
+    overflow: hidden;
 }
 
 .readPosts .container .content .picAndDes::-webkit-scrollbar-track,
-.readPosts .container .content .comments::-webkit-scrollbar-track {
+.readPosts .comments .container::-webkit-scrollbar-track {
     background: #f1f1f1;
+    overflow: hidden;
 }
 
 .readPosts .container .content .picAndDes::-webkit-scrollbar-thumb,
-.readPosts .container .content .comments::-webkit-scrollbar-thumb {
+.readPosts .comments .container::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 10px;
+    overflow: hidden;
 }
 
 .readPosts .container .content .picAndDes {
@@ -368,15 +371,21 @@ body.darkBackground::before {
     padding-right: 30px;
 }
 
-.readPosts .container .content .comments {
+.readPosts .comments {
     max-height: 550px;
+    height: 550px;
     overflow-y: auto;
-    width: 350px;
+    border-radius: 30px;
+    display: flex;
+
 }
 
 .readPosts .container .content .picAndDes img{
     position: relative;
     margin-top: 50px;
+    width: 450px;
+    height: 250px;
+    border-radius: 10px;
 }
 
 .readPosts .container .content .picAndDes p{
@@ -389,8 +398,57 @@ body.darkBackground::before {
     position: absolute;
     top: 20px;
     right: 25px;
-    z-index: 3; 
+    z-index: 100; 
     font-size: x-large;
+}
+
+.readPosts .comments .container{
+    margin-left: 250px;
+    display: flex;
+    flex-direction: column;
+    width: 430px;
+    height: 520px;
+}
+
+.readPosts .comments .container .likeCount{
+    margin: -15px 0 0 75px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.readPosts .comments .container .client{
+    display: flex;
+    margin: 100px 0 0 20px;
+    gap: 10px;
+}
+
+.readPosts .comments .container .client p{
+    margin-top: 0px;
+    font-size: 15px;
+}
+
+.readPosts .comments .container .client img{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.readPosts .comments .container .content p{
+    margin: 5px 0 0 55px; 
+}
+
+.readPosts .comments .container .content .favoriteAndDelete{
+    margin-left: 200px;
+    display: flex;
+    gap: 20px;
+}
+
+.favoriteAndDelete img{
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
 }
 
 /* USER */

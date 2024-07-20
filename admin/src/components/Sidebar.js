@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { AdminContext } from '../context/AdminContext'
+import { AdminContext } from '../context/AuthContext'
 
 
 const Sidebar = () => {

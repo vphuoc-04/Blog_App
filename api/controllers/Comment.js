@@ -114,3 +114,32 @@ export const editComments = (req, res) => {
         });
     });
 };
+
+
+export const deleteCommentsAdmin = (req, res) => {
+    const token = req.cookies.admin_access_token;
+    if (!token) { return res.status(401).json('Không được xác thực!'); }
+
+    jwt.verify(token, 'admin_jwtkey', (err, userInfo) => {
+        if(err) { return res.status(403).json('Token không hợp lệ!'); }
+
+        const commentId = req.params.id;
+        const parentId = req.query.parentId;
+        let q, queryValues;
+
+        if (!commentId) { return res.status(400).json('Thiếu thông tin id!') }
+        if(parentId){
+            q = "DELETE FROM comments WHERE `id` = ? AND `parentId` = ?";
+            queryValues = [commentId, parentId];
+        } 
+        else{
+            q = "DELETE FROM comments WHERE `id` = ?";
+            queryValues = [commentId];
+        }
+
+        database.query(q, queryValues, (err, data) => {
+            if(err) { return res.status(500).json(err); }
+            return res.json('Đã xóa!');
+        });
+    });
+};
