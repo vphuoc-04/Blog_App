@@ -107,7 +107,7 @@
 .sidebar{
     display: flex;
     flex-direction: column;
-    height: 90vh;
+    height: 80vh;
     gap: 20px;
     max-width: 250px;
     background-color: rgb(255, 255, 255);
@@ -331,10 +331,10 @@ body.darkBackground::before {
 
 .post .readPosts .container {
     position: fixed; 
-    width: 950px;
+    width: 1000px;
     height: 550px;
     background-color: rgb(255, 255, 255);
-
+    border-radius: 20px;
     z-index: 2;
     top: 50%;
     left: 50%;
@@ -342,45 +342,39 @@ body.darkBackground::before {
     overflow-y: auto;
 }
 
-.readPosts .container .content{
+.readPosts .container .contentPost{
     display: flex;
+    margin-left: 20px;
 }
 
-.readPosts .container .content .picAndDes::-webkit-scrollbar,
+.readPosts .container .contentPost .picAndDes::-webkit-scrollbar,
 .readPosts .comments .container::-webkit-scrollbar {
     width: 5px;
     overflow: hidden;
 }
 
-.readPosts .container .content .picAndDes::-webkit-scrollbar-track,
+.readPosts .container .contentPost .picAndDes::-webkit-scrollbar-track,
 .readPosts .comments .container::-webkit-scrollbar-track {
     background: #f1f1f1;
     overflow: hidden;
 }
 
-.readPosts .container .content .picAndDes::-webkit-scrollbar-thumb,
+.readPosts .container .contentPost .picAndDes::-webkit-scrollbar-thumb,
 .readPosts .comments .container::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 10px;
     overflow: hidden;
 }
 
-.readPosts .container .content .picAndDes {
-    max-height: 550px;
-    overflow-y: auto;
-    padding-right: 30px;
-}
-
-.readPosts .comments {
+.readPosts .container .contentPost .picAndDes {
     max-height: 550px;
     height: 550px;
     overflow-y: auto;
-    border-radius: 30px;
-    display: flex;
-
+    padding-right: 30px;
+    overflow-x: hidden;
 }
 
-.readPosts .container .content .picAndDes img{
+.readPosts .container .contentPost .picAndDes img{
     position: relative;
     margin-top: 50px;
     width: 450px;
@@ -388,38 +382,46 @@ body.darkBackground::before {
     border-radius: 10px;
 }
 
-.readPosts .container .content .picAndDes p{
+.readPosts .container .contentPost .picAndDes p{
     word-wrap: break-word;
     width: 450px;
 }
 
-.readPosts .container .closeReadButton {
+.readPosts .closeReadButton {
     cursor: pointer;
     position: absolute;
-    top: 20px;
-    right: 25px;
+    top: 13%;
+    left: 81%;
     z-index: 100; 
-    font-size: x-large;
+    font-size: xx-large;
+}
+
+.readPosts .comments{
+    display: flex;
+    flex-direction: column;
 }
 
 .readPosts .comments .container{
-    margin-left: 250px;
-    display: flex;
-    flex-direction: column;
-    width: 430px;
+    margin-left: 240px;
+    width: 460px;
     height: 520px;
 }
 
-.readPosts .comments .container .likeCount{
-    margin: -15px 0 0 75px;
+.readPosts .comments .container .likeCountAndRepy{
+    margin: -15px 0 0 65px;
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
+.readPosts .comments .container .likeCountAndRepy p{
+    margin-left: 20px;
+    cursor: pointer;
+}
+
 .readPosts .comments .container .client{
     display: flex;
-    margin: 100px 0 0 20px;
+    margin: 20px 0 0 10px;
     gap: 10px;
 }
 
@@ -436,19 +438,92 @@ body.darkBackground::before {
 }
 
 .readPosts .comments .container .content p{
-    margin: 5px 0 0 55px; 
+    margin: 5px 0 0 45px; 
+    word-wrap: break-word;
+    width: 250px;
 }
 
 .readPosts .comments .container .content .favoriteAndDelete{
-    margin-left: 200px;
+    position: absolute;
     display: flex;
     gap: 20px;
+    left: 370px;
 }
 
 .favoriteAndDelete img{
     width: 20px;
     height: 20px;
     object-fit: cover;
+}
+
+.comments .admin{
+    margin-top: -100px;
+    z-index: 100;
+}
+
+.comments .admin .adminInfo .info{
+    display: flex;
+    margin: 100px 0 0 10px;
+    gap: 10px;
+    align-items: center;
+}
+
+.comments .admin .adminInfo .info img{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comments .admin .adminInfo .info .inputComment{
+    margin-top: 20px;
+}
+
+.comments .admin .adminInfo .info .inputComment input{
+    outline: none;
+    border: none;
+    height: 30px;
+    border-radius: 0px;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    width: 325px;
+    padding-left: 0px;
+    color: rgb(0, 0, 0);
+}
+
+.comments .admin .adminInfo .info .inputComment .buttons{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: end;
+
+}
+
+.comments .admin .adminInfo .info .inputComment .buttons span{
+    margin-top: 20px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.comments .admin .adminInfo .info .inputComment .buttons button{
+    width: 70px;
+    height: 30px;
+    font-size: 11px;
+    background-color: rgb(225, 225, 225);
+    color: rgb(98, 98, 98);
+    border: none;
+    border-radius: 30px;
+    cursor: not-allowed;
+    transition: all 0.5s;
+}
+
+.comments .admin .adminInfo .info .inputComment .buttons button.active-button-comment-admin{
+    background-color: rgb(65, 175, 167);
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+
+.listReplyComment{
+    margin-left: 50px;
 }
 
 /* USER */
@@ -500,33 +575,6 @@ body.darkBackground::before {
     border-radius: 20px;
     box-shadow: 1px 1px 5px 2px rgb(0, 0, 0, 0.5);
 }
-
-/*.profileAdmin .content input{
-    width: 500px;
-    height: 30px;
-    padding: 10px;
-    border-radius: 20px;
-    outline: none;
-}
-
-.profileAdmin .content .button{
-    margin-top: 50px;
-    display: flex;
-    gap: 30px;
-}
-
-.profileAdmin .content .button button{
-    width: 100px;
-    height: 50px;
-    border-radius: 30px;
-    border: none;
-    cursor: pointer;
-}
-
-.profileAdmin .content .button button:nth-child(1){
-    color: rgb(255, 255, 255);
-    background-color: rgb(65, 175, 167);
-}*/
 
 .profileAdmin h1{
     margin-top: -80px;

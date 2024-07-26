@@ -10,17 +10,31 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 
 import { AdminContext } from '../context/AuthContext'
 
+import { displayAvatar, isURL } from '../services/AvatarService'
+
+import { 
+    fetchCommentData, 
+    fetchReplyCommentData,
+    DeleteComment,
+    FavoriteComment 
+} from '../services/CommentService'
+
 const ListPost = () => {
     const [listPost, setListPost] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
     const [readPosts, setReadPosts] = useState(false);
+    const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
     const [replycomments, setReplyComments] = useState([]);
     const id = useLocation().search;
     const [likes, setLikes] = useState({});
-    const [favorite, setFavorite] = useState({});
+    const [favorites, setFavorites] = useState({});
     const [likeCounts, setLikeCounts] = useState({});
+    const [replyCommentForm, setReplyCommentForm] = useState({});
+    const [replycomment, setReplyComment] = useState("");
+    const [commentButton, setCommentButton] = useState(false);
+    const [showReplies, setShowReplies] = useState({});
 
     const listPostPerPage = 3;
 
@@ -60,115 +74,13 @@ const ListPost = () => {
         }
     }
 
-    const fetchComments = async (postId) => {
-        try {
-            const res = await axios.get(`/comments/data/comment?postId=${postId}`);
-            if(Array.isArray(res.data)) {
-                const reversedComments = res.data.reverse();
-                setComments(reversedComments);
-    
-                const likesRes = await axios.get("/likecomments?postId=" + postId);
-                const initLike = {};
-                const likeCount = {};
-                likesRes.data.forEach((like) => {
-                    if(!likeCount[like.commentId]){
-                        likeCount[like.commentId] = 0;
-                    }
-                    likeCount[like.commentId] += 1;
-                    if(like.userId === currentUser.id){
-                        initLike[like.commentId] = true;
-                    }
-                });
-                setLikes(initLike);
-                setLikeCounts(likeCount);
-
-                const favoriteRes = await axios.get("/favoritecomments?postId=" + postId);
-                const initFavorite = {};
-                favoriteRes.data.forEach((favorite) => {
-                    if (favorite.userId === currentUser.id) {
-                        initFavorite[favorite.commentId] = true;
-                    }
-                });
-                setFavorite(initFavorite);
-            } 
-            
-            else{
-                console.log(res.data);
-                setComments([]);
-            }
-        } 
-        catch(err){
-            console.log(err);
-        }
-    };
-
-    const fetchReplyComment = async (postId, parentId) => {
-        try{
-            const res = await axios.get(`/comments/data/reply?postId=${postId}&parentId=${parentId}`);
-            console.log(res.data)
-            if(Array.isArray(res.data)) {
-                const reversedComments = res.data.reverse();
-                setReplyComments(reversedComments);
-    
-                const likesRes = await axios.get("/likecomments?postId=" + postId);
-                const initLike = {};
-                const likeCount = {};
-                likesRes.data.forEach((like) => {
-                    if(!likeCount[like.commentId]){
-                        likeCount[like.commentId] = 0;
-                    }
-                    likeCount[like.commentId] += 1;
-                    if(like.userId === currentUser.id){
-                        initLike[like.commentId] = true;
-                    }
-                });
-                setLikes(initLike);
-                setLikeCounts(likeCount);
-            } 
-            else{
-                console.log(res.data);
-                setReplyComments([]);
-            }
-        } 
-        catch(err){
-            console.log(err);
-        }
-    }
-
     const handleFavoriteComment = async (commentId) => {
-        try{
-            if(favorite[commentId]){
-                await axios.delete(`/favoritecomments?postId=${readPosts.id}&commentId=${commentId}`);
-            } 
-            else{
-                await axios.post(`/favoritecomments/`, { 
-                    postId: readPosts.id, 
-                    commentId 
-                });
-            }
-            setFavorite((prevFavorite) => ({ ...prevFavorite, [commentId]: !prevFavorite[commentId] }));
-        } 
-        catch(err){
-            console.log(err);
-        }
+        FavoriteComment(readPosts.id, commentId, favorites, readPosts, setFavorites);
     }; 
 
-    const DeleteComment = async (id, parentId) => {
-        try{
-            const res = await axios.delete(`/comments/admin/delete/${id}`, {
-                params: { parentId }
-            });
-            if(res.status === 200){
-                setComments(prevComments => prevComments.filter(comment => comment.id !== id));
-            } 
-            else{
-                console.error("Failed to delete comment");
-            }
-        }   
-        catch(err) {
-            console.log("Error:", err.response ? err.response.data : err.message);
-        }
-    };
+    const handleDeleteComment = async (id, parentId) => {
+        DeleteComment(id, parentId, setComments);
+    }
   
     const handlePageClick = (event) => { setCurrentPage(event.selected); }
 
@@ -184,13 +96,85 @@ const ListPost = () => {
 
     const handleReadPost = (post, parentId) => {
         setReadPosts(post);
-        fetchComments(post.id);
-        fetchReplyComment(post.id, parentId)
+        // Fetch comment data
+
+        fetchCommentData(post.id, currentUser, setComments, setLikes, setLikeCounts, setFavorites);
+
+        // Fetch reply comment data
+        fetchReplyCommentData(post.id, parentId, currentUser, setReplyComments, setLikes, setLikeCounts, setFavorites)
     }   
 
     const getText = (html) =>{
         const doc = new DOMParser().parseFromString(html, "text/html")
         return doc.body.textContent
+    }
+
+    const handleInputCommentChange = (event) => {
+        setComment(event.target.value);
+    };
+
+    useEffect(() => {
+        const handleInputCommentClick = () => {
+            setCommentButton(true);
+        };
+        const inputElement = document.getElementById('comment')
+        if(inputElement){
+            inputElement.addEventListener('click', handleInputCommentClick);
+        }
+        return () => {
+            if(inputElement){
+                inputElement.removeEventListener('click', handleInputCommentClick);
+            }
+        };
+    }, [])
+
+    const countReplies = (parentId) => {
+        let count = 0;
+        replycomments.forEach(rc => {
+            if (rc.parentId === parentId) {
+                count++;
+                count += countReplies(rc.id);
+            }
+        });
+        return count;
+    };
+
+    const toggleReplies = (commentId) => {
+        setShowReplies(prevState => ({
+            ...prevState,
+            [commentId]: !prevState[commentId]
+        }));
+    };
+
+
+    const renderReplies = (parentId) => {
+        return replycomments.filter(rc => rc.parentId === parentId).map(rc => (
+            <div className = "replyContainer" style = {{ marginLeft: 0 }} key = {rc.id}>
+                <div className = "client"  >
+                    <img src = {`http://localhost:3000/image/${rc?.img}`} />
+                    <p> { rc.username } </p>
+                </div>
+                <div className = "content">
+                    <p> { rc.comment } </p>
+                    <div className = "favoriteAndDelete">
+                        <span>
+                            {favorites[rc.id] ? (
+                                <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleFavoriteComment(rc.id) }/>
+                            ) : (
+                                <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleFavoriteComment(rc.id) }/>
+                            )}
+                        </span>
+                        <img src = { Delete } style = {{ cursor: 'pointer' }} onClick = {()=> handleDeleteComment(rc.id) }/>
+                    </div>
+                </div>
+                <div className = "likeCountAndRepy"> 
+                    <FavoriteBorderOutlinedIcon fontSize ="xx-small" />
+                    {likeCounts[rc.id] || 0}
+                    <p>Trả lời</p>
+                </div>
+                {renderReplies(rc.id)}
+            </div>
+        ));
     }
 
     return (
@@ -224,8 +208,9 @@ const ListPost = () => {
                         </div>
                         { readPosts && (
                             <div className = "readPosts" >
+                                <span className = "closeReadButton" onClick = {handleCloseReadPost}>&times;</span>
                                 <div className = "container" key = { post.id }>
-                                    <div className = "content">
+                                    <div className = "contentPost">
                                         <div className = "picAndDes">
                                             <img src = { `http://localhost:3000/upload/${ readPosts?.img }` } alt = "" />
                                             <p dangerouslySetInnerHTML = {{
@@ -237,54 +222,95 @@ const ListPost = () => {
                                 <div className = "comments" postId = { post.id }>
                                     {Array.isArray(comments) && comments.map((c) => (
                                         <div className = "container" commentId = {c.id}>
-                                        <span className = "closeReadButton" onClick = {handleCloseReadPost}>&times;</span>
+                                            <div className = "admin">
+                                                { currentUser && (
+                                                    <div className = "adminInfo">
+                                                        <div className = "info">
+                                                            <img src = { `../image/${currentUser?.img}` } alt = ""/>
+                                                            <div className = "inputComment">
+                                                                <input
+                                                                    name = "comment"
+                                                                    placeholder = "Viết bình luận..."
+                                                                    id = "comment"
+                                                                    onChange = {handleInputCommentChange}
+                                                                    value = {comment}
+                                                                />
+                                                                <div className = "buttons">
+                                                                    <span onClick = {(e) => { e.stopPropagation(); setCommentButton(false); setComment("") }}>Hủy</span>
+                                                                    <button
+                                                                        className = {comment.length > 0 ? "active-button-comment-admin" : ""}
+                                                                        disabled = {comment.length === 0}
+                                        
+                                                                    >Bình Luận</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ) }
+                                            </div>
                                             <div className = "client"  >
-                                                <img src = {`http://localhost:3000/image/${c?.img}`} />
+                                                <img src = {`http://localhost:3000/image/${c?.img}`} alt = ""/>
                                                 <p> { c.username } </p>
                                             </div>
                                             <div className = "content">
                                                 <p> { c.comment } </p>
                                                 <div className = "favoriteAndDelete">
                                                     <span>
-                                                        {favorite[c.id] ? (
-                                                            <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleFavoriteComment(c.id) }/>
+                                                        {favorites[c.id] ? (
+                                                            <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize = "small" onClick = { () => handleFavoriteComment(c.id) }/>
                                                         ) : (
-                                                            <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleFavoriteComment(c.id) }/>
+                                                            <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize = "small" onClick = { () => handleFavoriteComment(c.id) }/>
                                                         )}
                                                     </span>
-                                                    <img src = { Delete } style = {{ cursor: 'pointer' }} onClick = {()=> DeleteComment(c.id) }/>
+                                                    <img src = { Delete } style = {{ cursor: 'pointer' }} onClick = {() => handleDeleteComment(c.id) }/>
                                                 </div>
                                             </div>
 
-                                            <div className = "likeCount"> 
+                                            <div className = "likeCountAndRepy"> 
                                                 <FavoriteBorderOutlinedIcon fontSize ="xx-small" />
                                                 {likeCounts[c.id] || 0}
+                                                <p>Trả lời</p>
                                             </div>
-                                            {Array.isArray(replycomments) && replycomments.map((rc) => (
-                                                <div className = "replyContainer">
-                                                    <div className = "client"  >
-                                                        <img src = {`http://localhost:3000/image/${rc?.img}`} />
-                                                        <p> { rc.username } </p>
-                                                    </div>
-                                                    <div className = "content">
-                                                        <p> { rc.comment } </p>
-                                                        <div className = "favoriteAndDelete">
-                                                            <span>
-                                                                {favorite[rc.id] ? (
-                                                                    <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleFavoriteComment(rc.id) }/>
-                                                                ) : (
-                                                                    <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleFavoriteComment(rc.id) }/>
-                                                                )}
-                                                            </span>
-                                                            <img src = { Delete } style = {{ cursor: 'pointer' }} onClick = {()=> DeleteComment(rc.id) }/>
-                                                        </div>
-                                                    </div>
-                                                    <div className = "likeCount"> 
-                                                        <FavoriteBorderOutlinedIcon fontSize ="xx-small" />
-                                                        {likeCounts[rc.id] || 0}
-                                                    </div>
+                                            <div className = "showReplies" style = {{ cursor: 'pointer', marginLeft: 65, fontSize: 13 }}
+                                                onClick = {() => toggleReplies(c.id)}>
+                                                {showReplies[c.id] ? `Ẩn ${countReplies(c.id)} phản hồi` : `Hiện ${countReplies(c.id)} phản hồi`}
+                                            </div>
+                                            {showReplies[c.id] && ( 
+                                                <div className = "listReplyComment">
+                                                    {Array.isArray(replycomments) && replycomments.map((rc) => {
+                                                        if(c.id === rc.parentId){
+                                                            return (
+                                                                <div className = "replyContainer">
+                                                                    <div className = "client"  >
+                                                                        <img src = {`http://localhost:3000/image/${rc?.img}`} />
+                                                                        <p> { rc.username } </p>
+                                                                    </div>
+                                                                    <div className = "content">
+                                                                        <p> { rc.comment } </p>
+                                                                        <div className = "favoriteAndDelete">
+                                                                            <span>
+                                                                                {favorites[rc.id] ? (
+                                                                                    <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleFavoriteComment(rc.id) }/>
+                                                                                ) : (
+                                                                                    <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleFavoriteComment(rc.id) }/>
+                                                                                )}
+                                                                            </span>
+                                                                            <img src = { Delete } style = {{ cursor: 'pointer' }} onClick = {()=> handleDeleteComment(rc.id) }/>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className = "likeCountAndRepy"> 
+                                                                        <FavoriteBorderOutlinedIcon fontSize ="xx-small" />
+                                                                        {likeCounts[rc.id] || 0}
+                                                                        <p>Trả lời</p>
+                                                                    </div>
+                                                                    {renderReplies(rc.id)}
+                                                                </div>
+                                                            );
+                                                        }
+                                                        return null;
+                                                    })}
                                                 </div>
-                                            ))}
+                                            )}
                                         </div>
                                     )) }
                                 </div>
@@ -313,9 +339,7 @@ const ListPost = () => {
                 activeClassName = "active"
                 disabledClassName = "disabled"
             />
-            
         </div>
-
     )
 }
 

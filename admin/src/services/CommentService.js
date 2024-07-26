@@ -1,7 +1,7 @@
 import axios from "axios";
 import moment from 'moment';
 
-const fetchCommentData = async (postId, currentUser, setComments, setLikes, setLikeCounts) => {
+const fetchCommentData = async (postId, currentUser, setComments, setLikes, setLikeCounts, setFavorites) => {
     try{
         const res = await axios.get(`/comments/data/comment?postId=${postId}`);
         if(Array.isArray(res.data)) {
@@ -22,6 +22,15 @@ const fetchCommentData = async (postId, currentUser, setComments, setLikes, setL
             });
             setLikes(initLike);
             setLikeCounts(likeCount);
+
+            const favoriteRes = await axios.get("/favoritecomments?postId=" + postId);
+            const initFavorite = {};
+            favoriteRes.data.forEach((favorites) => {
+                if (favorites.adminId === currentUser.id) {
+                    initFavorite[favorites.commentId] = true;
+                }
+            });
+            setFavorites(initFavorite);
         } 
         else{
             console.log(res.data);
@@ -33,7 +42,7 @@ const fetchCommentData = async (postId, currentUser, setComments, setLikes, setL
     }
 };
 
-const fetchReplyCommentData = async (postId, parentId, currentUser, setReplyComments, setLikes, setLikeCounts) => {
+const fetchReplyCommentData = async (postId, parentId, currentUser, setReplyComments, setLikes, setLikeCounts, setFavorites) => {
     try{
         const res = await axios.get(`/comments/data/reply?postId=${postId}&parentId=${parentId}`);
         console.log(res.data)
@@ -55,6 +64,15 @@ const fetchReplyCommentData = async (postId, parentId, currentUser, setReplyComm
             });
             setLikes(initLike);
             setLikeCounts(likeCount);
+
+            const favoriteRes = await axios.get("/favoritecomments?postId=" + postId);
+            const initFavorite = {};
+            favoriteRes.data.forEach((favorites) => {
+                if (favorites.adminId === currentUser.id) {
+                    initFavorite[favorites.commentId] = true;
+                }
+            });
+            setFavorites(initFavorite);
         } 
         else{
             console.log(res.data);
@@ -87,31 +105,24 @@ const LikeComment = async (postId, commentId, likes, setLikes, setLikeCounts) =>
     }
 }; 
 
-const EditComment = async (id, setComments, setEditCommentId, editCommentContent, setEditCommentContent) => {
+const FavoriteComment = async(postId, commentId, favorites, setFavorites) => {
     try{
-        const res = await axios.put(`/comments/edit/${id}`, {
-            comment: editCommentContent,
-            date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
-        });
-        if(res.status === 200){
-            setComments(prevComments => prevComments.map(comment => 
-                comment.id === id ? { ...comment, comment: editCommentContent, isEditing: false } : comment
-            ));
-            setEditCommentId(null);
-            setEditCommentContent('');
+        if(favorites[commentId]){
+            await axios.delete(`/favoritecomments?postId=${postId}&commentId=${commentId}`);
         } 
         else{
-            console.error("Failed to edit comment");
+            await axios.post(`/favoritecomments/`, { postId, commentId });
         }
+        setFavorites((prevFavorite) => ({ ...prevFavorite, [commentId]: !prevFavorite[commentId] }));
     } 
-    catch (err){
-        console.log("Error:", err.response ? err.response.data : err.message);
+    catch(err){
+        console.log(err);
     }
-};
+}
 
 const DeleteComment = async (id, parentId, setComments) => {
     try{
-        const res = await axios.delete(`/comments/delete/${id}`, {
+        const res = await axios.delete(`/comments/admin/delete/${id}`, {
             params: { parentId }
         });
         if(res.status === 200){
@@ -177,4 +188,4 @@ const ReplyComment = async (parentId, postId, currentUser, replycomment, setRepl
     }
 };
 
-export { fetchCommentData, fetchReplyCommentData, LikeComment, EditComment, DeleteComment, AddComment, ReplyComment };
+export { fetchCommentData, fetchReplyCommentData, LikeComment, DeleteComment, AddComment, ReplyComment, FavoriteComment };

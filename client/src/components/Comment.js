@@ -19,10 +19,12 @@ import { fetchUserData } from '../services/AuthService';
 
 import { isURL, displayAvatar } from '../services/AvatarService';
 
+import Favorite from '../assets/logo/vphuoc.png'
+
 const Comment = ({ postId }) => {
     const [comment, setComment] = useState("");
     const [comments, setComments] = useState([]);
-    const [commentButton, setCommetButton] = useState(false);
+    const [commentButton, setCommentButton] = useState(false);
     const [replyCommentForm, setReplyCommentForm] = useState({});
     const [likes, setLikes] = useState({});
     const [replycomment, setReplyComment] = useState("");
@@ -35,16 +37,17 @@ const Comment = ({ postId }) => {
     const [showReportForm, setShowReportForm] = useState(false);
     const [originalContent, setOriginalContent] = useState('');
     const [showReplies, setShowReplies] = useState({});
+    const [favorites, setFavorites] = useState({});
     const { currentUser } = useContext(AuthContext);
 
     // Fetch data of comment
     useEffect(() => {
-        fetchCommentData(postId, currentUser, setComments, setLikes, setLikeCounts);
+        fetchCommentData(postId, currentUser, setComments, setLikes, setLikeCounts, setFavorites);
     }, [postId, currentUser]);
 
     // Fetch data of reply comment
     useEffect((parentId) => {
-        fetchReplyCommentData(postId, parentId, currentUser, setReplyComments, setLikes, setLikeCounts);
+        fetchReplyCommentData(postId, parentId, currentUser, setReplyComments, setLikes, setLikeCounts, setFavorites);
     }, [postId, currentUser]);
 
     // Fetch user data
@@ -71,7 +74,7 @@ const Comment = ({ postId }) => {
 
     // Comment
     const handleComment = async (event) => {
-        AddComment(event, comment, postId, currentUser, setComment, setComments, setCommetButton);
+        AddComment(event, comment, postId, currentUser, setComment, setComments, setCommentButton);
     }
 
     // Reply comment
@@ -81,7 +84,7 @@ const Comment = ({ postId }) => {
 
     useEffect(() => {
         const handleInputCommentClick = () => {
-            setCommetButton(true);
+            setCommentButton(true);
         };
         const inputElement = document.getElementById('comment')
         if(inputElement){
@@ -173,7 +176,6 @@ const Comment = ({ postId }) => {
         return replycomments.filter(rc => rc.parentId === parentId).map(rc => (
             <div className = "container" style = {{ marginLeft: 0 }} key = {rc.id}>
                 {editCommentId === rc.id ? (
-                    // Edit comment form
                     <div className = "formEdit">
                         <div className = "avatar"> {displayAvatar(rc?.img)} </div>
                         <div className = "form">
@@ -199,7 +201,9 @@ const Comment = ({ postId }) => {
                             <div className = "avatar"> {displayAvatar(rc?.img)} </div>
                             <div className = "username"> {rc.username} </div>
                             <p>{moment(rc.date).format("DD/MM/YYYY")}</p>
-                            <MoreVertIcon style = {{ color: '#828282', cursor: 'pointer', marginLeft: 500 }} onClick = {() => handleBoxActionComment(rc.id) } />
+                            <MoreVertIcon 
+                                style = {{ color: '#828282', cursor: 'pointer', position: 'absolute', left: 1028 }} onClick = {() => handleBoxActionComment(rc.id) } 
+                            />
                             {currentUser && currentUser.id === rc.uidc ? (
                                 <div className = "boxActionCommentReplies">
                                     {boxActionComment === rc.id && (
@@ -243,9 +247,9 @@ const Comment = ({ postId }) => {
                         <div className = "likeAndCountLike">
                             <span>
                                 {likes[rc.id] ? (
-                                    <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
+                                    <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }/>
                                 ) : (
-                                    <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
+                                    <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }/>
                                 )}
                             </span>
                             <p> {likeCounts[rc.id] || 0}</p>
@@ -312,7 +316,7 @@ const Comment = ({ postId }) => {
                             />
                             {commentButton ? (
                                 <div className = "buttons">
-                                    <span onClick = {(e) => { e.stopPropagation(); setCommetButton(false); setComment("") }}>Hủy</span>
+                                    <span onClick = {(e) => { e.stopPropagation(); setCommentButton(false); setComment("") }}>Hủy</span>
                                     <button
                                         className = {comment.length > 0 ? "active-button-comment" : ""}
                                         disabled = {comment.length === 0}
@@ -329,10 +333,8 @@ const Comment = ({ postId }) => {
                 )}
                 <div className = "listcomments">
                     {Array.isArray(comments) && comments.map((c) => (
-                        // Danh sách các bình luận
                         <div className = "container" key = {c.id}>
                             {editCommentId === c.id ? (
-                                // Edit comment form
                                 <div className = "formEdit">
                                     <div className = "avatar"> {displayAvatar(c?.img)} </div>
                                     <div className = "form">
@@ -406,9 +408,9 @@ const Comment = ({ postId }) => {
                                 <div className = "likeAndCountLike">
                                     <span>
                                         {likes[c.id] ? (
-                                            <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(c.id) }/>
+                                            <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(c.id) }/>
                                         ) : (
-                                            <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(c.id) }/>
+                                            <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(c.id) }/>
                                         )}
                                     </span>
                                     <p> {likeCounts[c.id] || 0}</p>
@@ -420,6 +422,13 @@ const Comment = ({ postId }) => {
                                                 console.log('c.id: ', c.id)
                                                 handleReplyClick(c.id)}} >Trả lời
                                         </p>
+                                        <div className = "favoriteComment">
+                                            { favorites[c.id] && (
+                                                <div>
+                                                    <img src = { Favorite } />
+                                                </div>
+                                            )}
+                                        </div>
                                         <div className = "showReplies" style = {{ cursor: 'pointer', marginLeft: 10, fontSize: 13 }}
                                             onClick = {() => toggleReplies(c.id)}>
                                             {showReplies[c.id] ? `Ẩn ${countReplies(c.id)} phản hồi` : `Hiện ${countReplies(c.id)} phản hồi`}
@@ -534,9 +543,9 @@ const Comment = ({ postId }) => {
                                                             <div className = "likeAndCountLike">
                                                                 <span>
                                                                     {likes[rc.id] ? (
-                                                                        <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
+                                                                        <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }/>
                                                                     ) : (
-                                                                        <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize ="small" onClick = { () => handleLikeComment(rc.id) }/>
+                                                                        <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }/>
                                                                     )}
                                                                 </span>
                                                                 <p> {likeCounts[rc.id] || 0}</p>
