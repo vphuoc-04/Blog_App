@@ -2,7 +2,7 @@ import { database } from "../database.js";
 import jwt from 'jsonwebtoken'
 import speakingurl from 'speakingurl'
 
-export const checkPost = (req, res) => {
+const checkPost = (req, res) => {
     const q = req.query.life
         ? "SELECT * FROM posts WHERE life = ?"
         : "SELECT * FROM posts";
@@ -13,7 +13,7 @@ export const checkPost = (req, res) => {
         })
 }
 
-export const getPost = (req, res) => {
+const getPost = (req, res) => {
     const q = "SELECT p.id, `username`, `title`, `introdes`, `des`, p.img, `date` FROM admin a JOIN posts p ON a.id=p.uid WHERE p.url = ?";
 
     database.query(q, [req.params.id], (err, data) => {
@@ -22,7 +22,7 @@ export const getPost = (req, res) => {
     })
 }
 
-export const addPost = (req, res) => {
+const addPost = (req, res) => {
     const token = req.cookies.admin_access_token;
     if(!token) { return res.status(401).json("Không được xác thực!") }
     jwt.verify(token, "admin_jwtkey", (err, userInfo) => {
@@ -49,7 +49,7 @@ export const addPost = (req, res) => {
     });
 }
 
-export const deletePost = (req, res) => {
+const deletePost = (req, res) => {
     const token = req.cookies.admin_access_token;
     if(!token) { return res.status(401).json("Không được xác thực!") }
     jwt.verify(token, "admin_jwtkey", (err, userInfo) => {
@@ -66,7 +66,7 @@ export const deletePost = (req, res) => {
     })
 }
 
-export const updatePost = (req, res) => {
+const updatePost = (req, res) => {
     const token = req.cookies.admin_access_token;
     if(!token) { return res.status(401).json("Không được xác thực!") }
     jwt.verify(token, "admin_jwtkey", (err, userInfo) => {
@@ -88,3 +88,5 @@ export const updatePost = (req, res) => {
         })
     })
 }
+
+export { checkPost, getPost, addPost, deletePost, updatePost }

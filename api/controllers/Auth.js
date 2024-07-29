@@ -22,7 +22,7 @@ const isIdUnique = (id) => {
     });
 }
 
-export const register = async (req, res) => {
+const register = async (req, res) => {
     const q = "SELECT * FROM users WHERE email = ? OR username = ?";
     database.query(q, [req.body.email, req.body.username], async (err, data) => {
         if (err) { return res.json(err) }
@@ -52,7 +52,7 @@ export const register = async (req, res) => {
     })
 }
 
-export const login = (req, res) => {
+const login = (req, res) => {
     const q = "SELECT * FROM users WHERE username = ?";
     database.query(q, [req.body.username], (err, data) => {
         if (err) { return res.json(err) }
@@ -76,14 +76,14 @@ export const login = (req, res) => {
     })
 }
 
-export const logout = (req, res) => {
+const logout = (req, res) => {
     res.clearCookie("access_token", {
         sameSite: "none",
         secure: true
     }).status(200).json("Tài khoản đã được đăng xuất!")
 }
 
-export const loginAdmin = (req, res) => {
+const loginAdmin = (req, res) => {
     const q = "SELECT * FROM admin WHERE username = ?";
     database.query(q, [req.body.username], (err, data) => {
         if (err) { return res.json(err) }
@@ -107,9 +107,11 @@ export const loginAdmin = (req, res) => {
     });
 }
 
-export const logoutAdmin = (req, res) => {
+const logoutAdmin = (req, res) => {
     res.clearCookie("admin_access_token", {
         sameSite: "none",
         secure: true
     }).status(200).json("Tài khoản đã được đăng xuất!")
 }
+
+export { register, login, logout, loginAdmin, logoutAdmin }

@@ -1,7 +1,7 @@
 import { database } from "../database.js";
 import jwt from 'jsonwebtoken';
 
-export const getLikes = (req, res) => {
+const getLikes = (req, res) => {
     const q = "SELECT userId, commentId FROM likecomments WHERE postId = ?";
 
     database.query(q, [req.query.postId], (err, data) => {
@@ -11,7 +11,7 @@ export const getLikes = (req, res) => {
 };
 
 
-export const addLike = (req, res) => {
+const addLike = (req, res) => {
     const token = req.cookies.access_token;
     if (!token) { return res.status(401).json("Token không được xác thực!"); }
 
@@ -32,7 +32,7 @@ export const addLike = (req, res) => {
 };
 
 
-export const deleteLike = (req, res) => {
+const deleteLike = (req, res) => {
     const token = req.cookies.access_token;
     if (!token) { return res.status(401).json("Token không được xác thực!"); }
 
@@ -45,3 +45,6 @@ export const deleteLike = (req, res) => {
         });
     });
 };
+
+export { addLike, getLikes, deleteLike }
+ 

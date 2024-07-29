@@ -22,8 +22,12 @@ const editCommentsAdmin = (req, res) => {
 };
 
 
+const deleteCommentsUser = (req, res) => {
+
+};
+
 const deleteCommentsAdmin = (req, res) => {
 
 };
 
-export { getCommentsAdmin, addCommentsAdmin, getReplyCommentAdmin, addReplyCommentsAdmin, editCommentsAdmin, deleteCommentsAdmin }
+export { getCommentsAdmin, addCommentsAdmin, getReplyCommentAdmin, addReplyCommentsAdmin, editCommentsAdmin, deleteCommentsUser, deleteCommentsAdmin }

@@ -40,7 +40,7 @@ const Navbar = () => {
               </summary>
               <div className = "menu">
                 <span>{currentUser?.username}</span>
-                <NavLink className = "button" to = "/setting"><i class="fa-solid fa-user"></i></NavLink>
+                <NavLink className = "button" to = {`/profile/${ currentUser.username }`}><i class="fa-solid fa-user"></i></NavLink>
                 <NavLink className = "button" onClick = { logout } to = "/"><i class="fa-solid fa-right-from-bracket"></i></NavLink>
               </div>
             </details>

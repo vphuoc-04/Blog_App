@@ -1,7 +1,7 @@
 import { database } from "../database.js";
 import jwt from 'jsonwebtoken'
 
-export const infoAdmin = (req, res) => {
+const infoAdmin = (req, res) => {
     const q = "SELECT * FROM admin"
     database.query(q, (err, data) => {
         if(err) { return res.json(err) }
@@ -9,7 +9,7 @@ export const infoAdmin = (req, res) => {
     })
 }
 
-export const uploadAvatar = (req, res) => {
+const uploadAvatar = (req, res) => {
     const token = req.cookies.admin_access_token;
     if(!token) { return res.status(401).json("Không được xác thực!") }
     jwt.verify(token, "admin_jwtkey", (err, userInfo) =>{
@@ -24,7 +24,7 @@ export const uploadAvatar = (req, res) => {
     })
 }
 
-export const changePassword = (req, res) => {
+const changePassword = (req, res) => {
     const token = req.cookies.admin_access_token;
     if(!token) { return res.status(401).json("Không được xác thực!") }
     jwt.verify(token, "admin_jwtkey", (err, userInfo) =>{
@@ -52,7 +52,7 @@ export const changePassword = (req, res) => {
     })
 }
 
-export const updateAdminProfile = (req, res) => {
+const updateAdminProfile = (req, res) => {
     const token = req.cookies.admin_access_token;
     if(!token) { return res.status(401).json("Không được xác thực!") }
     jwt.verify(token, "admin_jwtkey", (err, userInfo) =>{
@@ -69,41 +69,4 @@ export const updateAdminProfile = (req, res) => {
     })
 }
 
-export const getfavoriteComments = (req, res) => {
-
-}
-
-export const addfavoriteComments = (req, res) => {
-    const token = req.cookies.admin_access_token;
-    if(!token) { return res.status(401).json("Không được xác thực!") }
-    jwt.verify(token, "admin_jwtkey", (err, userInfo) =>{
-        if(err) { return res.status(403).json("Token không hợp lệ!") }
-
-        const adminId = req.params.id;
-        const q = "UPDATE admin SET `username` = ?, `email` = ? WHERE `id` = ?";
-        const values = [req.body.username, req.body.email, adminId];
-
-        database.query(q, values, (err, data) => {
-            if(err) { return res.status(403).json("Thông tin chưa được cập nhật!") }
-            return res.json("Thông tin đã được cập nhật!");
-        })
-    })
-}
-
-export const deleteFavoriteComments = (req, res) => {
-    const token = req.cookies.admin_access_token;
-    if(!token) { return res.status(401).json("Không được xác thực!") }
-    jwt.verify(token, "admin_jwtkey", (err, userInfo) =>{
-        if(err) { return res.status(403).json("Token không hợp lệ!") }
-
-        const adminId = req.params.id;
-        const q = "UPDATE admin SET `username` = ?, `email` = ? WHERE `id` = ?";
-        const values = [req.body.username, req.body.email, adminId];
-
-        database.query(q, values, (err, data) => {
-            if(err) { return res.status(403).json("Thông tin chưa được cập nhật!") }
-            return res.json("Thông tin đã được cập nhật!");
-        })
-    })
-}
-
+export { infoAdmin, uploadAvatar, changePassword, updateAdminProfile }

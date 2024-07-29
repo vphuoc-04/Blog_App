@@ -170,7 +170,7 @@ const AddComment = async (event, comment, postId, currentUser, setComment, setCo
     }
 };
 
-const ReplyComment = async (parentId, postId, currentUser, replycomment, setReplyComment, setReplyComments, setReplyCommentForm) => {
+const ReplyComment = async (parentId, postId, currentUser, replycomment, setReplyComment, setReplyComments, setReplyCommentForm, answered) => {
     if(replycomment.length > 0){
         try{
             const newReplyComment = {
@@ -179,7 +179,8 @@ const ReplyComment = async (parentId, postId, currentUser, replycomment, setRepl
                 parentId,
                 date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
                 username: currentUser.username,
-                img: currentUser.img
+                img: currentUser.img,
+                answered
             };
             const res = await axios.post('/comments/comment/reply', newReplyComment);
             setReplyComment('');

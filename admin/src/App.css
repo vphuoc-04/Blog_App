@@ -2,6 +2,10 @@
     font-family: monospace;
 }
 
+a{
+    text-decoration: none;
+}
+
 /* DASHBOARD */
 
 .dashboard{
@@ -335,7 +339,7 @@ body.darkBackground::before {
     height: 550px;
     background-color: rgb(255, 255, 255);
     border-radius: 20px;
-    z-index: 2;
+    z-index: 10;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -374,8 +378,7 @@ body.darkBackground::before {
     overflow-x: hidden;
 }
 
-.readPosts .container .contentPost .picAndDes img{
-    position: relative;
+.readPosts .container .contentPost .picAndDes img{ 
     margin-top: 50px;
     width: 450px;
     height: 250px;
@@ -397,14 +400,14 @@ body.darkBackground::before {
 }
 
 .readPosts .comments{
-    display: flex;
-    flex-direction: column;
+    
 }
 
 .readPosts .comments .container{
     margin-left: 240px;
     width: 460px;
     height: 520px;
+    max-height: 550px;
 }
 
 .readPosts .comments .container .likeCountAndRepy{
@@ -456,7 +459,7 @@ body.darkBackground::before {
     object-fit: cover;
 }
 
-.comments .admin{
+/* .comments .admin{
     margin-top: -100px;
     z-index: 100;
 }
@@ -520,7 +523,7 @@ body.darkBackground::before {
     background-color: rgb(65, 175, 167);
     color: rgb(255, 255, 255);
     cursor: pointer;
-}
+} */
 
 .listReplyComment{
     margin-left: 50px;

@@ -5,6 +5,11 @@ import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import moment from 'moment';
 import axios from 'axios';
+import ContentEditable from 'react-contenteditable';
+import DOMPurify from "dompurify";
+
+import { NavLink } from 'react-router-dom';
+
 import { 
     fetchCommentData, 
     fetchReplyCommentData, 
@@ -20,6 +25,7 @@ import { fetchUserData } from '../services/AuthService';
 import { isURL, displayAvatar } from '../services/AvatarService';
 
 import Favorite from '../assets/logo/vphuoc.png'
+import { Link } from 'react-router-dom';
 
 const Comment = ({ postId }) => {
     const [comment, setComment] = useState("");
@@ -38,6 +44,7 @@ const Comment = ({ postId }) => {
     const [originalContent, setOriginalContent] = useState('');
     const [showReplies, setShowReplies] = useState({});
     const [favorites, setFavorites] = useState({});
+    const [repliedUsername, setRepliedUsername] = useState('');
     const { currentUser } = useContext(AuthContext);
 
     // Fetch data of comment
@@ -78,8 +85,8 @@ const Comment = ({ postId }) => {
     }
 
     // Reply comment
-    const handleReplyComment = async (parentId) => {
-        ReplyComment(parentId, postId, currentUser, replycomment, setReplyComment, setReplyComments, setReplyCommentForm);
+    const handleReplyComment = async (parentId, answered) => {
+        ReplyComment(parentId, postId, currentUser, replycomment, setReplyComment, setReplyComments, setReplyCommentForm, answered);
     }
 
     useEffect(() => {
@@ -117,8 +124,9 @@ const Comment = ({ postId }) => {
         setReplyComment(event.target.value)
     };
 
-    const handleReplyClick = (id) => {
+    const handleReplyClick = (id, username) => {
         console.log("Click vào nút Trả lời tiếp theo với id:", id);
+        setReplyComment(`<a href="/profile/${username}">@${username}</a>&nbsp`);
         setReplyCommentForm((prevForms) => ({ ...prevForms, [id]: !prevForms[id] }));
     }
     
@@ -242,7 +250,9 @@ const Comment = ({ postId }) => {
                             )}
                         </div>
                         <div className = "infoComment">
-                            <p> {rc.comment} </p>
+                            <p dangerouslySetInnerHTML = {{
+                                __html: DOMPurify.sanitize(rc.comment),
+                            }}></p>
                         </div>
                         <div className = "likeAndCountLike">
                             <span>
@@ -257,8 +267,8 @@ const Comment = ({ postId }) => {
                         <div className = "reply">
                             <div className = "replyComment">
                                 <p style={{ cursor: 'pointer' }} onClick={() => {
-                                    console.log('rc.id:', rc.id, 'rc.parentId:', rc.parentId);
-                                    handleReplyClick(rc.id);
+                                    console.log('rc.id:', rc.id, 'rc.parentId:', rc.parentId, 'rc.username: ', rc.username);
+                                    handleReplyClick(rc.id, rc.username);
                                 }}>Trả lời</p>
                                 {replyCommentForm[rc.id] && (
                                     <div className = "mainReplyComment">
@@ -268,19 +278,18 @@ const Comment = ({ postId }) => {
                                         />
                                         <div className = "inputAndUserName">
                                             <div className = "username"> {currentUser.username} </div>
-                                            <input
-                                                name = "replycomment"
-                                                placeholder = "Viết bình luận..."
-                                                id = "replycomment"
-                                                onChange = { handleInputReplycomentChange }
-                                                value = { replycomment }
+                                            <ContentEditable
+                                                html = {replycomment} 
+                                                onChange = {handleInputReplycomentChange}
+                                                tagName = "div" 
+                                                className = "replycomment"
                                             />
                                             <div className = "buttons">
                                                 <span onClick = {(e) => { e.stopPropagation(); setReplyCommentForm(false); setReplyComment("") }}>Hủy</span>
                                                 <button
                                                     className = {replycomment.length > 0 ? "active-button-comment" : ""}
                                                     disabled = {replycomment.length === 0}
-                                                    onClick = { () => handleReplyComment(rc.id) }
+                                                    onClick = { () => handleReplyComment(rc.id, rc.username) }
                                                 >Bình Luận</button>
                                             </div>
                                         </div>
@@ -420,7 +429,7 @@ const Comment = ({ postId }) => {
                                         <p style = {{ cursor: 'pointer' }} 
                                             onClick = {() => { 
                                                 console.log('c.id: ', c.id)
-                                                handleReplyClick(c.id)}} >Trả lời
+                                                handleReplyClick(c.id, c.username)}} >Trả lời
                                         </p>
                                         <div className = "favoriteComment">
                                             { favorites[c.id] && (
@@ -434,7 +443,6 @@ const Comment = ({ postId }) => {
                                             {showReplies[c.id] ? `Ẩn ${countReplies(c.id)} phản hồi` : `Hiện ${countReplies(c.id)} phản hồi`}
                                         </div>
                                         {replyCommentForm[c.id] && (
-                                            // Phần bình luận cho bình luận đầu tiên
                                             <div className = "mainReplyComment">
                                                 <img src = {
                                                     isURL(currentUser.img) ? currentUser.img : `../image/${currentUser.img}`} 
@@ -442,19 +450,18 @@ const Comment = ({ postId }) => {
                                                 />
                                                 <div className = "inputAndUserName">
                                                     <div className = "username"> {currentUser.username} </div>
-                                                    <input
-                                                        name = "replycomment"
-                                                        placeholder = "Viết bình luận..."
-                                                        id = "replycomment"
-                                                        onChange = { handleInputReplycomentChange }
-                                                        value = { replycomment }
+                                                    <ContentEditable
+                                                        html = {replycomment} 
+                                                        onChange = {handleInputReplycomentChange}
+                                                        tagName = "div" 
+                                                        className = "replycomment"
                                                     />
                                                     <div className = "buttons">
                                                         <span onClick = {(e) => { e.stopPropagation(); setReplyCommentForm(false); setReplyComment("") }}>Hủy</span>
                                                         <button
                                                             className = {replycomment.length > 0 ? "active-button-comment" : ""}
                                                             disabled = {replycomment.length === 0}
-                                                            onClick = { () => handleReplyComment(c.id) }
+                                                            onClick = { () => handleReplyComment(c.id, c.username) }
                                                         >Bình Luận</button>
                                                     </div>
                                                 </div>
@@ -469,7 +476,6 @@ const Comment = ({ postId }) => {
                                                 return (
                                                     <div className = "container" key = { rc.id }>
                                                     {editCommentId === rc.id ? (
-                                                        // Edit comment form
                                                         <div className = "formEdit">
                                                             <div className = "avatar"> {displayAvatar(rc?.img)} </div>
                                                             <div className = "form">
@@ -538,7 +544,9 @@ const Comment = ({ postId }) => {
                                                                 </div>
                                                             </div>
                                                             <div className = "infoComment">
-                                                            <p> {rc.comment} </p> 
+                                                                <p dangerouslySetInnerHTML = {{
+                                                                    __html: DOMPurify.sanitize(rc.comment),
+                                                                }}></p>
                                                             </div>
                                                             <div className = "likeAndCountLike">
                                                                 <span>
@@ -554,7 +562,7 @@ const Comment = ({ postId }) => {
                                                                 <div className = "replyComment">
                                                                     <p style={{ cursor: 'pointer' }} onClick={() => {
                                                                         console.log('rc.id:', rc.id, 'rc.parentId:', rc.parentId);
-                                                                        handleReplyClick(rc.id);
+                                                                        handleReplyClick(rc.id, rc.username);
                                                                     }}>Trả lời</p>
                                                                     {replyCommentForm[rc.id] && (
                                                                         <div className = "mainReplyComment">
@@ -564,19 +572,18 @@ const Comment = ({ postId }) => {
                                                                             />
                                                                             <div className = "inputAndUserName">
                                                                                 <div className = "username"> {currentUser.username} </div>
-                                                                                <input
-                                                                                    name = "replycomment"
-                                                                                    placeholder = "Viết bình luận..."
-                                                                                    id = "replycomment"
-                                                                                    onChange = { handleInputReplycomentChange }
-                                                                                    value = { replycomment}
+                                                                                <ContentEditable
+                                                                                    html = {replycomment} 
+                                                                                    onChange = {handleInputReplycomentChange}
+                                                                                    tagName = "div" 
+                                                                                    className = "replycomment"
                                                                                 />
                                                                                 <div className = "buttons">
                                                                                     <span onClick = {(e) => { e.stopPropagation(); setReplyCommentForm(false); setReplyComment("") }}>Hủy</span>
                                                                                     <button
                                                                                         className = {replycomment.length > 0 ? "active-button-comment" : ""}
                                                                                         disabled = {replycomment.length === 0}
-                                                                                        onClick = { () => handleReplyComment(rc.id) }
+                                                                                        onClick = { () => handleReplyComment(rc.id, rc.username) }
                                                                                     >Bình Luận</button>
                                                                                 </div>
                                                                             </div>

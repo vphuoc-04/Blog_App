@@ -2,14 +2,14 @@ import { database } from "../database.js"
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 
-export const allUser = (req, res) => {
+const allUser = (req, res) => {
     const q = "SELECT * FROM users"
     database.query(q, (err, data) => {
         if(err) { return res.json(err) }
         return res.json(data);
     })
 }
-export const deleteUser = (req, res) => {
+const deleteUser = (req, res) => {
     const token = req.cookies.admin_access_token;
     if(!token) { return res.status(401).json("Không được xác thực!") }
     jwt.verify(token, "admin_jwtkey", (err, userInfo) =>{
@@ -24,7 +24,7 @@ export const deleteUser = (req, res) => {
     })
 }
 
-export const uploadAvatar = (req, res) => {
+const uploadAvatar = (req, res) => {
     const token = req.cookies.access_token;
     if(!token) { return res.status(401).json("Không được xác thực!") }
     jwt.verify(token, "jwtkey", (err, userInfo) =>{
@@ -39,7 +39,7 @@ export const uploadAvatar = (req, res) => {
     })
 }
 
-export const changePassword = (req, res) => {
+const changePassword = (req, res) => {
     const token = req.cookies.access_token;
     if(!token) { return res.status(401).json("Không được xác thực!") }
     jwt.verify(token, "jwtkey", (err, userInfo) =>{
@@ -67,7 +67,7 @@ export const changePassword = (req, res) => {
     })
 }
 
-export const updateUserProfile = (req, res) => {
+const updateUserProfile = (req, res) => {
     const token = req.cookies.access_token;
     if(!token) { return res.status(401).json("Không được xác thực!") }
     jwt.verify(token, "jwtkey", (err, userInfo) =>{
@@ -83,3 +83,5 @@ export const updateUserProfile = (req, res) => {
         })
     })
 }
+
+export { allUser, deleteUser, uploadAvatar, changePassword, updateUserProfile }

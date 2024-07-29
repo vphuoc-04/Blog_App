@@ -3,6 +3,7 @@ import {
     addCommentsAdmin, 
     addReplyCommentsAdmin, 
     deleteCommentsAdmin, 
+    deleteCommentsUser, 
     editCommentsAdmin, 
     getCommentsAdmin, 
     getReplyCommentAdmin 
@@ -14,7 +15,8 @@ router.get("/", getCommentsAdmin);
 router.post("/", addCommentsAdmin);
 router.get("/", getReplyCommentAdmin);
 router.post("/", addReplyCommentsAdmin);
+router.delete("/", deleteCommentsUser);
 router.delete("/", deleteCommentsAdmin);
-router.put("/", editCommentsAdmin)
+router.put("/", editCommentsAdmin);
 
 export default router;

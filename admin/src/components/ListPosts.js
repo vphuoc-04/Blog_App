@@ -104,11 +104,6 @@ const ListPost = () => {
         fetchReplyCommentData(post.id, parentId, currentUser, setReplyComments, setLikes, setLikeCounts, setFavorites)
     }   
 
-    const getText = (html) =>{
-        const doc = new DOMParser().parseFromString(html, "text/html")
-        return doc.body.textContent
-    }
-
     const handleInputCommentChange = (event) => {
         setComment(event.target.value);
     };
@@ -155,7 +150,9 @@ const ListPost = () => {
                     <p> { rc.username } </p>
                 </div>
                 <div className = "content">
-                    <p> { rc.comment } </p>
+                    <p dangerouslySetInnerHTML = {{
+                        __html: DOMPurify.sanitize(rc.comment),
+                    }}></p>
                     <div className = "favoriteAndDelete">
                         <span>
                             {favorites[rc.id] ? (
@@ -222,38 +219,15 @@ const ListPost = () => {
                                 <div className = "comments" postId = { post.id }>
                                     {Array.isArray(comments) && comments.map((c) => (
                                         <div className = "container" commentId = {c.id}>
-                                            <div className = "admin">
-                                                { currentUser && (
-                                                    <div className = "adminInfo">
-                                                        <div className = "info">
-                                                            <img src = { `../image/${currentUser?.img}` } alt = ""/>
-                                                            <div className = "inputComment">
-                                                                <input
-                                                                    name = "comment"
-                                                                    placeholder = "Viết bình luận..."
-                                                                    id = "comment"
-                                                                    onChange = {handleInputCommentChange}
-                                                                    value = {comment}
-                                                                />
-                                                                <div className = "buttons">
-                                                                    <span onClick = {(e) => { e.stopPropagation(); setCommentButton(false); setComment("") }}>Hủy</span>
-                                                                    <button
-                                                                        className = {comment.length > 0 ? "active-button-comment-admin" : ""}
-                                                                        disabled = {comment.length === 0}
-                                        
-                                                                    >Bình Luận</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ) }
-                                            </div>
+
                                             <div className = "client"  >
                                                 <img src = {`http://localhost:3000/image/${c?.img}`} alt = ""/>
                                                 <p> { c.username } </p>
                                             </div>
                                             <div className = "content">
-                                                <p> { c.comment } </p>
+                                                <p dangerouslySetInnerHTML = {{
+                                                    __html: DOMPurify.sanitize(c.comment),
+                                                }}></p>
                                                 <div className = "favoriteAndDelete">
                                                     <span>
                                                         {favorites[c.id] ? (
@@ -286,7 +260,9 @@ const ListPost = () => {
                                                                         <p> { rc.username } </p>
                                                                     </div>
                                                                     <div className = "content">
-                                                                        <p> { rc.comment } </p>
+                                                                        <p dangerouslySetInnerHTML = {{
+                                                                            __html: DOMPurify.sanitize(rc.comment),
+                                                                        }}></p>
                                                                         <div className = "favoriteAndDelete">
                                                                             <span>
                                                                                 {favorites[rc.id] ? (
