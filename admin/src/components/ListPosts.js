@@ -10,7 +10,7 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 
 import { AdminContext } from '../context/AuthContext'
 
-import { displayAvatar, isURL } from '../services/AvatarService'
+import { isURL } from '../services/AvatarService'
 
 import { 
     fetchCommentData, 
@@ -96,8 +96,8 @@ const ListPost = () => {
 
     const handleReadPost = (post, parentId) => {
         setReadPosts(post);
-        // Fetch comment data
 
+        // Fetch comment data
         fetchCommentData(post.id, currentUser, setComments, setLikes, setLikeCounts, setFavorites);
 
         // Fetch reply comment data
@@ -142,11 +142,11 @@ const ListPost = () => {
     };
 
 
-    const renderReplies = (parentId) => {
+    const RenderReplies = (parentId) => {
         return replycomments.filter(rc => rc.parentId === parentId).map(rc => (
             <div className = "replyContainer" style = {{ marginLeft: 0 }} key = {rc.id}>
                 <div className = "client"  >
-                    <img src = {`http://localhost:3000/image/${rc?.img}`} />
+                    <img src = {isURL(rc?.img) ? c?.img : `http://localhost:3000/image/${rc?.img}`} alt = ""/>
                     <p> { rc.username } </p>
                 </div>
                 <div className = "content">
@@ -169,7 +169,7 @@ const ListPost = () => {
                     {likeCounts[rc.id] || 0}
                     <p>Trả lời</p>
                 </div>
-                {renderReplies(rc.id)}
+                {RenderReplies(rc.id)}
             </div>
         ));
     }
@@ -219,9 +219,8 @@ const ListPost = () => {
                                 <div className = "comments" postId = { post.id }>
                                     {Array.isArray(comments) && comments.map((c) => (
                                         <div className = "container" commentId = {c.id}>
-
                                             <div className = "client"  >
-                                                <img src = {`http://localhost:3000/image/${c?.img}`} alt = ""/>
+                                                <img src = {isURL(c?.img) ? c?.img : `http://localhost:3000/image/${c?.img}`} alt = ""/>
                                                 <p> { c.username } </p>
                                             </div>
                                             <div className = "content">
@@ -256,7 +255,7 @@ const ListPost = () => {
                                                             return (
                                                                 <div className = "replyContainer">
                                                                     <div className = "client"  >
-                                                                        <img src = {`http://localhost:3000/image/${rc?.img}`} />
+                                                                        <img src = {isURL(rc?.img) ? c?.img : `http://localhost:3000/image/${rc?.img}`} alt = ""/>
                                                                         <p> { rc.username } </p>
                                                                     </div>
                                                                     <div className = "content">
@@ -279,7 +278,7 @@ const ListPost = () => {
                                                                         {likeCounts[rc.id] || 0}
                                                                         <p>Trả lời</p>
                                                                     </div>
-                                                                    {renderReplies(rc.id)}
+                                                                    {RenderReplies(rc.id)}
                                                                 </div>
                                                             );
                                                         }

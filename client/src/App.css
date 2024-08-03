@@ -3,6 +3,16 @@
     justify-content: center;
 }
 
+body::-webkit-scrollbar{
+    width: 5px;
+}
+
+body::-webkit-scrollbar-thumb{
+    background: #888;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
 .container{}
 
 a{
@@ -1218,7 +1228,7 @@ textarea.input {
 .listcomments .infoCommentAccount .editAndDelete{
     position: absolute;
     left: 67.7%;
-    margin-top: 30px;
+    margin-top: 60px;
 }
 
 .listcomments .infoCommentAccount .editAndDelete .button .boxActionComment .editAndDelete{
@@ -1289,6 +1299,7 @@ textarea.input {
     box-shadow: 1px 1px 5px rgb(0, 0, 0, 0.5);
     border-radius: 10px;
     z-index: 100;
+    margin-top: 55px;
 }
 
 .boxActionCommentReplies .report span{
@@ -1549,10 +1560,37 @@ textarea.input {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.1);
     z-index: 999;
 }
 
 .no-scroll{
     overflow: hidden;
 }
+
+.reportSuccessful{
+    position: fixed;
+    width: 550px;
+    height: 400px;
+    background-color: #fff;
+    z-index: 100111;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.reportSuccessful i{
+    font-size: xxx-large;
+    color: rgb(65, 175, 167);
+}
+
+.reportSuccessful p{
+    font-size: large;
+}
+
