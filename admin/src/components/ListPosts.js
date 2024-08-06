@@ -13,8 +13,8 @@ import { AdminContext } from '../context/AuthContext'
 import { isURL } from '../services/AvatarService'
 
 import { 
-    fetchCommentData, 
-    fetchReplyCommentData,
+    FetchCommentData, 
+    FetchReplyCommentData,
     DeleteComment,
     FavoriteComment 
 } from '../services/CommentService'
@@ -98,10 +98,10 @@ const ListPost = () => {
         setReadPosts(post);
 
         // Fetch comment data
-        fetchCommentData(post.id, currentUser, setComments, setLikes, setLikeCounts, setFavorites);
+        FetchCommentData(post.id, currentUser, setComments, setLikes, setLikeCounts, setFavorites);
 
         // Fetch reply comment data
-        fetchReplyCommentData(post.id, parentId, currentUser, setReplyComments, setLikes, setLikeCounts, setFavorites)
+        FetchReplyCommentData(post.id, parentId, currentUser, setReplyComments, setLikes, setLikeCounts, setFavorites)
     }   
 
     const handleInputCommentChange = (event) => {
@@ -146,7 +146,7 @@ const ListPost = () => {
         return replycomments.filter(rc => rc.parentId === parentId).map(rc => (
             <div className = "replyContainer" style = {{ marginLeft: 0 }} key = {rc.id}>
                 <div className = "client"  >
-                    <img src = {isURL(rc?.img) ? c?.img : `http://localhost:3000/image/${rc?.img}`} alt = ""/>
+                    <img src = {isURL(rc?.img) ? rc?.img : `http://localhost:3000/image/${rc?.img}`} alt = ""/>
                     <p> { rc.username } </p>
                 </div>
                 <div className = "content">

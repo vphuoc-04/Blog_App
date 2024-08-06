@@ -7,7 +7,7 @@ import {
 
 const router = express.Router();
 
-router.get("/", getReport);
+router.get("/report/data", getReport);
 router.post("/report/add", addReport);
 router.delete("/report/delete", deletReport);
 

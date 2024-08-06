@@ -24,8 +24,8 @@ a{
 
 /* NAVBAR */
 .navbar{
-    padding: 5px 200px;
-    border-bottom: 1px solid rgb(0, 0, 0, 0.3);
+    padding: 0px 200px;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.2);
     background-color: rgb(255, 255, 255);
 }
 
@@ -37,13 +37,96 @@ a{
     padding: 10px 0px;
 }
 
+.navbar .container .messageReport{
+    position: absolute;
+    left: 75%;
+    font-size: x-large;
+}
+
+.navbar .container .messageReport:hover{
+    
+}
+
+.navbar .container .messageReport i{
+    cursor: pointer;
+}
+
+.navbar .container .messageReport i:nth-child(2){
+    cursor: pointer;
+    margin-left: 60px;
+}
+
+.newReportCount {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    position: absolute;
+    top: -7px;
+    left: 15px;
+    touch-action: none;
+}
+
+.navbar .container .messageReport .container{
+    position: absolute;
+    top: 40px;
+    left: -250px;
+    width: 420px;
+    height: 450px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 1px 2px 5px rgb(0, 0, 0, 0.5);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.messageReport .container::-webkit-scrollbar{
+    width: 5px;
+}
+
+.messageReport .container::-webkit-scrollbar-thumb{
+    background: #888;
+    border-radius: 10px;    
+} 
+
+.messageReport .container .dataReport{
+
+}
+
+.messageReport .container .dataReport .avatar img{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.dataReport .infoUser{
+    display: flex;
+    padding: 10px;
+}
+
+.dataReport .infoUser p{
+    font-size: 13px;
+    margin: 0 0 0 5px;
+}
+
+.dataReport p{
+    font-size: 13px;
+    margin-left: 55px;
+    margin-top: -30px;
+}
+
 .navbar .container .profile{
     display: flex;
     align-items: center;
 }
 
 .navbar .logo img{
-    width: 50px;
+    width: 45px;
 }
 
 .navbar .profile img{
@@ -71,7 +154,7 @@ a{
     height: 130px;
     width: 100px;
     box-shadow: 1px 1px 5px rgb(0, 0, 0, 0.5);
-    margin: 20px 0 0 -45px;
+    margin: 10px 0 0 -45px;
     display: flex;
     align-items: center;
     justify-content: center;

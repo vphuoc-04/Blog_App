@@ -2,7 +2,11 @@ import { database } from '../database.js'
 import jwt from 'jsonwebtoken'
 
 const getReport = (req, res) => {
-    
+    const q = "SELECT r.* FROM reportcomments r JOIN users u ON r.userId = u.id JOIN comments c ON r.commentId = c.id JOIN posts p ON r.postId = p.id";
+    database.query(q, (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json(data);
+    });
 }
 
 const addReport = (req, res) => {

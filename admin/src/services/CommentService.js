@@ -1,7 +1,7 @@
 import axios from "axios";
 import moment from 'moment';
 
-const fetchCommentData = async (postId, currentUser, setComments, setLikes, setLikeCounts, setFavorites) => {
+const FetchCommentData = async (postId, currentUser, setComments, setLikes, setLikeCounts, setFavorites) => {
     try{
         const res = await axios.get(`/comments/data/comment?postId=${postId}`);
         if(Array.isArray(res.data)) {
@@ -42,7 +42,7 @@ const fetchCommentData = async (postId, currentUser, setComments, setLikes, setL
     }
 };
 
-const fetchReplyCommentData = async (postId, parentId, currentUser, setReplyComments, setLikes, setLikeCounts, setFavorites) => {
+const FetchReplyCommentData = async (postId, parentId, currentUser, setReplyComments, setLikes, setLikeCounts, setFavorites) => {
     try{
         const res = await axios.get(`/comments/data/reply?postId=${postId}&parentId=${parentId}`);
         console.log(res.data)
@@ -188,4 +188,15 @@ const ReplyComment = async (parentId, postId, currentUser, replycomment, setRepl
     }
 };
 
-export { fetchCommentData, fetchReplyCommentData, LikeComment, DeleteComment, AddComment, ReplyComment, FavoriteComment };
+const FetchReportCommentData = async (setDataReport, setNewReportCount) => {
+    try{
+        const res = await axios.get("/reportcomments/report/data");
+        setDataReport(res.data);
+        setNewReportCount(res.data.length);
+    }
+    catch(err){
+        console.log('Lỗi khi fetch data report:', err);
+    }
+}
+
+export { FetchCommentData, FetchReplyCommentData, LikeComment, DeleteComment, AddComment, ReplyComment, FavoriteComment, FetchReportCommentData };

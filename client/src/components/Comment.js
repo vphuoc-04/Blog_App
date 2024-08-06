@@ -6,24 +6,27 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import moment from 'moment';
 import DOMPurify from "dompurify";
 
-import { 
-    CommentCurrentUser,
-    CommentActions,
+import {
     FetchCommentData, 
-    FormEditComment,
     FetchReplyCommentData, 
     DeleteComment, 
     LikeComment, 
     EditComment, 
     AddComment, 
     ReplyComment,
-    RenderReplyCommentForm,
+    ReportComment
+} from '../services/CommentService';
+
+import { 
+    CommentCurrentUser, 
+    CommentActions, 
+    FormEditComment, 
+    RenderReplyCommentForm, 
     RenderNextReplyCommentForm,
     ReplyCommentActions,
     NextReplyCommentActions,
     FormEditReplyComment,
-    ReportComment
-} from '../services/CommentService';
+} from '../utils/CommentStructure';
 
 import { fetchUserData } from '../services/AuthService';
 
@@ -203,7 +206,6 @@ const Comment = ({ postId }) => {
         return replycomments.filter(rc => rc.parentId === parentId).map(rc => (
             <div className = "container" style = {{ marginLeft: 0 }} key = {rc.id}>
                 {editCommentId === rc.id ? (
-                    
                     <FormEditReplyComment
                         rc = { rc }
                         editCommentContent = { editCommentContent }
@@ -213,7 +215,6 @@ const Comment = ({ postId }) => {
                         handleEditSaveComment = { handleEditSaveComment }
                         handleCancelEdit = { handleCancelEdit }
                     />
-
                 ) : (
                     <div className = "content">
                         <div className = "infoCommentAccount">
@@ -221,10 +222,8 @@ const Comment = ({ postId }) => {
                             <div className = "username"> {rc.username} </div>
                             <p>{moment(rc.date).format("DD/MM/YYYY")}</p>
                             <MoreVertIcon 
-                                style = {{ color: '#828282', cursor: 'pointer', position: 'absolute', left: 1035, marginTop: 25, }} 
-                                onClick = {() => handleBoxActionComment(rc.id) } 
-                            />
-                            
+                                style = {{ color: '#828282', cursor: 'pointer', position: 'absolute', left: 1035, marginTop: 25, }} onClick = {() => handleBoxActionComment(rc.id) } 
+                            />                           
                             <NextReplyCommentActions
                                 currentUser = { currentUser }
                                 rc = { rc }
@@ -240,30 +239,27 @@ const Comment = ({ postId }) => {
                                 handleInputReport = { handleInputReport }
                                 reportSuccessful = { reportSuccessful }
                             />
-
                         </div>
                         <div className = "infoComment">
-                            <p dangerouslySetInnerHTML = {{
-                                __html: DOMPurify.sanitize(rc.comment),
-                            }}></p>
+                            <p dangerouslySetInnerHTML = {{ __html: DOMPurify.sanitize(rc.comment) }}></p>
                         </div>
                         <div className = "likeAndCountLike">
                             <span>
                                 {likes[rc.id] ? (
-                                    <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }/>
+                                    <FavoriteOutlinedIcon 
+                                        style = {{ color: 'red', cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }
+                                    />
                                 ) : (
-                                    <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }/>
+                                    <FavoriteBorderOutlinedIcon 
+                                        style = {{ cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }
+                                    />
                                 )}
                             </span>
                             <p> {likeCounts[rc.id] || 0}</p>
                         </div>
                         <div className = "reply">
                             <div className = "replyComment">
-                                <p style={{ cursor: 'pointer' }} onClick={() => {
-                                    console.log('rc.id:', rc.id, 'rc.parentId:', rc.parentId, 'rc.username: ', rc.username);
-                                    handleReplyClick(rc.id, rc.username);
-                                }}>Trả lời</p>
-
+                                <p style={{ cursor: 'pointer' }} onClick = {() => {handleReplyClick(rc.id, rc.username)}}>Trả lời</p>
                                 <RenderNextReplyCommentForm
                                     rc = { rc }
                                     replyCommentForm = { replyCommentForm }
@@ -275,7 +271,6 @@ const Comment = ({ postId }) => {
                                     setReplyComment = { setReplyComment }
                                     handleReplyComment = { handleReplyComment }
                                 />
-
                             </div>
                         </div>
                     </div>
@@ -289,7 +284,6 @@ const Comment = ({ postId }) => {
         <div className = "comment">
             <div className= "commentCount"> { comments.length + replycomments.length } Bình Luận</div>
             <div className = "container">
-
                 <CommentCurrentUser
                     currentUser = { currentUser }
                     commentButton = { commentButton }
@@ -300,12 +294,10 @@ const Comment = ({ postId }) => {
                     handleComment = { handleComment }
                     handleInputCommentChange = { handleInputCommentChange }
                 />
-
                 <div className = "listcomments">
                     {Array.isArray(comments) && comments.map((c) => (
                         <div className = "container" key = {c.id}>
                             {editCommentId === c.id ? (
-
                                 <FormEditComment
                                     displayAvatar = { displayAvatar }
                                     c = { c }
@@ -315,7 +307,6 @@ const Comment = ({ postId }) => {
                                     originalContent = { originalContent }
                                     handleEditSaveComment = { handleEditSaveComment }
                                 />
-
                             ) : (
                             <div className = "content">
                                 <div className = "infoCommentAccount">
@@ -325,10 +316,8 @@ const Comment = ({ postId }) => {
                                     <div className = "editAndDelete">
                                         <div className = "button">
                                             <MoreVertIcon 
-                                                style = {{ color: '#828282', cursor: 'pointer', marginTop: -20 }} 
-                                                onClick = {() => handleBoxActionComment(c.id) } 
+                                                style = {{ color: '#828282', cursor: 'pointer', marginTop: -20 }} onClick = {() => handleBoxActionComment(c.id) } 
                                             />
-
                                             <CommentActions
                                                 currentUser = { currentUser }
                                                 c = { c }
@@ -344,7 +333,6 @@ const Comment = ({ postId }) => {
                                                 handleInputReport = { handleInputReport }
                                                 reportSuccessful = { reportSuccessful }
                                             />
-
                                         </div>
                                     </div>
                                 </div>
@@ -354,20 +342,20 @@ const Comment = ({ postId }) => {
                                 <div className = "likeAndCountLike">
                                     <span>
                                         {likes[c.id] ? (
-                                            <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(c.id) }/>
+                                            <FavoriteOutlinedIcon 
+                                                style = {{ color: 'red', cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(c.id) }
+                                            />
                                         ) : (
-                                            <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(c.id) }/>
+                                            <FavoriteBorderOutlinedIcon 
+                                                style = {{ cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(c.id) }
+                                            />
                                         )}
                                     </span>
                                     <p> {likeCounts[c.id] || 0}</p>
                                 </div>
                                 <div className = "reply">
                                     <div className = "replyComment">
-                                        <p style = {{ cursor: 'pointer' }} 
-                                            onClick = {() => { 
-                                                console.log('c.id: ', c.id)
-                                                handleReplyClick(c.id, c.username)}} >Trả lời
-                                        </p>
+                                        <p style = {{ cursor: 'pointer' }} onClick = {() => {handleReplyClick(c.id, c.username)}}>Trả lời</p>
                                         <div className = "favoriteComment">
                                             { favorites[c.id] && (
                                                 <div>
@@ -379,7 +367,6 @@ const Comment = ({ postId }) => {
                                             onClick = {() => toggleReplies(c.id)}>
                                             {showReplies[c.id] ? `Ẩn ${countReplies(c.id)} phản hồi` : `Hiện ${countReplies(c.id)} phản hồi`}
                                         </div>
-
                                         <RenderReplyCommentForm
                                             replyCommentForm = { replyCommentForm }
                                             c = { c }
@@ -391,7 +378,6 @@ const Comment = ({ postId }) => {
                                             setReplyComment = { setReplyCommentForm }
                                             handleReplyComment = { handleReplyComment }
                                         />
-
                                     </div>
                                 </div>
                                 {showReplies[c.id] && (
@@ -401,7 +387,6 @@ const Comment = ({ postId }) => {
                                                 return (
                                                     <div className = "container" key = { rc.id }>
                                                     {editCommentId === rc.id ? (
-
                                                         <FormEditReplyComment
                                                             rc = { rc }
                                                             editCommentContent = { editCommentContent }
@@ -410,8 +395,7 @@ const Comment = ({ postId }) => {
                                                             displayAvatar = { displayAvatar }
                                                             handleEditSaveComment = { handleEditSaveComment }
                                                             handleCancelEdit = { handleCancelEdit }
-                                                        />
-                                                        
+                                                        />                                                      
                                                     ) : (
                                                         <div className = "content">
                                                             <div className = "infoCommentAccount">
@@ -421,10 +405,8 @@ const Comment = ({ postId }) => {
                                                                 <div className = "editAndDelete">
                                                                     <div className = "button">
                                                                         <MoreVertIcon 
-                                                                            style = {{ color: '#828282', cursor: 'pointer', marginTop: -20}} 
-                                                                            onClick = {() => handleBoxActionComment(rc.id) }                                                                              
+                                                                            style = {{ color: '#828282', cursor: 'pointer', marginTop: -20}} onClick = {() => handleBoxActionComment(rc.id) }                                                                              
                                                                         />
-
                                                                         <ReplyCommentActions
                                                                             currentUser = { currentUser }
                                                                             rc = { rc }
@@ -440,32 +422,29 @@ const Comment = ({ postId }) => {
                                                                             handleInputReport = { handleInputReport }
                                                                             reportSuccessful = { reportSuccessful }
                                                                         />
-
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div className = "infoComment">
-                                                                <p dangerouslySetInnerHTML = {{
-                                                                    __html: DOMPurify.sanitize(rc.comment),
-                                                                }}></p>
+                                                                <p dangerouslySetInnerHTML = {{ __html: DOMPurify.sanitize(rc.comment) }}></p>
                                                             </div>
                                                             <div className = "likeAndCountLike">
                                                                 <span>
                                                                     {likes[rc.id] ? (
-                                                                        <FavoriteOutlinedIcon style = {{ color: 'red', cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }/>
+                                                                        <FavoriteOutlinedIcon 
+                                                                            style = {{ color: 'red', cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }
+                                                                        />
                                                                     ) : (
-                                                                        <FavoriteBorderOutlinedIcon style = {{ cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }/>
+                                                                        <FavoriteBorderOutlinedIcon 
+                                                                            style = {{ cursor: 'pointer' }} fontSize = "small" onClick = { () => handleLikeComment(rc.id) }
+                                                                        />
                                                                     )}
                                                                 </span>
                                                                 <p> {likeCounts[rc.id] || 0}</p>
                                                             </div>
                                                             <div className = "reply">
                                                                 <div className = "replyComment">
-                                                                    <p style={{ cursor: 'pointer' }} onClick={() => {
-                                                                        console.log('rc.id:', rc.id, 'rc.parentId:', rc.parentId);
-                                                                        handleReplyClick(rc.id, rc.username);
-                                                                    }}>Trả lời</p>
-
+                                                                    <p style = {{ cursor: 'pointer' }} onClick={() => { handleReplyClick(rc.id, rc.username); }}>Trả lời</p>
                                                                     <RenderNextReplyCommentForm
                                                                         replyCommentForm = { replyCommentForm }
                                                                         isURL = { isURL }
@@ -477,7 +456,6 @@ const Comment = ({ postId }) => {
                                                                         setReplyComment = { setReplyComment }
                                                                         handleReplyComment = { handleReplyComment }
                                                                     />
-
                                                                 </div>
                                                             </div>
                                                         </div>
