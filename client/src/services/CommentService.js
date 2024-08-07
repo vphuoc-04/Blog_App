@@ -207,7 +207,7 @@ const ReportComment = async (reportText, userId, postId, commentId, currentUser,
             img: currentUser.img,
             date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
             userReported,
-            commentReported
+            commentReported,
         };
         await axios.post('/reportcomments/report/add', contentReport);
         setReportSuccessful(true);
