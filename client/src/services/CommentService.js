@@ -196,7 +196,7 @@ const ReplyComment = async (parentId, postId, currentUser, replycomment, setRepl
     }
 };
 
-const ReportComment = async (reportText, userId, postId, commentId, currentUser, userReported, commentReported, setReportSuccessful) => {
+const ReportComment = async (reportText, userId, postId, commentId, currentUser, userReported, commentReported) => {
     try{
         const contentReport = {
             report: reportText,
@@ -210,7 +210,6 @@ const ReportComment = async (reportText, userId, postId, commentId, currentUser,
             commentReported,
         };
         await axios.post('/reportcomments/report/add', contentReport);
-        setReportSuccessful(true);
     }
     catch(err){
         console.log(err);

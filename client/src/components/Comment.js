@@ -99,10 +99,12 @@ const Comment = ({ postId }) => {
 
     // Send report
     const handleSendReport = async (commentId, userId, userReported, commentReported) => {
-        await ReportComment(reportText, userId, postId, commentId, currentUser, userReported, commentReported, setShowReportForm, setReportSuccessful);
+        ReportComment(reportText, userId, postId, commentId, currentUser, userReported, commentReported, setShowReportForm);
+        setReportSuccessful(true);
         setTimeout(() => {
             setReportSuccessful(null);
             setShowReportForm(false);
+            setReportText('');
         }, 3000);
     }
 
@@ -120,18 +122,6 @@ const Comment = ({ postId }) => {
             }
         };
     }, [])
-
-    useEffect(() => {
-        if (showReportForm) {
-            document.body.classList.add("no-scroll");
-        } else {
-            document.body.classList.remove("no-scroll");
-        }
-
-        return () => {
-            document.body.classList.remove("no-scroll");
-        };
-    }, [showReportForm]);
 
     const handleInputCommentChange = (event) => {
         setComment(event.target.value);

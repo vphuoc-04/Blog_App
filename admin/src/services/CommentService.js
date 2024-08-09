@@ -191,7 +191,8 @@ const ReplyComment = async (parentId, postId, currentUser, replycomment, setRepl
 const FetchReportCommentData = async (setDataReport, setNewReportCount) => {
     try{
         const res = await axios.get("/reportcomments/report/data");
-        setDataReport(res.data);
+        const reverseDataReport = res.data.reverse();
+        setDataReport(reverseDataReport);
         setNewReportCount(res.data.length);
     }
     catch(err){

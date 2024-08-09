@@ -50,12 +50,11 @@ cron.schedule('0 0 * * *', () => {
 })
 
 const deletReport = (req, res) => {
-    const { reportId } = req.body;
+    const reportId = req.params.id;
     const q = 'DELETE FROM reportcomments WHERE `id` = ?';
 
     database.query(q, [reportId], (err, data) => {
         if (err) return res.status(500).json(err);
-        if (data.affectedRows === 0) return res.status(404).json('Báo cáo không tồn tại');
         return res.json('Báo cáo đã tự động xóa thành công!');
     })
 }

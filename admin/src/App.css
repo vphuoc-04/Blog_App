@@ -47,23 +47,46 @@ body::-webkit-scrollbar-thumb{
     padding: 10px 0px;
 }
 
-.navbar .container .messageReport{
+.navbar .container .iconNav{
     position: absolute;
     left: 75%;
     font-size: x-large;
 }
 
-.navbar .container .messageReport:hover{
+.navbar .container .iconNav:hover{
     
 }
 
-.navbar .container .messageReport i{
+.navbar .container .iconNav i{
     cursor: pointer;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.5s;
+    border-radius: 50%;
 }
 
-.navbar .container .messageReport i:nth-child(2){
+.navbar .container .iconNav .icon i:hover{
+    background-color: rgb(243, 243, 243);
+}
+
+.navbar .container .iconNav .icon i:nth-child(2){
     cursor: pointer;
-    margin-left: 60px;
+    margin-left: 75px;
+    margin-top: -50px;
+}
+
+.navbar .container .iconNav .icon i.activeIconNav{
+    color: rgb(59, 203, 193);
+    background-color: rgb(243, 243, 243);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
 }
 
 .newReportCount {
@@ -73,14 +96,17 @@ body::-webkit-scrollbar-thumb{
     padding: 2px 6px;
     font-size: 12px;
     position: absolute;
-    top: -7px;
-    left: 15px;
-    touch-action: none;
+    top: 5px;
+    left: 27px;
+    user-select: none; 
+    -webkit-user-select: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none; touch-action: none;
 }
 
-.navbar .container .messageReport .container{
+.navbar .container .iconNav .report{
     position: absolute;
-    top: 40px;
+    top: 55px;
     left: -300px;
     width: 420px;
     height: 450px;
@@ -93,24 +119,31 @@ body::-webkit-scrollbar-thumb{
     justify-content: flex-start;
     gap: 30px;
     z-index: 1000;
+    padding-right: 5px;
+    overflow-x: hidden;
 }
 
-.messageReport .container::-webkit-scrollbar{
+.iconNav .report::-webkit-scrollbar{
     width: 5px;
     padding: 10px;
 }
 
-.messageReport .container::-webkit-scrollbar-thumb{
+.iconNav .report::-webkit-scrollbar-thumb{
     background: #888;
     border-radius: 10px;    
     padding: 10px;
 } 
 
-.messageReport .container .dataReport{
-
+.iconNav .report .dataReport .info{
+    transition: all 0.3s;
+    cursor: pointer;
 }
 
-.messageReport .container span{
+.iconNav .report .dataReport .info:hover{
+    background-color: rgb(243, 243, 243);
+}
+
+.iconNav .report span{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -119,25 +152,79 @@ body::-webkit-scrollbar-thumb{
     width: 300px;
 }
 
-.messageReport .container .dataReport .avatar img{
+.iconNav .report .dataReport .avatar img{
     width: 40px;
     height: 40px;
     object-fit: cover;
     border-radius: 50%;
 }
 
-.messageReport .container .dataReport .imagePost img{
+.iconNav .report .dataReport .imagePost{
+    display: flex;
+    align-items: center;
+}
+
+.iconNav .report .dataReport .imagePost img{
     width: 90px;
     height: 50px;
     padding-left: 15px;
 }
 
-.dataReport .infoUser{
+.dataReport .boxActionReport{
+    margin-left: 280px;
+    position: relative;
+    top: 10px;
+    padding-bottom: 10px;
+}
+
+.dataReport .boxActionReport .viewAndDelete{
+    height: 70px;
+    width: 120px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+}
+
+.dataReport .boxActionReport .viewAndDelete span{
+    display: flex;
+    align-items: center;
+    font-size: small;
+    margin-left: 60px;
+ 
+    color: rgb(0, 0, 0, 0.5);
+    transition: all 0.2s;
+    height: 10px;
+}
+
+.dataReport .boxActionReport .viewAndDelete span:hover{
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+}
+
+.viewAndDelete span:nth-child(1){
+    margin-top: -20px;
+}
+
+.viewAndDelete span:nth-child(2){
+    margin-top: 10px;
+}
+
+.dataReport .boxActionReport .viewAndDelete i{
+    position: relative;
+    left: 10px;
+    transition: all 0.2s;
+}
+
+.dataReport .boxActionReport .viewAndDelete i:hover{
+    color: rgb(0, 0, 0);
+}
+
+.dataReport .info{
     display: flex;
     padding: 10px;
 }
 
-.dataReport .infoUser p{
+.dataReport .info p{
     font-size: 13px;
     margin: 0 0 0 5px;
     word-break: break-all;

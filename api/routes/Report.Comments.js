@@ -9,6 +9,6 @@ const router = express.Router();
 
 router.get("/report/data", getReport);
 router.post("/report/add", addReport);
-router.delete("/report/delete", deletReport);
+router.delete("/report/delete/:id", deletReport);
 
 export default router;
